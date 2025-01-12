@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_12_155914) do
+ActiveRecord::Schema.define(version: 2025_01_12_163742) do
 
   create_table "cards", force: :cascade do |t|
     t.string "name"
@@ -21,6 +21,16 @@ ActiveRecord::Schema.define(version: 2025_01_12_155914) do
     t.string "effect"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "collections", force: :cascade do |t|
+    t.integer "player_id"
+    t.integer "card_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["card_id"], name: "index_collections_on_card_id"
+    t.index ["player_id", "card_id"], name: "index_collections_on_player_id_and_card_id", unique: true
+    t.index ["player_id"], name: "index_collections_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -42,5 +52,7 @@ ActiveRecord::Schema.define(version: 2025_01_12_155914) do
     t.index ["token"], name: "index_sessions_on_token", unique: true
   end
 
+  add_foreign_key "collections", "cards"
+  add_foreign_key "collections", "players"
   add_foreign_key "sessions", "players"
 end

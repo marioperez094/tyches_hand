@@ -1,5 +1,7 @@
 class Player < ApplicationRecord
   has_many :sessions, dependent: :destroy
+  has_many :collections, dependent: :destroy
+  has_many :cards, through: :collections
 
   has_secure_password validations: false
 

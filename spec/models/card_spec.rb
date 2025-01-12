@@ -72,5 +72,15 @@ RSpec.describe Card, type: :model do
 
       expect(Card.by_suit("Hearts")).to contain_exactly(hearts_card)
     end
+
+    it 'should have many collections' do
+      card = FactoryBot.create(:card)
+      expect(card.players).to eq([])
+    end
+
+    it 'should have many players' do 
+      card = FactoryBot.create(:card)
+      expect(card.players).to eq([])
+    end
   end
 end

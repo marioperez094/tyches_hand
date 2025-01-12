@@ -71,5 +71,15 @@ RSpec.describe  Player, type: :model do
       player = FactoryBot.create(:player)
       expect(player.sessions).to eq([])
     end
+
+    it 'should have many collections' do
+      player = FactoryBot.create(:player)
+      expect(player.collections).to eq([])
+    end
+
+    it 'should have many cards' do 
+      player = FactoryBot.create(:player)
+      expect(player.cards).to eq([])
+    end
   end
 end

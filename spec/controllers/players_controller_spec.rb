@@ -74,6 +74,46 @@ RSpec.describe Api::PlayersController, type: :controller do
         }
       }.to_json)
     end
+
+    it 'shows a player and their deck' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+      card1 = FactoryBot.create(:card)
+      card2 = FactoryBot.create(:card, value: 8)
+
+      player.cards << card1
+      player.cards << card2
+
+      get :show, params: { id: player.id, cards: 'true'}
+
+      expect(response.body).to eq({
+        player: {
+          username: player.username,
+          guest: player.guest,
+          blood_pool: player.blood_pool,
+
+          cards: [{
+            id: card1.id,
+            name: card1.name,
+            suit: card1.suit,
+            value: card1.value,
+            description: card1.description,
+            effect_type: card1.effect_type,
+            effect: card1.effect
+          }, {
+            id: card2.id,
+            name: card2.name,
+            suit: card2.suit,
+            value: card2.value,
+            description: card2.description,
+            effect_type: card2.effect_type,
+            effect: card2.effect
+          }]
+        }
+      }.to_json)
+    end
   end
 
   context 'PUT /player/:id' do

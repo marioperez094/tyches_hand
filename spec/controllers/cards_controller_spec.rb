@@ -5,8 +5,14 @@ RSpec.describe Api::CardsController, type: :controller do
 
   context 'GET /cards' do
     it 'searches for a card' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
       card1 = FactoryBot.create(:card)
       card2 = FactoryBot.create(:card, value: 3)
+
+      player.cards << card2
 
       get :show, params: { id: card2.id }
 
@@ -20,6 +26,22 @@ RSpec.describe Api::CardsController, type: :controller do
           effect_type: card2.effect_type,
           effect: card2.effect
         }
+      }.to_json)
+    end
+
+    
+    it 'if a card does not belong to player invalid' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+      card1 = FactoryBot.create(:card)
+      card2 = FactoryBot.create(:card, value: 3)
+      
+      get :show, params: { id: card2.id }
+
+      expect(response.body).to eq({
+        error: 'Player does not have this card.'
       }.to_json)
     end
   end
