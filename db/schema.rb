@@ -10,17 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_10_014417) do
+ActiveRecord::Schema.define(version: 2025_01_12_074640) do
 
-  create_table "cards", force: :cascade do |t|
-    t.string "name"
-    t.string "suit"
-    t.string "value"
-    t.string "description"
-    t.string "effect_type"
-    t.string "effect"
+  create_table "players", force: :cascade do |t|
+    t.string "username"
+    t.string "password_digest"
+    t.boolean "guest", default: false, null: false
+    t.integer "blood_pool", default: 5000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["username"], name: "index_players_on_username", unique: true
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.string "token"
+    t.integer "player_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["player_id"], name: "index_sessions_on_player_id"
+    t.index ["token"], name: "index_sessions_on_token", unique: true
+  end
+
+  add_foreign_key "sessions", "players"
 end
