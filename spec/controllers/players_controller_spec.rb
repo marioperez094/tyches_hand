@@ -61,6 +61,8 @@ RSpec.describe Api::PlayersController, type: :controller do
 
     it 'shows a player' do
       player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       get :show, params: { id: player.id }
 

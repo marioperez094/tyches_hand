@@ -36,4 +36,8 @@ RSpec.describe 'Route definition', :type => :routing do
   it 'of GET /authenticated' do
     expect(:get => '/api/authenticated').to route_to(:controller => 'api/sessions', :action => 'authenticated' )
   end
+
+  it 'of GET /cards' do 
+    expect(:get => '/api/cards/:id').to route_to(:controller => 'api/cards', :action => 'show', :id => ':id')
+  end
 end

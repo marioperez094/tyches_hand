@@ -1,5 +1,7 @@
 module Api
   class PlayersController < ApplicationController
+    before_action :current_player, only: [:show, :convert_to_registered, :update_password, :destroy]
+
     def create
       @player = Player.new(player_params)
 
@@ -27,7 +29,6 @@ module Api
     end
 
     def show
-      set_player_by_id
       return render json: { error: 'Player not found.' }, 
       status: :not_found if !@player
 
@@ -36,8 +37,6 @@ module Api
     end
 
     def convert_to_registered
-      @player = current_player
-
       return render json: { error: 'Player not found.' },
       status: :not_found if !@player
 
@@ -56,8 +55,6 @@ module Api
     end
 
     def update_password
-      @player = current_player
-
       return render json: { error: 'Player not found.'},
       status: :not_found if !@player
 
@@ -72,8 +69,6 @@ module Api
     end
 
     def destroy
-      @player = current_player
-
       if @player&.destroy
         render json: { success: true }
       else
