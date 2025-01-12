@@ -77,6 +77,8 @@ RSpec.describe Api::PlayersController, type: :controller do
   context 'PUT /player/:id' do
     it 'converts guest player to registered player' do
       player = FactoryBot.create(:player, username: nil, password: nil, guest: true)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       post :convert_to_registered, params: { id: player.id,
         player: {
@@ -96,6 +98,8 @@ RSpec.describe Api::PlayersController, type: :controller do
 
     it 'does not convert a registered account' do
       player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       post :convert_to_registered, params: { id: player.id,
         player: {
@@ -111,6 +115,8 @@ RSpec.describe Api::PlayersController, type: :controller do
 
     it 'updates a player password' do
       player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       post :update_password, params: { id: player.id,
         player: {
@@ -127,6 +133,8 @@ RSpec.describe Api::PlayersController, type: :controller do
   context 'DELETE /player/:id' do
     it 'deletes a player' do
       player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       delete :destroy, params: { id: player.id }
 

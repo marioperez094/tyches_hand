@@ -24,4 +24,16 @@ RSpec.describe 'Route definition', :type => :routing do
   it 'of DELETE password /players/:id' do
     expect(:delete => '/api/players/:id').to route_to(:controller => 'api/players', :action => 'destroy', :id => ':id')
   end
+
+  it 'of POST /sessions' do
+    expect(:post => '/api/sessions').to route_to(:controller => 'api/sessions', :action => 'create')
+  end
+
+  it 'of DELETE /sessions' do
+    expect(:delete => '/api/sessions').to route_to(:controller => 'api/sessions', :action => 'destroy')
+  end
+
+  it 'of GET /authenticated' do
+    expect(:get => '/api/authenticated').to route_to(:controller => 'api/sessions', :action => 'authenticated' )
+  end
 end

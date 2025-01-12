@@ -4,7 +4,15 @@ module Api
       @player = Player.new(player_params)
 
       if @player.save
+        session = @player.sessions.create
+
+        cookies.signed[:tyches_hand_session_token] = {
+          value: session.token,
+          httponly: true,
+        }
+        
         render 'api/players/show'
+
       else
         render json: {
           error: @player.errors
@@ -28,7 +36,7 @@ module Api
     end
 
     def convert_to_registered
-      set_player_by_id
+      @player = current_player
 
       return render json: { error: 'Player not found.' },
       status: :not_found if !@player
@@ -37,8 +45,7 @@ module Api
       status: :forbidden if @player.guest == false
 
       begin
-        @player.update(player_params)
-        @player.update(guest: false)
+        @player.update!(username: params[:player][:username], password: params[:player][:password], guest: false)
 
         render 'api/players/show',
         status: :ok
@@ -49,7 +56,7 @@ module Api
     end
 
     def update_password
-      set_player_by_id
+      @player = current_player
 
       return render json: { error: 'Player not found.'},
       status: :not_found if !@player
@@ -65,7 +72,7 @@ module Api
     end
 
     def destroy
-      set_player_by_id
+      @player = current_player
 
       if @player&.destroy
         render json: { success: true }
