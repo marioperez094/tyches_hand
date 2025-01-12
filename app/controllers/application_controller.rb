@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   private
 
   def current_player 
-    @current_player ||= authenticate_current_player
+    @player ||= authenticate_current_player
   end
 
   def authenticate_current_player
@@ -13,6 +13,6 @@ class ApplicationController < ActionController::Base
     session = Session.find_by(token: token)
     return nil unless session
     
-    @current_player = session.player
+    @player = session.player
   end
 end

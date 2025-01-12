@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   namespace :api do
     resources :players, only: [:create, :index, :show, :destroy]
     resources :sessions, only: [:create]
+    resources :cards, only: [:show]
 
     #Players
     put '/players/:id/convert_to_registered' => 'players#convert_to_registered'
