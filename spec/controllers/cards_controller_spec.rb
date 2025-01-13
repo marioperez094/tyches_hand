@@ -30,7 +30,7 @@ RSpec.describe Api::CardsController, type: :controller do
     end
 
     
-    it 'if a card does not belong to player invalid' do
+    it 'if a card does not belong to player, invalid' do
       player = FactoryBot.create(:player)
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
@@ -43,6 +43,16 @@ RSpec.describe Api::CardsController, type: :controller do
       expect(response.body).to eq({
         error: 'Player does not have this card.'
       }.to_json)
+    end
+  end
+
+  context 'POST /player/cards/discover' do
+    it 'adds a discovered card' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+
     end
   end
   
