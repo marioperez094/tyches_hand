@@ -1,6 +1,9 @@
 class Card < ApplicationRecord
   has_many :collections, dependent: :destroy
   has_many :players, through: :collections
+  
+  has_many :cards_in_deck, dependent: :destroy
+  has_many :decks, through: :cards_in_deck
 
   before_validation :set_card_name
   before_validation :set_effect_description

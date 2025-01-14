@@ -73,6 +73,11 @@ RSpec.describe Card, type: :model do
       expect(card.players).to eq([])
     end
 
+    it 'should have many decks' do
+      card = FactoryBot.create(:card)
+      expect(card.decks).to eq([])
+    end
+
     it 'should have 312 cards and 52 cards of each effect' do
       Rake::Task['cards:populate_cards'].invoke
       expect(Card.count).to eq(312)

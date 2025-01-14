@@ -2,6 +2,7 @@ class Player < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :cards, through: :collections
+  has_one :deck
 
   has_secure_password validations: false
 
@@ -37,7 +38,7 @@ class Player < ApplicationRecord
 
   def assign_guest_username
     timestamp = Time.now.to_i
-    update_column(:username, "Guest#{timestamp}") if username.blank?
+    update!(username: "Guest#{timestamp}") if username.blank?
   end
 
   def weighted_random_card_count(max_cards, health_odds)

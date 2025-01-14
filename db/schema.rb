@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_12_163742) do
+ActiveRecord::Schema.define(version: 2025_01_14_162913) do
 
   create_table "cards", force: :cascade do |t|
     t.string "name"
@@ -22,6 +22,16 @@ ActiveRecord::Schema.define(version: 2025_01_12_163742) do
     t.datetime "updated_at", precision: 6, null: false
   end
 
+  create_table "cards_in_decks", force: :cascade do |t|
+    t.integer "card_id"
+    t.integer "deck_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["card_id", "deck_id"], name: "index_cards_in_decks_on_card_id_and_deck_id", unique: true
+    t.index ["card_id"], name: "index_cards_in_decks_on_card_id"
+    t.index ["deck_id"], name: "index_cards_in_decks_on_deck_id"
+  end
+
   create_table "collections", force: :cascade do |t|
     t.integer "player_id"
     t.integer "card_id"
@@ -30,6 +40,14 @@ ActiveRecord::Schema.define(version: 2025_01_12_163742) do
     t.index ["card_id"], name: "index_collections_on_card_id"
     t.index ["player_id", "card_id"], name: "index_collections_on_player_id_and_card_id", unique: true
     t.index ["player_id"], name: "index_collections_on_player_id"
+  end
+
+  create_table "decks", force: :cascade do |t|
+    t.string "name"
+    t.integer "player_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["player_id"], name: "index_decks_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
@@ -51,7 +69,10 @@ ActiveRecord::Schema.define(version: 2025_01_12_163742) do
     t.index ["token"], name: "index_sessions_on_token", unique: true
   end
 
+  add_foreign_key "cards_in_decks", "cards"
+  add_foreign_key "cards_in_decks", "decks"
   add_foreign_key "collections", "cards"
   add_foreign_key "collections", "players"
+  add_foreign_key "decks", "players"
   add_foreign_key "sessions", "players"
 end

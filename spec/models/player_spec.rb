@@ -89,6 +89,9 @@ RSpec.describe  Player, type: :model do
       player1 = FactoryBot.create(:player)
       player2 = FactoryBot.create(:player, username: 'Test2')
       player2.blood_pool = 2000
+      deck = FactoryBot.create(:deck, player: player1)
+
+      expect(player1.deck).to eq(deck)
 
       player1.discover_cards
       player2.discover_cards
