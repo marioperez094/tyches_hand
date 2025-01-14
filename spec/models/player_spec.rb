@@ -1,5 +1,7 @@
 require 'rails_helper'
 
+Rails.application.load_tasks
+
 RSpec.describe  Player, type: :model do
   context 'create' do
     it 'if guest = false, it must have a username' do
@@ -70,6 +72,34 @@ RSpec.describe  Player, type: :model do
     it 'should have many sessions' do
       player = FactoryBot.create(:player)
       expect(player.sessions).to eq([])
+    end
+
+    it 'should have many collections' do
+      player = FactoryBot.create(:player)
+      expect(player.collections).to eq([])
+    end
+
+    it 'should have many cards' do 
+      player = FactoryBot.create(:player)
+      expect(player.cards).to eq([])
+    end
+
+    it 'has a better chance to discover cards with lower blood_pool' do
+      Rake::Task['cards:populate_cards'].invoke
+      player1 = FactoryBot.create(:player)
+      player2 = FactoryBot.create(:player, username: 'Test2')
+      player2.blood_pool = 2000
+      deck = FactoryBot.create(:deck, player: player1)
+
+      expect(player1.deck).to eq(deck)
+
+      player1.discover_cards
+      player2.discover_cards
+
+      expect(Card.count).to eq(312)
+      expect(player1.cards.count).to be <= player2.cards.count
+      Collection.delete_all
+      Card.delete_all
     end
   end
 end

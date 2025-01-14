@@ -12,6 +12,10 @@ RSpec.describe 'Route definition', :type => :routing do
   it 'of GET /players' do
     expect(:get => '/api/players/:id').to route_to(:controller => 'api/players', :action => 'show', :id => ':id')
   end
+  
+  it 'of GET /players with cards' do
+    expect(:get => '/api/players/:id?cards=true').to route_to(:controller => 'api/players', :action => 'show', :id => ':id', :cards => 'true')
+  end
 
   it 'of PUT guest /players/:id' do
     expect(:put => '/api/players/:id/convert_to_registered').to route_to(:controller => 'api/players', :action => 'convert_to_registered', :id => ':id')

@@ -1,6 +1,6 @@
 module Api
   class PlayersController < ApplicationController
-    before_action :current_player, only: [:show, :convert_to_registered, :update_password, :destroy]
+    before_action :current_player, only: [:show, :convert_to_registered, :update_password, :destroy, :player_discover_cards]
 
     def create
       @player = Player.new(player_params)
@@ -32,7 +32,15 @@ module Api
       return render json: { error: 'Player not found.' }, 
       status: :not_found if !@player
 
+      @include_cards = params[:cards] == 'true'
+
       render 'api/players/show',
+      status: :ok
+    end
+
+    def player_discover_cards
+      @cards = @player.discover_cards
+      render json: { cards: @cards },
       status: :ok
     end
 
