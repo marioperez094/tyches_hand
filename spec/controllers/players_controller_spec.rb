@@ -1,5 +1,8 @@
 require 'rails_helper'
 
+Rails.application.load_tasks
+Card.delete_all
+
 RSpec.describe Api::PlayersController, type: :controller do
   render_views
 
@@ -81,7 +84,7 @@ RSpec.describe Api::PlayersController, type: :controller do
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       card1 = FactoryBot.create(:card)
-      card2 = FactoryBot.create(:card, value: 8)
+      card2 = FactoryBot.create(:card, rank: 8)
 
       player.cards << card1
       player.cards << card2
@@ -98,18 +101,18 @@ RSpec.describe Api::PlayersController, type: :controller do
             id: card1.id,
             name: card1.name,
             suit: card1.suit,
-            value: card1.value,
+            rank: card1.rank,
             description: card1.description,
             effect_type: card1.effect_type,
-            effect: card1.effect
+            effect_value: card1.calculate_effect_value
           }, {
             id: card2.id,
             name: card2.name,
             suit: card2.suit,
-            value: card2.value,
+            rank: card2.rank,
             description: card2.description,
             effect_type: card2.effect_type,
-            effect: card2.effect
+            effect_value: card2.calculate_effect_value
           }]
         }
       }.to_json)
@@ -181,6 +184,22 @@ RSpec.describe Api::PlayersController, type: :controller do
       delete :destroy, params: { id: player.id }
 
       expect(Player.count).to eq(0)
+    end
+  end
+
+  context 'POST /players/cards/discover' do
+    it 'randomly generates max 10 cards for player to discover' do
+      Rake::Task['cards:populate_cards'].invoke
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+      post :player_discover_cards
+
+      expect(player.cards.count).to be >= 0
+      
+      Collection.delete_all
+      Card.delete_all
     end
   end
 end

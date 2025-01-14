@@ -15,10 +15,9 @@ ActiveRecord::Schema.define(version: 2025_01_12_163742) do
   create_table "cards", force: :cascade do |t|
     t.string "name"
     t.string "suit"
-    t.string "value"
+    t.string "rank"
     t.string "description"
     t.string "effect_type"
-    t.string "effect"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
   end
