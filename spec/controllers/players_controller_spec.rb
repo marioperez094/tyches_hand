@@ -1,10 +1,17 @@
 require 'rails_helper'
 
-Rails.application.load_tasks
-Card.delete_all
-
 RSpec.describe Api::PlayersController, type: :controller do
   render_views
+
+  before do
+    Card::EFFECTS.each do |effect_type|
+      Card::SUITS.each do |suit|
+        Card::RANKS.each do |rank|
+          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+        end
+      end
+    end
+  end
 
   context 'POST /players' do
     it 'renders a new registered player' do
@@ -78,13 +85,13 @@ RSpec.describe Api::PlayersController, type: :controller do
       }.to_json)
     end
 
-    it 'shows a player and their deck' do
+    it 'shows a player and their cards' do
       player = FactoryBot.create(:player)
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
-      card1 = FactoryBot.create(:card)
-      card2 = FactoryBot.create(:card, rank: 8)
+      card1 = Card.first
+      card2 = Card.last
 
       player.cards << card1
       player.cards << card2
@@ -114,6 +121,65 @@ RSpec.describe Api::PlayersController, type: :controller do
             effect_type: card2.effect_type,
             effect_value: card2.calculate_effect_value
           }]
+        }
+      }.to_json)
+    end
+
+    it 'shows a player and their deck' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+      deck = FactoryBot.create(:deck, player: player)
+
+      get :show, params: { id: player.id, deck: 'true'}
+
+      expect(response.body).to eq({
+        player: {
+          username: player.username,
+          guest: player.guest,
+          blood_pool: player.blood_pool,
+
+          deck: {
+            name: "#{player.username}'s Deck",
+            total: 52,
+            standard: 52,
+            exhumed: 0,
+            charred: 0,
+            fleshwoven: 0,
+            blessed: 0,
+            bloodstained: 0,
+          }
+        }
+      }.to_json)
+    end
+
+    it 'shows a player and sepeartes their deck and non-deck cards' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+
+      deck = FactoryBot.create(:deck, player: player)
+      player.discover_cards
+
+      get :show, params: { id: player.id, deck_cards: 'true'}
+
+      expect(response.body).to eq({
+        player: {
+          username: player.username,
+          guest: player.guest,
+          blood_pool: player.blood_pool,
+
+          deck: {
+            name: "#{player.username}'s Deck",
+            total: 52,
+            standard: 52,
+            exhumed: 0,
+            charred: 0,
+            fleshwoven: 0,
+            blessed: 0,
+            bloodstained: 0,
+          }
         }
       }.to_json)
     end
@@ -189,7 +255,6 @@ RSpec.describe Api::PlayersController, type: :controller do
 
   context 'POST /players/cards/discover' do
     it 'randomly generates max 10 cards for player to discover' do
-      Rake::Task['cards:populate_cards'].invoke
       player = FactoryBot.create(:player)
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
@@ -197,9 +262,6 @@ RSpec.describe Api::PlayersController, type: :controller do
       post :player_discover_cards
 
       expect(player.cards.count).to be >= 0
-      
-      Collection.delete_all
-      Card.delete_all
     end
   end
 end

@@ -45,15 +45,4 @@ RSpec.describe Api::CardsController, type: :controller do
       }.to_json)
     end
   end
-
-  context 'POST /player/cards/discover' do
-    it 'adds a discovered card' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-
-    end
-  end
-  
 end

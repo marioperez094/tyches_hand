@@ -32,7 +32,9 @@ module Api
       return render json: { error: 'Player not found.' }, 
       status: :not_found if !@player
 
+      @include_decks = params[:deck] == 'true'
       @include_cards = params[:cards] == 'true'
+      @separate_deck_cards = params[:deck_cards] == 'true'
 
       render 'api/players/show',
       status: :ok
