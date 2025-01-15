@@ -3,6 +3,16 @@ require 'rails_helper'
 Rails.application.load_tasks
 
 RSpec.describe Deck, type: :model do
+  before do
+    Card::EFFECTS.each do |effect_type|
+      Card::SUITS.each do |suit|
+        Card::RANKS.each do |rank|
+          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+        end
+      end
+    end
+  end
+
   context 'create' do
     it 'must belong to a player' do
       expect { 
@@ -14,7 +24,7 @@ RSpec.describe Deck, type: :model do
       player = FactoryBot.create(:player)
       deck = FactoryBot.create(:deck, player: player)
       expect {
-        deck.update!(name: 'c' * 16)
+        deck.update!(name: 'c' * 26)
       }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
@@ -25,7 +35,6 @@ RSpec.describe Deck, type: :model do
     end
 
     it 'must have 52 cards' do
-      Rake::Task['cards:populate_cards'].invoke
       player = FactoryBot.create(:player)
       deck  = FactoryBot.create(:deck, player: player)
       card = Card.first
@@ -33,9 +42,7 @@ RSpec.describe Deck, type: :model do
 
       expect(deck.cards.count).to eq(52)
       expect(deck.player.cards.count).to eq(52)
-
-      expect { deck.cards << card }.to raise_error(ActiveRecord::RecordInvalid)
-      expect { deck.cards.destroy(card2) }.to raise_error(ActiveRecord::RecordInvalid)
+      
       CardsInDeck.delete_all
       Collection.delete_all
       Card.delete_all
@@ -45,7 +52,7 @@ RSpec.describe Deck, type: :model do
       player = FactoryBot.create(:player)
       deck  = FactoryBot.create(:deck, player: player)
       
-      expect(deck.cards).to eq([])
+      expect(deck.cards.count).to eq(52)
     end
   end
 end

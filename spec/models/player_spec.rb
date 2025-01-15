@@ -1,8 +1,16 @@
 require 'rails_helper'
 
-Rails.application.load_tasks
-
 RSpec.describe  Player, type: :model do
+  before do
+    Card::EFFECTS.each do |effect_type|
+      Card::SUITS.each do |suit|
+        Card::RANKS.each do |rank|
+          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+        end
+      end
+    end
+  end
+
   context 'create' do
     it 'if guest = false, it must have a username' do
       expect {
@@ -85,11 +93,11 @@ RSpec.describe  Player, type: :model do
     end
 
     it 'has a better chance to discover cards with lower blood_pool' do
-      Rake::Task['cards:populate_cards'].invoke
       player1 = FactoryBot.create(:player)
       player2 = FactoryBot.create(:player, username: 'Test2')
       player2.blood_pool = 2000
       deck = FactoryBot.create(:deck, player: player1)
+      deck2 = FactoryBot.create(:deck, player: player2)
 
       expect(player1.deck).to eq(deck)
 
@@ -98,6 +106,7 @@ RSpec.describe  Player, type: :model do
 
       expect(Card.count).to eq(312)
       expect(player1.cards.count).to be <= player2.cards.count
+      CardsInDeck.delete_all
       Collection.delete_all
       Card.delete_all
     end

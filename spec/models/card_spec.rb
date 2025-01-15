@@ -1,7 +1,5 @@
 require 'rails_helper'
 
-Rails.application.load_tasks
-
 RSpec.describe Card, type: :model do
   context 'create' do
     it 'must have a suit' do
@@ -79,7 +77,14 @@ RSpec.describe Card, type: :model do
     end
 
     it 'should have 312 cards and 52 cards of each effect' do
-      Rake::Task['cards:populate_cards'].invoke
+      Card::EFFECTS.each do |effect_type|
+        Card::SUITS.each do |suit|
+          Card::RANKS.each do |rank|
+            FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+          end
+        end
+      end
+
       expect(Card.count).to eq(312)
       expect(Card.by_effect_type("Exhumed").count).to eq(52)
       expect(Card.by_effect_type("Charred").count).to eq(52)
@@ -93,35 +98,35 @@ RSpec.describe Card, type: :model do
       card = FactoryBot.create(:card, rank: 'King', effect_type: 'Exhumed')
       expect(card.calculate_effect_value).to eq(433)
       expect(card.name).to eq('Exhumed King of Hearts')
-      expect(card.description).to eq("An #{card.name}, cards ripped from a corpse's stiff grip. Gain 433 on blood pool with a winning hand.")
+      expect(card.description).to eq("An #{card.name}, cards ripped from a corpse's stiff grip. Greater blood pool winnings with a winning hand.")
     end
 
     it 'should calculate a charred card' do
       card = FactoryBot.create(:card, rank: 'Queen', effect_type: 'Charred')
       expect(card.calculate_effect_value).to eq(0.12)
       expect(card.name).to eq('Charred Queen of Hearts')
-      expect(card.description).to eq("A #{card.name}, the embers on these cards can still cauterize wounds. Reduces blood loss by 12.0%.")
+      expect(card.description).to eq("A #{card.name}, the embers on these cards can still cauterize wounds. Reduces blood loss.")
     end
 
     it 'should calculate a fleshwoven card' do
       card = FactoryBot.create(:card, rank: 'Jack', effect_type: 'Fleshwoven')
       expect(card.calculate_effect_value).to eq(0.15)
       expect(card.name).to eq('Fleshwoven Jack of Hearts')
-      expect(card.description).to eq("A #{card.name}, these cards appear to have a leathery texture and an odd familiarity. Boosts health by 15.0% if the hand ends in a draw.")
+      expect(card.description).to eq("A #{card.name}, these cards appear to have a leathery texture and an odd familiarity. Greater blood pool winnings if the hand ends in a draw.")
     end
 
     it 'should calculate a blessed card' do
       card = FactoryBot.create(:card, rank: '9', effect_type: 'Blessed')
       expect(card.calculate_effect_value).to eq(1.6)
       expect(card.name).to eq('Blessed 9 of Hearts')
-      expect(card.description).to eq("A #{card.name}, the cards are blinding, and sizzles to the touch. Multiplies wager by 1.6.")
+      expect(card.description).to eq("A #{card.name}, the cards are blinding, and sizzles to the touch. Multiplies wager.")
     end
 
     it 'should calculate a bloodstained card' do
       card = FactoryBot.create(:card, rank: 'Ace', effect_type: 'Bloodstained')
       expect(card.calculate_effect_value).to eq(1.5)
       expect(card.name).to eq('Bloodstained Ace of Hearts')
-      expect(card.description).to eq("A #{card.name}, the cards are matted together by blood, filling the room with their fould odor. Increases daimon's wager by 1.5.")
+      expect(card.description).to eq("A #{card.name}, the cards are matted together by blood, filling the room with their foul odor. Daimon's minimum wager increases.")
     end
 
     it 'should not have an effect if standard card' do

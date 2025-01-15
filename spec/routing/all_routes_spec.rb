@@ -25,6 +25,10 @@ RSpec.describe 'Route definition', :type => :routing do
     expect(:put => '/api/players/:id/update_password').to route_to(:controller => 'api/players', :action => 'update_password', :id => ':id')
   end
 
+  it 'of POST /players/cards/discover' do
+    expect(:post => 'api/players/cards/discover').to route_to(:controller => 'api/players', :action => 'player_discover_cards')
+  end
+
   it 'of DELETE password /players/:id' do
     expect(:delete => '/api/players/:id').to route_to(:controller => 'api/players', :action => 'destroy', :id => ':id')
   end
@@ -43,5 +47,17 @@ RSpec.describe 'Route definition', :type => :routing do
 
   it 'of GET /cards' do 
     expect(:get => '/api/cards/:id').to route_to(:controller => 'api/cards', :action => 'show', :id => ':id')
+  end
+
+  it 'of POST /decks' do 
+    expect(:post => '/api/decks').to route_to(:controller => 'api/decks', :action => 'create')
+  end
+
+  it 'of PUT /decks/:id/rename' do
+    expect(:put => '/api/decks/:id/rename').to route_to(:controller => 'api/decks', :action => 'rename_deck', :id => ':id')
+  end
+
+  it 'of PUT /decks/:id/cards/:card_removed/:card_added' do
+    expect(:put => '/api/decks/:id/cards/:card_removed/:card_added').to route_to(:controller => 'api/decks', :action => 'swap_cards', :id => ':id', :card_removed => ':card_removed', :card_added => ':card_added')
   end
 end
