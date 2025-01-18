@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.string "username"
     t.string "password_digest"
     t.boolean "guest", default: false, null: false
+    t.boolean "tutorial_complete", default: false, null: false
     t.integer "blood_pool", default: 5000
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

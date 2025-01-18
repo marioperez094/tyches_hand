@@ -17,13 +17,26 @@ class Player < ApplicationRecord
     max_cards = 10
     max_player_health = 5000.0
     health_odds = 1 - (self.blood_pool / max_player_health)
+
+    #Only discover cards that are not discovered by players
     cards = Card.by_undiscovered(self)
 
-    
     num_of_cards = weighted_random_card_count(max_cards, health_odds)
-    weights = calculate_card_weights(cards, health_odds)
+    
+    #The higher the rank the lower the chance of getting a high card
+    rank_weights = ->(card) { 1.5 / (card.card_numeric_rank || 1) }
 
-    discovered_cards = discover_random_cards(cards, weights, num_of_cards)
+    #Retrieves a hash table of 
+    effect_type_weights = -> (card) { card.effect_type_probability(card.effect_type, health_odds) }
+
+    weights_array = Card.calculate_card_weights(
+      cards: cards,
+      rank_weights: rank_weights,
+      effect_type_weights: effect_type_weights
+    )
+
+
+    discovered_cards = Card.randomize_cards_by_weight(cards, weights_array, num_of_cards)
 
     self.cards << discovered_cards
     
@@ -42,32 +55,10 @@ class Player < ApplicationRecord
   end
 
   def weighted_random_card_count(max_cards, health_odds)
+    #The less health the player has the higher the probability they will find more cards
     base_probability = 0.5 + health_odds * 0.3
+
+    #Creates a random number. This is the number of chances player will get a card, if a rand number between 0 and 1 is greater than base_probability
     rand(0..max_cards).times.count { rand < base_probability }
-  end
-
-  def calculate_card_weights(cards, health_odds)
-    cards.map do |card|
-      rank_weight = 1.5 / (card.card_numeric_rank || 1)
-      effect_type_weight = card.effect_type_probability(card.effect_type, health_odds)
-      rank_weight * effect_type_weight
-    end
-  end
-
-  
-  def discover_random_cards(cards, weights, count)
-    raise ArgumentError, "Cards and weights size must match" unless cards.size == weights.size 
-
-    cumulative_weights = []
-    weights.each_with_index do |weight, index|
-      cumulative_weights[index] = weight + (cumulative_weights[index - 1] || 0)
-    end
-
-    total_weight = cumulative_weights.last
-
-    Array.new(count) do
-      random = rand * total_weight
-      cards[cumulative_weights.index { |w| w > random}]
-    end
   end
 end

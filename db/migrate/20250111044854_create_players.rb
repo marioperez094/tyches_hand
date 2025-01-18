@@ -4,6 +4,7 @@ class CreatePlayers < ActiveRecord::Migration[6.1]
       t.string :username, unique: true
       t.string :password_digest
       t.boolean :guest, default: false, null: false
+      t.boolean :tutorial_complete, default: false, null: false
       t.integer :blood_pool, default: 5000
 
       t.timestamps
