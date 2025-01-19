@@ -27,6 +27,7 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: 'Test',
           guest: false,
           blood_pool: 5000,
+          tutorial_complete: false,
         }
       }.to_json)
     end
@@ -43,6 +44,7 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: "Guest#{Time.now.to_i}",
           guest: true,
           blood_pool: 5000,
+          tutorial_complete: false
         }
       }.to_json)
     end
@@ -60,11 +62,13 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player2.username,
           guest: player2.guest,
           blood_pool: player2.blood_pool,
+          tutorial_complete: false
 
         }, {
           username: player1.username,
           guest: player1.guest,
           blood_pool: player1.blood_pool,
+          tutorial_complete: false
         }]
       }.to_json)
     end
@@ -80,7 +84,8 @@ RSpec.describe Api::PlayersController, type: :controller do
         player: {
           username: player.username,
           guest: player.guest,
-          blood_pool: player.blood_pool
+          blood_pool: player.blood_pool, 
+          tutorial_complete: false
         }
       }.to_json)
     end
@@ -103,6 +108,7 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player.username,
           guest: player.guest,
           blood_pool: player.blood_pool,
+          tutorial_complete: false,
 
           cards: [{
             id: card1.id,
@@ -139,6 +145,7 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player.username,
           guest: player.guest,
           blood_pool: player.blood_pool,
+          tutorial_complete: false, 
 
           deck: {
             name: "#{player.username}'s Deck",
@@ -169,6 +176,7 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player.username,
           guest: player.guest,
           blood_pool: player.blood_pool,
+          tutorial_complete: false,
 
           deck: {
             name: "#{player.username}'s Deck",
@@ -202,7 +210,8 @@ RSpec.describe Api::PlayersController, type: :controller do
         player: {
           username: 'Test',
           guest: false,
-          blood_pool: player.blood_pool
+          blood_pool: player.blood_pool, 
+          tutorial_complete: false
         }
       }.to_json)
     end
@@ -229,9 +238,10 @@ RSpec.describe Api::PlayersController, type: :controller do
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
-      post :update_password, params: { id: player.id,
+      put :update_password, params: {
         player: {
-          password: 'abcdef'
+          password: '123456',
+          new_password: 'abcdefg'
         }
       }
 
@@ -247,7 +257,11 @@ RSpec.describe Api::PlayersController, type: :controller do
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
-      delete :destroy, params: { id: player.id }
+      delete :destroy, params: { id: player.id,
+        player: {
+          password: '123456'
+        }
+      }
 
       expect(Player.count).to eq(0)
     end

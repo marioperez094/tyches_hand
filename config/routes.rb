@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
     #Players
     put '/players/:id/convert_to_registered' => 'players#convert_to_registered'
-    put '/players/:id/update_password' => 'players#update_password'
+    put '/players/update_password' => 'players#update_password'
     post '/players/cards/discover' => 'players#player_discover_cards'
 
     #Sessions

@@ -34,6 +34,8 @@ module Api
 
       @include_decks = params[:deck] == 'true'
       @include_cards = params[:cards] == 'true'
+      
+      #Sepeartes cards in players collection but not in deck
       @separate_deck_cards = params[:deck_cards] == 'true'
 
       render 'api/players/show',
@@ -41,6 +43,9 @@ module Api
     end
 
     def player_discover_cards
+      return render json: { error: 'Player not found.' },
+      status: :not_found if !@player
+
       @cards = @player.discover_cards
       render json: { cards: @cards },
       status: :ok
@@ -65,11 +70,14 @@ module Api
     end
 
     def update_password
-      return render json: { error: 'Player not found.'},
-      status: :not_found if !@player
+      unless @player && @player.authenticate(params[:player][:password])
+        return render json: {
+          error: "The username or password is invalid."
+        }, status: :unauthorized
+      end
 
       begin
-        @player.update(password: params[:player][:password])
+        @player.update!(password: params[:player][:new_password])
         render json: { success: true },
         status: :ok
       rescue ArgumentError => e
@@ -79,6 +87,12 @@ module Api
     end
 
     def destroy
+      unless @player && @player.authenticate(params[:player][:password])
+        return render json: {
+          error: "The username or password is invalid."
+        }, status: :unauthorized
+      end
+      
       if @player&.destroy
         render json: { success: true }
       else
@@ -97,7 +111,7 @@ module Api
     end
 
     def player_params
-      params.require(:player).permit(:username, :password, :guest)
+      params.require(:player).permit(:username, :password, :guest, :new_password)
     end
   end
 end

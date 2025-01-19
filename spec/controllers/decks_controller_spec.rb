@@ -54,7 +54,7 @@ RSpec.describe Api::DecksController, type: :controller do
       player.cards << card
       deck.cards << card
 
-      post :rename_deck, params: { id: deck.id,
+      put :rename_deck, params: { id: deck.id,
         deck: {
           name: 'Test'
         }
