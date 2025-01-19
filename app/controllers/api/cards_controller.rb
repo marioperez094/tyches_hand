@@ -8,12 +8,13 @@ module Api
       return render json: { error: 'Card not found.' },
       status: :not_found if !@card
 
+      #Prevents players from seeing undiscovered cards
       unless @player.cards.include?(@card)
         return render json: { error: 'Player does not have this card.' }, 
         status: :unauthorized
       end
 
-      render 'show', 
+      render 'api/cards/show', 
       status: :ok
     end
 
