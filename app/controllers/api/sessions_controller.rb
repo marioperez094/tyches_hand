@@ -30,6 +30,8 @@ module Api
       status: :not_found if !session
 
       if session.player.guest
+        session.player.deck.destroy
+        session.player.collections.destroy
         session.player.destroy
       end
 

@@ -1,10 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import Home from "./home";
+import StartScreen from "./startScreen";
 
 document.addEventListener("DOMContentLoaded", () => {
   const node = document.createElement("div");
   const root = createRoot(node);
-  root.render(<Home />);
+  root.render(<StartScreen />);
   document.body.appendChild(node);
 });

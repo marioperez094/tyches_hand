@@ -111,7 +111,7 @@ module Api
     end
 
     def player_params
-      params.require(:player).permit(:username, :password, :guest, :new_password)
+      params.require(:player).permit(:username, :password, :password_confirmation, :guest, :new_password,)
     end
   end
 end

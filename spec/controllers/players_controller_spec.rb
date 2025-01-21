@@ -19,6 +19,7 @@ RSpec.describe Api::PlayersController, type: :controller do
         player: {
           username: 'Test',
           password: '123456',
+          password_confirmation: '123456'
         }
       }
 

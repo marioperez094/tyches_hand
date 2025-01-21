@@ -24,6 +24,18 @@ RSpec.describe  Player, type: :model do
       }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
+    it 'if guest = false, it must have a password_confirmation' do
+      expect {
+        FactoryBot.create(:player, password_confirmation: nil)
+      }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+    
+    it 'if guest = false, password and password_confirmation must match' do
+      expect {
+        FactoryBot.create(:player, password_confirmation: "abcdefg")
+      }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
     it 'if guest = true, it can have no username' do
       expect {
         FactoryBot.create(:player, username: nil, guest: true)

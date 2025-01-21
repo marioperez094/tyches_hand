@@ -15,4 +15,10 @@ class ApplicationController < ActionController::Base
     
     @player = session.player
   end
+
+  def authenticate_player!
+    unless current_player
+      redirect_to '/login'
+    end
+  end
 end
