@@ -1,6 +1,7 @@
 module Api
   class DecksController < ApplicationController
     before_action :current_player
+    
     def create
       return render json: { error: 'Player not found.' },
       status: :not_found if !@player

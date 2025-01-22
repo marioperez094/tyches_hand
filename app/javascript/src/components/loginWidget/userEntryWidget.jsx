@@ -8,6 +8,7 @@ import HomeButton from "@components/homeButton/homeButton";
 import { postRequest } from "@utils/fetchRequest";
 
 export default function UserEntryWidget({ setCurrentWidgetState }) {
+  const siteKey = "6LfwBr8qAAAAANOZNMJDzZiSckbsJ1brxyR-CsTq" //Google Recaptcha
   const userEntryOptions = [{
       name: "Sign Up",
       buttonAction: () => setCurrentWidgetState("signup"),
@@ -16,17 +17,38 @@ export default function UserEntryWidget({ setCurrentWidgetState }) {
       buttonAction: () => setCurrentWidgetState("login"),
     }, {
       name: "Guest Mode",
-      buttonAction: (e) => submitGuestMode(e),
+      buttonAction: (e) => handleSubmit(e),
   }]
 
-  function submitGuestMode(e) {
+  function handleSubmit(e) {
     if (e) e.preventDefault();
-    postRequest("/api/players", { player: { guest: true } })
+
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+        .execute(siteKey, { action: "submit"})
+        .then((token) => {
+          submitGuestMode(token);
+        })
+        .catch((error) => {
+          alert("reCAPTCHA error: " + error.message)
+        })
+    })
+  };
+
+  function submitGuestMode(captchaToken) {
+    const payload = {
+      player: {
+        guest: true
+      },
+      recaptcha_token: captchaToken,
+    };
+
+    postRequest("/api/players", payload)
       .then((data) => {
         if (data.player) return location.assign("/tutorial")
       })
       .catch(error => console.log(error))
-  };
+  }
 
   return(
     <>

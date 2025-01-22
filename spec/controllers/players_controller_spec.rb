@@ -4,6 +4,11 @@ RSpec.describe Api::PlayersController, type: :controller do
   render_views
 
   before do
+    #Prevents reCAPTCHA from executing
+    allow(RecaptchaV3Verifier).to receive(:verify).and_return(true)
+  end
+
+  before do
     Card::EFFECTS.each do |effect_type|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
@@ -20,7 +25,8 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: 'Test',
           password: '123456',
           password_confirmation: '123456'
-        }
+        }, 
+
       }
 
       expect(response.body).to eq({
@@ -48,6 +54,21 @@ RSpec.describe Api::PlayersController, type: :controller do
           tutorial_complete: false
         }
       }.to_json)
+    end
+
+    it 'creates a player deck with 52 cards' do
+      post :create, params: {
+        player: {
+          username: 'Test',
+          password: '123456',
+          password_confirmation: '123456'
+        }
+      }
+
+      p = Player.find_by(id: 1)
+
+      expect(p.cards.count).to eq(52)
+      expect(p.deck.name).to eq("Test's Deck")
     end
   end
 

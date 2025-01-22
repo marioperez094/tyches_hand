@@ -1,2 +1,8 @@
 <%= javascript_packs_with_chunks_tag 'login' %>
 <%= stylesheet_packs_with_chunks_tag 'login' %>
+
+<% content_for :head do %>
+  <title>Tyche's Hand - log in, sign up, or play as a guest</title>
+  <meta name='description' content="Log in, manage your deck, optimize your tokens, and challenge the odds. No account? Sign up now! Or play as a guest. " />
+  <script src="https://www.google.com/recaptcha/api.js?render=<%= ENV['REACT_APP_RECAPTCHA_SITE_KEY'] %>"></script>
+<% end %>
