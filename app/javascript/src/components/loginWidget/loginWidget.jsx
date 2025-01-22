@@ -29,7 +29,7 @@ export default function LoginWidget() {
 
     postRequest("/api/sessions", { player: formData })
       .then((data) => {
-        if (data.success) return location.assign("/player_stats");
+        if (data.success) return location.assign("/player/stats");
       })
       .catch(error => setError(capitalizeFirstWord(error.message)));
   };

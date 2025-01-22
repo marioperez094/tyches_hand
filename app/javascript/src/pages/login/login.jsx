@@ -4,12 +4,11 @@ import React, { useState } from "react";
 //Components
 import Title from "@components/title/title";
 import UserEntryWidget from "@components/loginWidget/userEntryWidget";
-import SignUpWidget from "@components/loginWidget/signupWidget";
-import LoginWidget from "@components/loginWidget/loginWidget";
+import UserOptions from "@components/loginWidget/userOptions";
+import RecaptchaText from "@components/loginWidget/recaptchaText";
 
 //Stylesheets
 import "./login.scss";
-import UserOptions from "../../components/loginWidget/userOptions";
 
 export default function StartScreen() {
   const [currentWidget, setCurrentWidget] = useState("options");
@@ -29,27 +28,28 @@ export default function StartScreen() {
       </header>
       
       <section className="mx-auto mt-8 lg:mt-4 py-2 px-5 sm:w-full sm:max-w-xl relative intricate-border">
-        { currentWidget == "options" 
-          && <UserEntryWidget setCurrentWidgetState={ setCurrentWidgetState } /> 
-        }
-        { currentWidget == "signup" 
-          && <SignUpWidget />
-
-        }
-        { currentWidget == "login" 
-          && <LoginWidget />
-        }
-        { currentWidget !== "options"
-          && <UserOptions
-              options={ optionsToSelect }
-              setCurrentWidgetState={ setCurrentWidgetState }  
-            />
-        }
-        <div className="text-red-500 text-center">This site is protected by reCAPTCHA and the Google
-          <a className="underline" href="https://policies.google.com/privacy"> Privacy Policy</a> and
-          <a className="underline" href="https://policies.google.com/terms"> Terms of Service</a> apply.
-        </div>
+        <UserEntryWidget currentWidget={ currentWidget } setCurrentWidgetState={ setCurrentWidgetState } />
+        { currentWidget !== "options" && <RecaptchaText /> }
       </section>
     </main>
   )
 };
+
+/*{ currentWidget === "options" 
+  && <UserEntryWidget setCurrentWidgetState={ setCurrentWidgetState } /> 
+}
+{ currentWidget === "signup" 
+  && <SignUpWidget />
+
+}
+{ currentWidget === "login" 
+  && <LoginWidget />
+}
+{ currentWidget !== "options" && 
+  <>
+    <UserOptions
+      options={ optionsToSelect }
+      setCurrentWidgetState={ setCurrentWidgetState }  
+    />
+  </>
+}*/

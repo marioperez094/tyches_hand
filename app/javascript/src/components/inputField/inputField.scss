@@ -5,8 +5,8 @@
   font-size: 16px;
   border: 2px solid $light-blood-color;
   border-radius: 8px;
-  background-color: #f5f5f5;
-  color: #333;
+  background-color: rgba(255, 71, 76, 0.2);
+  color: #aaa;
   transition: all 0.3s ease;
 }
 
@@ -14,11 +14,11 @@
   outline: none;
   border-color: $light-gold-color; /* Gold border on focus */
   box-shadow: 0 0 8px rgba(242, 169, 0, 0.5); /* Optional: subtle glow */
-  background-color: #fff; /* White background on focus */
+  background-color: rgba(255, 71, 76, 0.5); /* White background on focus */
 }
 
 .input-field::placeholder {
-  color: #aaa; /* Placeholder text color */
+  color: #bbb; /* Placeholder text color */
   font-style: italic;
   text-align: center;
 }

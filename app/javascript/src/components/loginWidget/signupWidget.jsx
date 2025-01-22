@@ -10,6 +10,8 @@ import ErrorMessage from "@components/errorMessage/errorMessage";
 import { postRequest } from "@utils/fetchRequest";
 import { capitalizeFirstWord } from "@utils/utils";
 
+import { siteKey } from "@utils/constants";
+
 export default function SignUpWidget() {
   const [error, setError] = useState("");
   const [formData, setFormData] = useState({
@@ -25,13 +27,32 @@ export default function SignUpWidget() {
     });
   };
 
-  function submitForm(e) {
+  function handleSubmit(e) {
     if (e) e.preventDefault();
+  
+    window.grecaptcha.ready(() => {
+      window.grecaptcha
+      .execute(siteKey, { action: "submit"})
+      .then((token) => {
+        submitForm(token);
+      })
+      .catch((error) => {
+        setError("reCAPTCHA error: " + error.message)
+      })
+    })
+  };
+
+  function submitForm(captchaToken) {
     const { password, password_confirmation } = formData;
 
     if (password !== password_confirmation) return setError("The passwords do not match.");
 
-    postRequest("/api/players", { player: formData })
+    const payload = {
+      player: formData, 
+      recaptcha_token: captchaToken,
+    }
+
+    postRequest("/api/players", payload)
       .then((data) => {
         if (data.player) return location.assign("/tutorial");
       })
@@ -39,7 +60,7 @@ export default function SignUpWidget() {
   };
 
   return(
-    <form onSubmit={ submitForm }>
+    <form onSubmit={ handleSubmit }>
       <ErrorMessage error={ error } />
       <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
         { Object.keys(formData).map((field) => {

@@ -3,18 +3,25 @@ import React from "react";
 
 //Components
 import HomeButton from "@components/homeButton/homeButton";
+import SignUpWidget from "@components/loginWidget/signupWidget";
+import LoginWidget from "@components/loginWidget/loginWidget";
 
 //Functions
 import { postRequest } from "@utils/fetchRequest";
 
-export default function UserEntryWidget({ setCurrentWidgetState }) {
-  const siteKey = "6LfwBr8qAAAAANOZNMJDzZiSckbsJ1brxyR-CsTq" //Google Recaptcha
+import { siteKey } from "@utils/constants";
+
+export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }) {
   const userEntryOptions = [{
       name: "Sign Up",
+      comparison: "signup",
       buttonAction: () => setCurrentWidgetState("signup"),
+      widget: <SignUpWidget />
     }, {
       name: "Log In",
+      comparison: "login",
       buttonAction: () => setCurrentWidgetState("login"),
+      widget: <LoginWidget />
     }, {
       name: "Guest Mode",
       buttonAction: (e) => handleSubmit(e),
@@ -33,7 +40,7 @@ export default function UserEntryWidget({ setCurrentWidgetState }) {
           alert("reCAPTCHA error: " + error.message)
         })
     })
-  };
+  };  
 
   function submitGuestMode(captchaToken) {
     const payload = {
@@ -52,9 +59,16 @@ export default function UserEntryWidget({ setCurrentWidgetState }) {
 
   return(
     <>
-      { userEntryOptions.map((option, index) => {
-        return <HomeButton buttonAction={ option.buttonAction } key={ index }>{ option.name }</HomeButton>
+      { userEntryOptions.map((option) => {
+        return (
+          <UserEntryOption option={ option } currentWidget={ currentWidget } key={ option.name } />
+        )
       })}
     </>
   )
+};
+
+function UserEntryOption({option, currentWidget}) {
+  if (currentWidget === option.comparison) return option.widget
+  return <HomeButton buttonAction={ option.buttonAction }>{ option.name }</HomeButton>
 };

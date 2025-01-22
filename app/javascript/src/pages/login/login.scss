@@ -1,1 +1,5 @@
 @import "@stylesheets/globals.scss";
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

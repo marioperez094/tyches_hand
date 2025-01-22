@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
-  root to: "static_pages#start_screen"
-
-  get 'login' => 'static_pages#login'
+  root to: "static_pages#login"
+  
+  get 'player/stats' => "static_pages#player_stats"
 
   namespace :api do
     resources :players, only: [:create, :index, :show, :destroy]
