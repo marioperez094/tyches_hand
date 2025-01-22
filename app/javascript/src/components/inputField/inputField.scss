@@ -6,7 +6,7 @@
   border: 2px solid $light-blood-color;
   border-radius: 8px;
   background-color: rgba(255, 71, 76, 0.2);
-  color: #aaa;
+  color: #ffffff;
   transition: all 0.3s ease;
 }
 
@@ -18,7 +18,7 @@
 }
 
 .input-field::placeholder {
-  color: #bbb; /* Placeholder text color */
+  color: #aaa; /* Placeholder text color */
   font-style: italic;
   text-align: center;
 }

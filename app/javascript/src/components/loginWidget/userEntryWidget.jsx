@@ -3,8 +3,6 @@ import React from "react";
 
 //Components
 import HomeButton from "@components/homeButton/homeButton";
-import SignUpWidget from "@components/loginWidget/signupWidget";
-import LoginWidget from "@components/loginWidget/loginWidget";
 
 //Functions
 import { postRequest } from "@utils/fetchRequest";
@@ -14,14 +12,10 @@ import { siteKey } from "@utils/constants";
 export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }) {
   const userEntryOptions = [{
       name: "Sign Up",
-      comparison: "signup",
-      buttonAction: () => setCurrentWidgetState("signup"),
-      widget: <SignUpWidget />
+      buttonAction: () => setCurrentWidgetState("Sign Up"),
     }, {
       name: "Log In",
-      comparison: "login",
-      buttonAction: () => setCurrentWidgetState("login"),
-      widget: <LoginWidget />
+      buttonAction: () => setCurrentWidgetState("Log In"),
     }, {
       name: "Guest Mode",
       buttonAction: (e) => handleSubmit(e),
@@ -59,16 +53,10 @@ export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }
 
   return(
     <>
-      { userEntryOptions.map((option) => {
-        return (
-          <UserEntryOption option={ option } currentWidget={ currentWidget } key={ option.name } />
-        )
+      { userEntryOptions.map((option) => {     
+        if (currentWidget === option.name ) return 
+        return <HomeButton buttonAction={ option.buttonAction } key={ option.name }>{ option.name }</HomeButton>
       })}
     </>
   )
-};
-
-function UserEntryOption({option, currentWidget}) {
-  if (currentWidget === option.comparison) return option.widget
-  return <HomeButton buttonAction={ option.buttonAction }>{ option.name }</HomeButton>
 };

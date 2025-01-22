@@ -15,7 +15,7 @@ export default function InputField({ name, type, changeEvent, required = true })
         id={ name }
         name={ name }
         type={ type }
-        className="h-15 md:h-10 w-full input-field"
+        className="h-10 w-full input-field"
         placeholder={ capitalizedName }
         onChange={ (e) => changeEvent(e) }
         required={ required }
