@@ -3,10 +3,19 @@ module Api
     before_action :current_player, only: [:show, :convert_to_registered, :update_password, :destroy, :player_discover_cards]
 
     def create
+      # recaptcha_token from front end
+      recaptcha_token = params[:recaptcha_token]
+
+      # Verify
+      unless RecaptchaV3Verifier.verify(recaptcha_token, 0.5)
+        return render json: { error: "reCAPTCHA verification failed" }, status: :unauthorized
+      end
+
       @player = Player.new(player_params)
 
       if @player.save
         session = @player.sessions.create
+        deck = @player.create_deck
 
         cookies.signed[:tyches_hand_session_token] = {
           value: session.token,
@@ -111,7 +120,7 @@ module Api
     end
 
     def player_params
-      params.require(:player).permit(:username, :password, :guest, :new_password)
+      params.require(:player).permit(:username, :password, :password_confirmation, :guest, :new_password,)
     end
   end
 end

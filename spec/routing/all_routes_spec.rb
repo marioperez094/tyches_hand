@@ -22,7 +22,7 @@ RSpec.describe 'Route definition', :type => :routing do
   end
 
   it 'of PUT password /players/:id' do
-    expect(:put => '/api/players/:id/update_password').to route_to(:controller => 'api/players', :action => 'update_password', :id => ':id')
+    expect(:put => '/api/players/update_password').to route_to(:controller => 'api/players', :action => 'update_password')
   end
 
   it 'of POST /players/cards/discover' do

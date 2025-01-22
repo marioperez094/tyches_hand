@@ -112,7 +112,7 @@ RSpec.describe Card, type: :model do
       card = FactoryBot.create(:card, rank: 'Jack', effect_type: 'Fleshwoven')
       expect(card.calculate_effect_value).to eq(0.15)
       expect(card.name).to eq('Fleshwoven Jack of Hearts')
-      expect(card.description).to eq("A #{card.name}, these cards appear to have a leathery texture and an odd familiarity. Greater blood pool winnings if the hand ends in a draw.")
+      expect(card.description).to eq("A #{card.name}, these cards appear to have a leathery texture and an odd familiarity. Greater blood pool winnings if the hand ends in a push.")
     end
 
     it 'should calculate a blessed card' do

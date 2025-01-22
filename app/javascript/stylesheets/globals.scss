@@ -1,0 +1,25 @@
+@import "@stylesheets/variables.scss";
+
+.intricate-border {
+  position: relative;
+  border: 3px solid $light-blood-color;
+}
+
+.intricate-border::before,
+.intricate-border::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border: 2px solid $light-gold-color;
+  pointer-events: none;
+}
+
+.intricate-border::after {
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  bottom: 2px;
+}

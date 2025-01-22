@@ -1,10 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import Home from "./home";
+import PlayerStats from "./playerStats";
 
 document.addEventListener("DOMContentLoaded", () => {
   const node = document.createElement("div");
   const root = createRoot(node);
-  root.render(<Home />);
+  root.render(<PlayerStats />);
   document.body.appendChild(node);
 });
