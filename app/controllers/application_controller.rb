@@ -18,7 +18,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate_player!
     unless current_player
-      redirect_to '/login'
+      redirect_to '/'
     end
   end
 end

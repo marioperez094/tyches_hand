@@ -4,12 +4,13 @@ Rails.application.routes.draw do
   get 'player/stats' => "static_pages#player_stats"
 
   namespace :api do
-    resources :players, only: [:create, :index, :show, :destroy]
+    resources :players, only: [:create, :index, :destroy]
     resources :sessions, only: [:create]
     resources :cards, only: [:show]
     resources :decks, only: [:create]
 
     #Players
+    get '/players/show' => 'players#show'
     put '/players/:id/convert_to_registered' => 'players#convert_to_registered'
     put '/players/update_password' => 'players#update_password'
     post '/players/cards/discover' => 'players#player_discover_cards'

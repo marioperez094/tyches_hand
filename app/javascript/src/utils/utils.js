@@ -4,5 +4,4 @@ export function capitalizeFirstWord(string) {
   let newString = string.split("_").join(" ")
     
   return newString.charAt(0).toUpperCase() + newString.slice(1).toLowerCase();
-    
 };

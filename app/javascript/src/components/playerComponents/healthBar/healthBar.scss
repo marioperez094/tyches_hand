@@ -1,0 +1,64 @@
+@import "@stylesheets/variables.scss";
+
+.health-bar-container {
+  height: 30px;
+  border: 2px solid #444; /* Outer border */
+  border-radius: 10px;
+  background: #222; /* Dark background for contrast */
+  overflow: hidden;
+  box-shadow: 0 0 10px $dark-blood-color; /* Optional glowing effect */
+}
+
+.name-container {
+  color: #2c5282;
+}
+
+.player-name-container {
+  color: #9b2c2c;
+}
+
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease, background 0.5s ease; /* Smooth animations */
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  background: linear-gradient( #0B235A, #1C5E9C, #0B235A);
+}
+
+.player-blood-pool {
+  background: linear-gradient( $dark-blood-color, $light-blood-color, $dark-blood-color);
+}
+
+.health-bar-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+  text-shadow: 0 0 5px #000;
+  pointer-events: none;
+}
+
+@keyframes quiver {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  25% {
+    transform: translateY(-2px);
+  }
+  50% {
+    transform: translateY(2px);
+  }
+  75% {
+    transform: translateY(-1px);
+  }
+}
+
+.low-health {
+  animation: quiver 2s infinite ease-in-out;
+}
+
+.health-floating {
+  animation: quiver 10s infinite ease-in-out;
+}

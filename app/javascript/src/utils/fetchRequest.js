@@ -15,3 +15,11 @@ export function postRequest(link, body) {
     .then(handleErrors)
     .catch(error => { throw error });
 };
+
+export function deleteRequest(link) {
+  return fetch(link, safeCredentials({
+    method: "DELETE",
+  }))
+    .then(handleErrors)
+    .catch(error => { throw error});
+};
