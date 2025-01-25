@@ -13,7 +13,7 @@ export default function DeckStats({ deck }) {
     <>
       { deckTypes.map((deckType) => {
         if (deck[deckType] > 0) return (
-          <PlayerStatTitle isHeading={ false }>
+          <PlayerStatTitle key={ deckType } isHeading={ false }>
             <li className={ `${ deckType }-text` } key={ deckType }>
               { capitalizeFirstWord(deckType) }
               <span className="hidden sm:inline">:</span> { deck[deckType] } 
@@ -23,7 +23,7 @@ export default function DeckStats({ deck }) {
 
         return (
           
-          <PlayerStatTitle isHeading={ false }>
+          <PlayerStatTitle key={ deckType } isHeading={ false }>
             <li className="redacted">
               <div className="redacted-animation">
                 <div className="question-mark">?</div>

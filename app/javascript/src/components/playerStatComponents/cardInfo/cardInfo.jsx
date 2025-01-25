@@ -17,8 +17,8 @@ export default function CardInfo({ deck }) {
       <ul className="grid grid-cols-2 md:block">
         <DeckStats deck={ deck } />
       </ul>
-      <div className="mx-5 my-16">
-        <LinkButton link="/player/stats/deck/edit">Edit Deck</LinkButton>
+      <div className="mx-5 my-10">
+        <LinkButton link="/player/stats/edit/deck">Edit Deck</LinkButton>
       </div>
     </article>
   )
