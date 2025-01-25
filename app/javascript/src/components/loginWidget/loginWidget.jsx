@@ -3,7 +3,7 @@ import React, { useState } from "react";
 
 //Components
 import InputField from "@components/inputField/inputField";
-import HomeButton from "@components/homeButton/homeButton";
+import { HomeButton } from "@components/homeButton/homeButton";
 import ErrorMessage from "@components/errorMessage/errorMessage";
 
 //Functions

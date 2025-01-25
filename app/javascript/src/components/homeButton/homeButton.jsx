@@ -1,10 +1,11 @@
 //External Imports
 import React from "react";
+import { Link } from "react-router-dom";
 
 //Stylesheets
 import "./homeButton.scss";
 
-export default function HomeButton({ type="button", buttonAction=null, children }) {
+export function HomeButton({ type="button", buttonAction=null, children }) {
   return(
     <button
       type={ type }
@@ -13,5 +14,16 @@ export default function HomeButton({ type="button", buttonAction=null, children 
     >
       { children }
     </button>
+  )
+};
+
+export function LinkButton({ link , children }) {
+  return(
+    <Link
+      to={ link }
+      className="block login-buttons w-full text-center my-2"
+    >
+      { children }
+    </Link>
   )
 };

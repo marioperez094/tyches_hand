@@ -2,7 +2,7 @@
 import React from "react";
 
 //Components
-import HomeButton from "@components/homeButton/homeButton";
+import { HomeButton } from "@components/homeButton/homeButton";
 
 //Functions
 import { postRequest } from "@utils/fetchRequest";
