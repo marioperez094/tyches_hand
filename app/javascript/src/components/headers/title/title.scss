@@ -1,0 +1,34 @@
+@import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
+
+.title-text, .four-suits {
+  color: $light-blood-color;
+  background: linear-gradient($light-blood-color 50%, $dark-blood-color);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  padding-bottom: 20px;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+}
+
+.four-suits {
+  position: absolute;
+  top: -25px; /* Adjust to position the text directly on the border */
+  left: 50%; /* Center the text horizontally */
+  transform: translateX(-50%); /* Center alignment */
+  font-weight: bold;
+  color: transparent; /* Match your theme */
+  padding: 0 5px; /* Adds spacing around the text */
+  background: repeating-linear-gradient(
+    45deg,
+    $dark-blood-color, /* Dark blood red */
+    $light-blood-color 6px, /* Lighter red */
+    $dark-blood-color 5px,
+    $light-blood-color 9px
+  );
+  -webkit-background-clip: text; /* Clip gradient to the text */
+  background-clip: text;
+  z-index: 1;
+}

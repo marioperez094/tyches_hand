@@ -5,7 +5,7 @@
   font-size: 16px;
   border: 2px solid $light-blood-color;
   border-radius: 8px;
-  background-color: rgba(255, 71, 76, 0.2);
+  background-color: $dark-blood-color;
   color: #ffffff;
   transition: all 0.3s ease;
 }
@@ -13,8 +13,8 @@
 .input-field:focus {
   outline: none;
   border-color: $light-gold-color; /* Gold border on focus */
-  box-shadow: 0 0 8px rgba(242, 169, 0, 0.5); /* Optional: subtle glow */
-  background-color: rgba(255, 71, 76, 0.5); /* White background on focus */
+  box-shadow: 0 0 8px $dark-gold-color;
+  background-color: $light-blood-color; /* White background on focus */
 }
 
 .input-field::placeholder {
