@@ -6,7 +6,7 @@ import "./main.scss";
 
 export default function Main({ children }) {
   return (
-    <main className="overflow-hidden h-screen flex flex-col">
+    <main className="h-screen flex flex-col">
       { children }
     </main>
   )

@@ -7,7 +7,8 @@ import Main from "@components/main/main";
 import { HomeButton } from "@components/homeButton/homeButton";
 import Headers from "@components/headers/headers/headers";
 import HealthBarWithName from "@components/playerComponents/healthBar/healthBarWithName";
-import CardInfo from "@components/playerStatComponents/cardInfo/cardInfo";
+import PlayerCollections from "@components/playerStatComponents/playerCollections";
+import DeckEditor from "@components/playerStatComponents/deckEditor";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
@@ -62,30 +63,24 @@ function PlayerStats() {
               </HomeButton>
             </div>
           </div>
-          <section className="mx-3 mb-5 overflow-hidden player-info intricate-border textured-gray-border">
-            <div className="mx-auto my-3 sm:my-5 lg: my-10">
+          <section className="mx-3 mb-5 player-info intricate-border textured-gray-border">
+            <div className="mx-auto my-3 sm:my-5 lg:my-8">
               <HealthBarWithName
                 name={ username }
                 health={ blood_pool } 
                 isPlayer={ true }
               />
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-3 h-full py-2">
               <Routes>
                 <Route
-                  exact path="/player/stats"
-                  element={ <CardInfo deck={ deck } /> }
+                  exact path="/player/stats/edit/deck"
+                  element={ <PlayerCollections deck={ deck } /> }
                 />
                 <Route
-                  path="/player/stats/edit/deck"
-                  element={ <div>Hi</div>}
+                  path="/player/stats"
+                  element={ <DeckEditor /> }
                 />
               </Routes>
-          
-              <article className="mx-auto player-info-container">{ username }</article>
-          
-              <article className="mx-auto player-info-container">{ username }</article>
-            </div>
           </section>
         </div>
       </Main>

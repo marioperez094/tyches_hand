@@ -16,6 +16,15 @@ export function postRequest(link, body) {
     .catch(error => { throw error });
 };
 
+export function putRequest(link, body) {
+  return fetch(link, safeCredentials({
+    method: "PUT",
+    body: JSON.stringify(body)
+  }))
+    .then(handleErrors)
+    .catch(error => { throw error });
+};
+
 export function deleteRequest(link) {
   return fetch(link, safeCredentials({
     method: "DELETE",

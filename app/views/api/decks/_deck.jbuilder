@@ -1,3 +1,4 @@
+json.id              deck.id
 json.name            deck.name
 json.total           deck.player.cards.count
 json.standard        deck.player.cards.by_effect_type("Standard").count
