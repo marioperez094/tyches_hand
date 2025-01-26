@@ -118,3 +118,26 @@
     transform: translateX(0);
   }
 }
+
+@media (max-width: 700px) {
+  .card {
+    width: 75px;
+    height: 110px;
+  }
+
+  .card-header .card-suit, .card-footer .card-suit {
+    font-size: 10px;
+  }
+
+  .card-header, .card-footer {
+    font-size: 9px;
+  }
+  
+  .card-content {
+    font-size: 20px;
+  }
+
+  .overlap-cards {
+    margin-left: -55px;
+  }
+}
