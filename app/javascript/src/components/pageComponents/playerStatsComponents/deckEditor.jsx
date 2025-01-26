@@ -3,8 +3,7 @@ import React, { useState } from "react";
 
 //Components
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
-import CardStack from "@components/cards/cardStack";
-import { HomeButton } from "@components/homeButton/homeButton";
+import CardStack from "@components/gameAssets/cards/cardStack";
 import PlayerStatsLayout from "./playerStatsLayout";
 import DeckNamer from "./deckNamer";
 

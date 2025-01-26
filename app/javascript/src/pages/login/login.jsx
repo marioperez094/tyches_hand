@@ -2,10 +2,10 @@
 import React, { useState } from "react";
 
 //Components
-import Main from "@components/main/main";
+import Main from "@components/headers/main/main";
 import Title from "@components/headers/title/title";
-import UserEntryWidget from "@components/loginWidget/userEntryWidget";
-import ActiveWidget from "@components/loginWidget/activeWidget";
+import UserEntryWidget from "@components/pageComponents/loginWidget/userEntryWidget";
+import ActiveWidget from "@components/pageComponents/loginWidget/activeWidget";
 
 //Stylesheets
 import "./login.scss";

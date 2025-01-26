@@ -3,11 +3,10 @@ import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 //Components
-import Main from "@components/main/main";
-import PlayerCollections from "@components/playerStatsComponents/playerCollections";
-import DeckEditor from "@components/playerStatsComponents/deckEditor";
-import { HomeButton } from "@components/homeButton/homeButton"
-import PlayerStatsLayout, { LinkButtons } from "@components/playerStatsComponents/playerStatsLayout";
+import Main from "@components/headers/main/main";
+import PlayerCollections from "@components/pageComponents/playerStatsComponents/playerCollections";
+import DeckEditor from "@components/pageComponents/playerStatsComponents/deckEditor";
+import PlayerStatsLayout, { LinkButtons } from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
@@ -27,7 +26,6 @@ export default function PlayerStatsScreen() {
 };
 
 function PlayerStats() {
-  const [open, setOpen] = useState(false);
   const { player, setPlayer } = usePlayer();
   
   useEffect(() => {
@@ -45,12 +43,6 @@ function PlayerStats() {
   
   return(
     <Router>
-      <div className="fixed flex justify-end sm:hidden floating-buttons header-buttons">
-        <div>
-          { open && <LinkButtons /> }
-          <HomeButton buttonAction={ setOpenBoolean }>{ open ? "Close" : "Open"}</HomeButton>
-        </div>
-      </div>
       <Main>
         <div className="player-stat-screen">
           <Routes>

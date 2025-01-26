@@ -2,9 +2,9 @@
 import React from "react";
 
 //Components
-import LoginWidget from "@components/loginWidget/loginWidget";
-import SignUpWidget from "@components/loginWidget/signupWidget";
-import RecaptchaText from "@components/loginWidget/recaptchaText";
+import LoginWidget from "./loginWidget";
+import SignUpWidget from "./signupWidget";
+import RecaptchaText from "./recaptchaText";
 
 export default function ActiveWidget({ currentWidget }) {
   return (

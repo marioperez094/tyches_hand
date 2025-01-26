@@ -2,7 +2,7 @@
 import React from "react";
 
 //Components
-import { LinkButton } from "@components/homeButton/homeButton";
+import { LinkButton } from "@components/menuComponents/buttons/homeButton/homeButton";
 import HealthBarWithName from "@components/playerComponents/healthBar/healthBarWithName";
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
 import DeckStats from "./deckStats";

@@ -2,11 +2,11 @@
 import React, { useState } from "react";
 
 //Components
-import Card from "@components/cards/card";
-import HoverText from "@components/hoverText/hoverText";
+import Card from "./card";
+import HoverText from "@components/headers/hoverText/hoverText";
 
 //Stylesheets
-import "./card.scss";
+import "./cards.scss";
 
 export default function CardStack({ cards }) {
 

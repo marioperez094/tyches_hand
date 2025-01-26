@@ -3,7 +3,7 @@ import React from "react";
 
 //Components
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
-import HoverText from "@components/hoverText/hoverText";
+import HoverText from "@components/headers/hoverText/hoverText";
 
 //Functions
 import { capitalizeFirstWord } from "@utils/utils";

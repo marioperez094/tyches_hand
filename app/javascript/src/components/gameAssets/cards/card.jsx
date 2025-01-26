@@ -2,7 +2,7 @@
 import React from "react";
 
 //Stylesheets
-import "./card.scss"
+import "./cards.scss"
 
 export default function Card({ card }) {
   const { suit, rank, effect_type } = card;
