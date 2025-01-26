@@ -1,7 +1,6 @@
 @import "@stylesheets/variables.scss";
 
 .input-field {
-  padding: 12px 16px;
   font-size: 16px;
   border: 2px solid $light-blood-color;
   border-radius: 8px;
@@ -12,13 +11,13 @@
 
 .input-field:focus {
   outline: none;
-  border-color: $light-gold-color; /* Gold border on focus */
+  border-color: $light-gold-color;
   box-shadow: 0 0 8px $dark-gold-color;
-  background-color: $light-blood-color; /* White background on focus */
+  background-color: $light-blood-color;
 }
 
 .input-field::placeholder {
-  color: #aaa; /* Placeholder text color */
+  color: #aaa;
   font-style: italic;
   text-align: center;
 }

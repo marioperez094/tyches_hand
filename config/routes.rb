@@ -23,7 +23,8 @@ Rails.application.routes.draw do
     put '/decks/:id/rename' => 'decks#rename_deck'
     put '/decks/:id/cards/:card_removed/:card_added' => 'decks#swap_cards'
 
-    #Redirects react-router links on reload
-    get '/player/stats/edit/*path' => redirect('/player/stats')
   end
+  
+  #Redirects react-router links on reload
+  get '*path' => redirect('/player/stats')
 end

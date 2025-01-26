@@ -6,23 +6,18 @@ import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle
 
 //Functions
 import { capitalizeFirstWord } from "@utils/utils";
+import HoverText from "../hoverText/hoverText";
+
+//Constants
+import { deckTypes } from "@utils/constants";
 
 export default function DeckStats({ deck }) {
-  const deckTypes = ["total", "standard", "blessed", "bloodstained", "charred", "exhumed", "fleshwoven"]
   return (
     <>
       { deckTypes.map((deckType) => {
-        if (deck[deckType] > 0) return (
-          <PlayerStatTitle key={ deckType } isHeading={ false }>
-            <li className={ `${ deckType }-text` } key={ deckType }>
-              { capitalizeFirstWord(deckType) }
-              <span className="hidden sm:inline">:</span> { deck[deckType] } 
-            </li>
-          </PlayerStatTitle>
-        )
+        if (deck[deckType.name] > 0) return <DeckTypes  key={ deckType.name } deck={ deck } deckType={ deckType } />
 
         return (
-          
           <PlayerStatTitle key={ deckType } isHeading={ false }>
             <li className="redacted">
               <div className="redacted-animation">
@@ -39,3 +34,17 @@ export default function DeckStats({ deck }) {
     </>
   )
 };
+
+function DeckTypes({ deck, deckType }) {
+  const title = `${ capitalizeFirstWord(deckType.name) }: ${ deck[deckType.name] }`
+  console.log(title)
+  return(
+    <li className="relative flex flex-col justify-between deck-type-container">
+      <PlayerStatTitle isHeading={ false }>
+        <span className={ `${ deckType.name }-text` }>{ title }</span>
+      </PlayerStatTitle>
+      
+      <HoverText name={ title } description={ deckType.description } />
+    </li>
+  )
+}

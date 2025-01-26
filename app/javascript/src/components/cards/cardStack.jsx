@@ -10,11 +10,11 @@ import "./card.scss";
 export default function CardStack({ cards }) {
 
   return(
-    <div className="card-stack">
+    <div className="flex justify-start items-center relative card-stack">
       { cards.map((card, index) => {
         return(
           <div 
-            className="overlap-cards" 
+            className="relative overlap-cards" 
             key={ card.id }
             style={{ animationDelay: `${ index * 0.05 }s` }}
           >

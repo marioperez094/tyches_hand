@@ -21,27 +21,27 @@ class Card < ApplicationRecord
   EFFECT_TYPE_DETAILS = {
     "Exhumed" => {
       value_calculation: ->(rank) { (500 * rank / 15.0).round },
-      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. Greater blood pool winnings with a winning hand." },
+      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. GREATER BLOOD POOL WINNINGS WITH WINNING HAND." },
       discovery_probability: ->(health_odds) { (0.4 + health_odds) / 1.4 }
     },
     "Charred" => {
       value_calculation: ->(rank) { (0.15 * rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, the embers on these cards can still cauterize wounds. Reduces blood loss." },
+      description: ->(name) { "A #{name}, the embers on these cards can still cauterize wounds. REDUCES BLOOD LOSS." },
       discovery_probability: ->(health_odds) { (0.6 + health_odds) / 2 }
     },
     "Fleshwoven" => {
       value_calculation: ->(rank) { (0.2 * rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. Greater blood pool winnings if the hand ends in a push." },
+      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. GREATER BLOOD POOL WINNINGS IF THE HAND ENDS IN A PUSH." },
       discovery_probability: ->(health_odds) { 0.6 }
     },
     "Blessed" => {
       value_calculation: ->(rank) { (1 + rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. Multiplies wager." },
+      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. MULTIPLIES WAGER." },
       discovery_probability: ->(health_odds) { 0.5 * (1.5 - health_odds) }
     },
     "Bloodstained" => {
       value_calculation: ->(rank) { (1 + 0.5 * (rank / 15.0)).round(2) },
-      description: ->(name) { "A #{name}, the cards are matted together by blood, filling the room with their foul odor. Daimon's minimum wager increases." },
+      description: ->(name) { "A #{name}, the cards are matted together by blood, filling the room with their foul odor. DAIMON'S MINIMUM WAGER INCREASES." },
       discovery_probability: ->(health_odds) { 0.2 * (1 - health_odds) }
     }
   }.freeze

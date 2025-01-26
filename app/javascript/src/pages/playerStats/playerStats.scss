@@ -1,158 +1,178 @@
 @import "@stylesheets/variables.scss";
 @import "@stylesheets/globals.scss";
 
-.player-stat-screen {
-  position: relative;
-  transform: translateY(100vh); /* Start off-screen */
-  animation: slide-up-bounce 1s ease-out forwards; /* Trigger animation */
-}
-.player-info {
-  background: linear-gradient($dark-blood-color, transparent 100%);
-}
-
-.player-info-grid {
-  border-top: transparent !important;
-  border-left: transparent !important;
-  border-bottom: transparent !important;
-}
-
-.player-stat {
-  border-top: transparent !important;
-  border-left: transparent !important;
-  border-right: transparent !important;
-}
-
-.total-text,
-.standard-text,
-.blessed-text, 
-.bloodstained-text, 
-.charred-text, 
-.exhumed-text, 
-.fleshwoven-text {
-  animation: quiver 3s infinite ease-in-out;
-}
-
-
-.blessed-text, 
-.bloodstained-text, 
-.charred-text, 
-.exhumed-text, 
-.fleshwoven-text { 
-  color: transparent;
-  font-size: 18px;
-  font-weight: bold;
-  position: relative;
-}
-
-.blessed-text {
-  background: repeating-linear-gradient(
-    45deg,
-    $dark-gold-color,
-    $light-gold-color 6px,
-    $dark-gold-color 5px,
-    $light-gold-color 9px
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.bloodstained-text {
-  background: repeating-linear-gradient(
-    45deg,
-    #D72638,
-    #5A0B0B 6px,
-    #D72638 5px,
-    #5A0B0B 7px
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.charred-text {
-  background: repeating-linear-gradient(
-    45deg,
-    #4B4B4B,
-    #FF5700 6px,
-    #D72538 5px,
-    #FF5700 8px,
-    #4B4B4B 7px
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.exhumed-text {
-  background: repeating-linear-gradient(
-    45deg,
-    #D7C9AA,
-    #6B4F28 6px,
-    #D7C9AA 5px,
-    #6B4F28 8px,
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-}
-
-.fleshwoven-text {
-  background: repeating-linear-gradient(
-    45deg,
-    #C2877C,
-    #7B2E2F 6px,
-    #C2877C 5px,
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-
-}
-
-.redacted {
-  position: relative;
-  height: 25px; /* Match the text height */
-  color: transparent; /* Hide the actual name */
-  overflow: hidden; /* Prevent squares from overflowing */
-}
-
-.redacted-animation {
-  display: flex;
-  gap: 8px; /* Space between question marks */
-  justify-content: center; /* Center the squares horizontally */
-  align-items: center;
-  height: 100%;
-}
-
-.question-mark {
-  font-size: 18px;
-  font-weight: bold;
-  color: #444;
-  animation: float 5s infinite;
-  position: relative;
-}
-
-.question-mark:nth-child(2) {
-  animation-delay: 2.5s; /* Offset the animation for the second square */
-}
-
-.question-mark:nth-child(4) {
-  animation-delay: 2.5s; /* Offset the animation for the third square */
-}
-
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
+#player_stats {
+  .player-stat-screen {
+    position: relative;
+    transform: translateY(100vh);
+    animation: slide-up-bounce 1s ease-out forwards;
   }
-  50% {
-    transform: translateY(-5px);
+  
+  .player-info {
+    background: linear-gradient($dark-blood-color, transparent 100%);
   }
-}
 
-@keyframes slide-up-bounce {
-  0% {
-    transform: translateY(100vh); /* Start off-screen */
+  .player-info-grid {
+    border-top: transparent !important;
+    border-left: transparent !important;
+    border-bottom: transparent !important;
   }
-  80% {
-    transform: translateY(-20px); /* Slight overshoot to simulate bounce */
+
+  .player-stat {
+    border-top: transparent !important;
+    border-left: transparent !important;
+    border-right: transparent !important;
   }
-  100% {
-    transform: translateY(0); /* Settle into final position */
+
+  .total-text,
+  .standard-text,
+  .blessed-text, 
+  .bloodstained-text, 
+  .charred-text, 
+  .exhumed-text, 
+  .fleshwoven-text {
+    animation: quiver 3s infinite ease-in-out;
+  }
+
+
+  .blessed-text, 
+  .bloodstained-text, 
+  .charred-text, 
+  .exhumed-text, 
+  .fleshwoven-text { 
+    color: transparent;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+  }
+  
+  .blessed-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $dark-gold-color,
+      $light-gold-color 6px,
+      $dark-gold-color 5px,
+      $light-gold-color 9px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .bloodstained-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $shadow-blood,
+      $light-blood-color 6px,
+      $shadow-blood 5px,
+      $light-blood-color 7px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .charred-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $ashen-gray,
+      $ember-orange 6px,
+      $shadow-fire 5px,
+      $ember-orange 8px,
+      $ashen-gray 7px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .exhumed-text {
+    background: repeating-linear-gradient(
+      45deg,
+      #FFF,
+      $eerie-green 6px,
+      #FFF 5px,
+      $eerie-green 8px,
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .fleshwoven-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $skin-tone,
+      $shadow-artery 6px,
+      $skin-tone 5px,
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .deck-type-container {
+    cursor: pointer;
+    
+    &:hover {
+      .hover-info {
+        opacity: 1;
+        transform: translate(-50%, 20px);
+        z-index: 1;
+      }
+    }
+  }
+
+  .redacted {
+    position: relative;
+    height: 25px;
+    color: transparent;
+    overflow: hidden;
+  }
+
+  .redacted-animation {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+
+  .question-mark {
+    font-size: 18px;
+    font-weight: bold;
+    color: #444;
+    animation: float 5s infinite;
+    position: relative;
+  }
+
+  .question-mark:nth-child(2) {
+    animation-delay: 2.5s;
+  }
+
+  .question-mark:nth-child(4) {
+    animation-delay: 2.5s;
+  }
+
+  .link-buttons {
+    .home-buttons {
+      padding: 12px 24px;
+      display: block;
+      width: 100%;
+    }
+  }
+
+  .header-buttons {
+    .home-buttons {
+      flex-wrap: wrap;
+      margin: 0 3px;
+      padding: 12px 16px;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-5px);
+    }
   }
 }
