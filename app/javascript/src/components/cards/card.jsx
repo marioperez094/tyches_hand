@@ -1,14 +1,11 @@
 //External Imports
 import React from "react";
 
-//Components
-import HoverText from "@components/hoverText/hoverText";
-
 //Stylesheets
 import "./card.scss"
 
 export default function Card({ card }) {
-  const { name, description, suit, rank, effect_type } = card;
+  const { suit, rank, effect_type } = card;
   const isBlackSuit = suit === "Clubs" || suit === "Spades" && true;
   const cardRankObject = {
     Ace: "A",
@@ -48,8 +45,6 @@ export default function Card({ card }) {
         <div className="card-value">{ cardRankObject[rank] }</div>
         <div className="card-suit">{ cardSuit[suit] }</div>
       </div>
-
-      <HoverText name={ name } description={ description } />
     </div>
   )
 };

@@ -1,11 +1,13 @@
 //External Imports
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 //Components
 import Main from "@components/main/main";
 import PlayerCollections from "@components/playerStatsComponents/playerCollections";
 import DeckEditor from "@components/playerStatsComponents/deckEditor";
+import { HomeButton } from "@components/homeButton/homeButton"
+import PlayerStatsLayout, { LinkButtons } from "@components/playerStatsComponents/playerStatsLayout";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
@@ -15,7 +17,6 @@ import { getRequest } from "@utils/fetchRequest";
 
 //Stylesheets
 import "./playerStats.scss";
-import PlayerStatsLayout from "../../components/playerStatsComponents/playerStatsLayout";
 
 export default function PlayerStatsScreen() {
   return (
@@ -26,6 +27,7 @@ export default function PlayerStatsScreen() {
 };
 
 function PlayerStats() {
+  const [open, setOpen] = useState(false);
   const { player, setPlayer } = usePlayer();
   
   useEffect(() => {
@@ -36,11 +38,21 @@ function PlayerStats() {
   
   if (!player) return;
 
+  function setOpenBoolean() {
+    setOpen(prevState => !prevState)
+  };
+
   
   return(
     <Router>
+      <div className="fixed flex justify-end sm:hidden floating-buttons header-buttons">
+        <div>
+          { open && <LinkButtons /> }
+          <HomeButton buttonAction={ setOpenBoolean }>{ open ? "Close" : "Open"}</HomeButton>
+        </div>
+      </div>
       <Main>
-        <div className="player-stat-screen h-7/8">
+        <div className="player-stat-screen">
           <Routes>
             <Route
               exact path="/player/stats"

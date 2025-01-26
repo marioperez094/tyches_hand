@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 //Components
 import Card from "@components/cards/card";
+import HoverText from "@components/hoverText/hoverText";
 
 //Stylesheets
 import "./card.scss";
@@ -18,7 +19,9 @@ export default function CardStack({ cards }) {
             key={ card.id }
             style={{ animationDelay: `${ index * 0.05 }s` }}
           >
-            <Card card={ card }/>
+            <HoverText name={ card.name } description={ card.description }>
+              <Card card={ card }/>
+            </HoverText>
           </div>
         )
       })}
