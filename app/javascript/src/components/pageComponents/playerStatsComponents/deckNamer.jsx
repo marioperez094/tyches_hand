@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 //Components
-import InputField from "@components/inputField/inputField";
+import InputField from "@components/menuComponents/inputField/inputField";
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
 
 //Context

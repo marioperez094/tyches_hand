@@ -1,0 +1,120 @@
+@import "@stylesheets/variables.scss";
+
+.card {
+  width: 150px;
+  height: 220px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #FFFFFF, #EAEAEA );
+  border: 2px solid #000;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1;
+
+  &:hover {
+    transform: translateY(-20px) scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+
+    .hover-info {
+      display: block;
+    }
+  }
+
+  &.black
+  .card-suit,
+  &.black
+  .card-rank,
+  &.black
+  .card-value {
+    color: #000
+  }
+
+  &.Blessed-card {
+    background: linear-gradient(135deg, $light-gold-color, $dark-gold-color);
+    border: 3px solid $light-gold-color;
+    box-shadow: 0 4px 10px $shadow-gold;
+    .card-suit, .card-rank, .card-value {
+      color: #FFFFFF !important;
+    }
+  }
+
+  &.Bloodstained-card {
+    background: radial-gradient(circle, $light-blood-color, $dark-blood-color);
+    border: 3px solid $dark-blood-color;
+    box-shadow: 0 4px 10px $shadow-blood; 
+    .card-suit, .card-rank, .card-value {
+      color: #E8E4D9 !important;
+    }
+  }
+
+  &.Charred-card {
+    background: linear-gradient(135deg, $ashen-gray, $ember-orange);
+    border: 3px solid $shadow-fire;
+    box-shadow: 0 4px 10px rgba(255, 87, 0, 0.6); 
+    .card-suit, .card-rank, .card-value {
+      color: #EAEAEA !important;
+    }
+  }
+
+  &.Exhumed-card {
+    background: linear-gradient(135deg, $mystic-black, $eerie-green);
+    border: 3px solid $eerie-green;
+    box-shadow: 0 4px 15px $shadow-mist;
+    .card-suit, .card-rank, .card-value {
+      color: #D1D1D1 !important;
+    }
+  }
+
+  &.Fleshwoven-card {
+    background: linear-gradient(135deg, $skin-tone, $shadow-fire);
+    border: 3px solid $vein-blue;
+    box-shadow: 0 4px 10px $shadow-artery;
+    .card-suit, .card-rank, .card-value {
+      color: #EFE2D9 !important;
+    }
+  }
+}
+
+.card-header .card-suit, .card-footer .card-suit {
+  font-size: 20px;
+}
+
+.card-header, .card-footer {
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  color: $light-blood-color;
+}
+
+.card-content {
+  font-size: 50px;
+  color: $light-blood-color;
+}
+
+.overlap-cards {
+  margin-left: -120px;
+  opacity: 0;
+  z-index: 1;
+  transition: z-index 0.3s ease;
+  transform: translateX(50px);
+  animation: stack-animation 0.05s ease forwards;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:hover {
+    z-index: 2;
+  } 
+}
+
+@keyframes stack-animation {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

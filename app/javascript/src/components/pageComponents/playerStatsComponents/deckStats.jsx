@@ -3,26 +3,23 @@ import React from "react";
 
 //Components
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
+import HoverText from "@components/headers/hoverText/hoverText";
 
 //Functions
 import { capitalizeFirstWord } from "@utils/utils";
 
+//Constants
+import { deckTypes } from "@utils/constants";
+
+//Stylesheets
+
 export default function DeckStats({ deck }) {
-  const deckTypes = ["total", "standard", "blessed", "bloodstained", "charred", "exhumed", "fleshwoven"]
   return (
     <>
       { deckTypes.map((deckType) => {
-        if (deck[deckType] > 0) return (
-          <PlayerStatTitle key={ deckType } isHeading={ false }>
-            <li className={ `${ deckType }-text` } key={ deckType }>
-              { capitalizeFirstWord(deckType) }
-              <span className="hidden sm:inline">:</span> { deck[deckType] } 
-            </li>
-          </PlayerStatTitle>
-        )
+        if (deck[deckType.name] > 0) return <DeckTypes  key={ deckType.name } deck={ deck } deckType={ deckType } />
 
         return (
-          
           <PlayerStatTitle key={ deckType } isHeading={ false }>
             <li className="redacted">
               <div className="redacted-animation">
@@ -39,3 +36,17 @@ export default function DeckStats({ deck }) {
     </>
   )
 };
+
+function DeckTypes({ deck, deckType }) {
+  const title = `${ capitalizeFirstWord(deckType.name) }: ${ deck[deckType.name] }`
+  
+  return(
+    <li className="relative flex flex-col justify-between deck-type-container">
+      <PlayerStatTitle isHeading={ false }>
+        <HoverText name={ title } description={ deckType.description }>
+          <p className={ `${ deckType.name }-text` }>{ title }</p>
+        </HoverText>
+      </PlayerStatTitle>
+    </li>
+  )
+}
