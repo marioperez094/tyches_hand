@@ -54,8 +54,7 @@ module Api
 
 
       card_ids_to_add.each do |card_id|
-        card = @player.cards.find_by(id: card_id)
-        if card
+        if @player.owns_card?(card_id)
           @deck.cards_in_deck.create!(card_id: card_id)
         else 
           return render json: { error: "Card #{ card.name } does not belong to the player"},

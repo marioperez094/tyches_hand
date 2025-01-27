@@ -74,7 +74,7 @@ export default function DeckEditor({ player }) {
 
   function submitDeck(e) {
     e.preventDefault();
-    if (JSON.stringify(deckCards) === JSON.stringify(deck_cards)) return console.log("Nothing Happend")
+    if (JSON.stringify(deckCards) === JSON.stringify(deck_cards)) return
     const payload = {
       deck: {
         cards: deckCards

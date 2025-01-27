@@ -9,7 +9,7 @@ module Api
       status: :not_found if !@card
 
       #Prevents players from seeing undiscovered cards
-      unless @player.cards.include?(@card)
+      unless @player.owns_card?(@card.id)
         return render json: { error: 'Player does not have this card.' }, 
         status: :unauthorized
       end

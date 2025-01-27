@@ -43,6 +43,10 @@ class Player < ApplicationRecord
     
     discovered_cards
   end
+  
+  def owns_card?(card_id)
+    cards.exists?(card_id)
+  end
 
   private
 
