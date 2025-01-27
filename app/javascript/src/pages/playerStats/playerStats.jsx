@@ -35,11 +35,6 @@ function PlayerStats() {
     }, []);
   
   if (!player) return;
-
-  function setOpenBoolean() {
-    setOpen(prevState => !prevState)
-  };
-
   
   return(
     <Router>
@@ -47,11 +42,11 @@ function PlayerStats() {
         <div className="player-stat-screen">
           <Routes>
             <Route
-              exact path="/player/stats"
+              exact path="/player/stats/edit/deck"
               element={ <PlayerCollections player={ player } /> }
             />
             <Route
-              path="/player/stats/edit/deck"
+              path="/player/stats"
               element={ <DeckEditor player={ player } /> }
             />
             <Route

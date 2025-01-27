@@ -20,8 +20,8 @@ Rails.application.routes.draw do
     delete '/sessions' => 'sessions#destroy'
 
     #Decks
-    put '/decks/:id/rename' => 'decks#rename_deck'
-    put '/decks/:id/cards/:card_removed/:card_added' => 'decks#swap_cards'
+    put '/decks/rename' => 'decks#rename_deck'
+    put '/decks/update/cards' => 'decks#update_cards_in_deck'
 
   end
   

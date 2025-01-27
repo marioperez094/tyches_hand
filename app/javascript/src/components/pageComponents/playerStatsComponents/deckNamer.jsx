@@ -12,7 +12,7 @@ import { usePlayer } from "@context/player";
 import { putRequest } from "@utils/fetchRequest";
 
 export default function DeckNamer({ deck }) {
-  const{ id, name } = deck;
+  const{ name } = deck;
   const { player, setPlayer } = usePlayer();
   const [editName, setEditName] = useState(true);
   const [deckName, setDeckName] = useState(name);
@@ -32,7 +32,7 @@ export default function DeckNamer({ deck }) {
       name: deckName
     };
     
-    putRequest(`/api/decks/${ id }/rename`, payload)
+    putRequest(`/api/decks/rename`, payload)
       .then(data => {
         if (data.deck.name === deckName) {
           setPlayer({
