@@ -167,16 +167,6 @@
     }
   }
 
-  .floating-buttons {
-    bottom: 20px;
-    right: 20px;
-    z-index: 100;
-    .home-buttons {
-      display: block;
-      
-    }
-  }
-
   @keyframes float {
     0%, 100% {
       transform: translateY(0);

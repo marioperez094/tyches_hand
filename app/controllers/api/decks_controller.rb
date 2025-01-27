@@ -35,19 +35,35 @@ module Api
       end
     end
 
-    def swap_cards
+    def update_cards_in_deck
+      return render json: { error: 'Player not found.' },
+      status: :not_found if !@player
+      
       set_deck
 
-      card_removed = @deck.cards.find_by(id: params[:card_removed])
-      return render json: { error: 'Card to remove not found.' },
-      status: :not_found if !card_removed
+      new_card_ids = params[:deck][:cards].map { |card| card[:id].to_i }
 
-      card_added = @player.cards.find_by(id: params[:card_added])
-      return render json: { error: 'Card to add not found.' },
-      status: :not_found if !card_added
+      if new_card_ids.size != 52
+        return render json: { error: "A deck must contain exactly 52 cards." }, status: :unprocessable_entity
+      end
 
-      @deck.cards.delete(card_removed)
-      @deck.cards << card_added
+      current_card_ids = @deck.cards.pluck(:id)
+
+      card_ids_to_add = new_card_ids - current_card_ids
+      card_ids_to_remove = current_card_ids - new_card_ids
+
+
+      card_ids_to_add.each do |card_id|
+        card = @player.cards.find_by(id: card_id)
+        if card
+          @deck.cards_in_deck.create!(card_id: card_id)
+        else 
+          return render json: { error: "Card #{ card.name } does not belong to the player"},
+          status: :unprocessable_entity
+        end
+      end
+
+      @deck.cards_in_deck.where(card_id: card_ids_to_remove).destroy_all
       
       if @deck.save
         render 'api/decks/show', status: :ok
@@ -59,14 +75,14 @@ module Api
     private
 
     def set_deck
-      @deck = Deck.find_by(id: params[:id])
+      @deck = @player.deck
       return render json: { error: 'Deck not found.' },
       status: :not_found if !@deck
       @deck
     end
 
     def deck_params
-      params.require(:deck).permit(:name)
+      params.require(:deck).permit(:name, :cards)
     end
   end
 end

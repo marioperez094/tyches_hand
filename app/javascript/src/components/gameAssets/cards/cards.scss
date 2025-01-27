@@ -9,7 +9,7 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   padding: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  z-index: 1;
+  z-index: 1000;
 
   &:hover {
     transform: translateY(-20px) scale(1.1);
@@ -106,7 +106,23 @@
   &:hover {
     z-index: 2;
   } 
+
+  
+  &:active {
+    opacity: 1;
+
+    .card {
+      opacity: 1;
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+  }
 }
+
+.card-stack {
+  min-height: 300px;
+}
+
 
 @keyframes stack-animation {
   0% {
@@ -120,6 +136,10 @@
 }
 
 @media (max-width: 700px) {
+  .card-stack {
+    min-height: 175px;
+  }
+
   .card {
     width: 75px;
     height: 110px;

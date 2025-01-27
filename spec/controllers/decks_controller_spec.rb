@@ -40,7 +40,7 @@ RSpec.describe Api::DecksController, type: :controller do
     end
   end
 
-  context 'PUT /deck/:id' do
+  context 'PUT /deck' do
     it 'renames the player deck' do
       player = FactoryBot.create(:player)
       session = player.sessions.create
@@ -54,7 +54,7 @@ RSpec.describe Api::DecksController, type: :controller do
       player.cards << card
       deck.cards << card
 
-      put :rename_deck, params: { id: deck.id,
+      put :rename_deck, params: {
         deck: {
           name: 'Test'
         }
@@ -74,24 +74,22 @@ RSpec.describe Api::DecksController, type: :controller do
       }.to_json)
     end
 
-    it 'swaps one card for another' do
+    it 'updates cards in a deck' do
       player = FactoryBot.create(:player)
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       deck = FactoryBot.create(:deck, player: player)
+      cards = deck.cards.map { |card| { id: card.id }  }
 
       card1 = Card.first
-      card2 = deck.cards.first
+      card2 = Card.second
 
       player.cards << card1
 
-      put :swap_cards, params: { 
-        id: deck.id,
-        card_removed: card2.id,
-        card_added: card1.id,
+      put :update_cards_in_deck, params: { 
         deck: {
-          name: nil
+          cards: cards
         }
       }
 

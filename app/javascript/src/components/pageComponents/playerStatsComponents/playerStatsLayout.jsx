@@ -67,7 +67,6 @@ export default function PlayerStatsLayout({ title, children}) {
   };
   
   const buttons = [ playButton, playerStatsLinks[currentLocation].firstButton, playerStatsLinks[currentLocation].secondButton, logOutButton];
-
   function logOut() {
     deleteRequest("/api/sessions")
       .then(data => {
@@ -99,9 +98,10 @@ export default function PlayerStatsLayout({ title, children}) {
 export function LinkButtons({ buttonOptions }) { 
   return(
     <>
-      { buttonOptions.map((button) => {
+      { buttonOptions.map((button, index) => {
         if (button.isLink) return (
           <LinkButton
+            key={ index }
             link={ button.link }
           >
             { button.name }
@@ -110,6 +110,7 @@ export function LinkButtons({ buttonOptions }) {
 
         return (
           <HomeButton
+            key={ index }
             buttonAction={ button.buttonAction }
           >
             { button.name }

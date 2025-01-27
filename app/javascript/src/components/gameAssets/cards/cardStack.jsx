@@ -8,15 +8,19 @@ import HoverText from "@components/headers/hoverText/hoverText";
 //Stylesheets
 import "./cards.scss";
 
-export default function CardStack({ cards }) {
+export default function CardStack({ cards, dragStart = null }) {
 
   return(
-    <div className="flex justify-start items-center relative card-stack">
+    <div 
+      className="w-full flex justify-start overflow-x-scroll overflow-y-visible items-center mx-auto relative card-stack"
+    >
       { cards.map((card, index) => {
         return(
           <div 
             className="relative overlap-cards" 
             key={ card.id }
+            draggable
+            onDragStart={ (e) => dragStart(e, card) }
             style={{ animationDelay: `${ index * 0.05 }s` }}
           >
             <HoverText name={ card.name } description={ card.description }>
