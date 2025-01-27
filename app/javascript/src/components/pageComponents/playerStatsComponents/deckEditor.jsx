@@ -74,12 +74,12 @@ export default function DeckEditor({ player }) {
 
   function submitDeck(e) {
     e.preventDefault();
+    if (JSON.stringify(deckCards) === JSON.stringify(deck_cards)) return console.log("Nothing Happend")
     const payload = {
       deck: {
         cards: deckCards
       }  
     };
-    console.log(payload);
 
     putRequest(`/api/decks/update/cards`, payload)
       .then(data => console.log(data))
