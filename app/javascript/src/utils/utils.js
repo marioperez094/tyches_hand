@@ -7,15 +7,11 @@ export function capitalizeFirstWord(string) {
 };
 
 export function filterGivenCards(cards, filters) {
-  console.log(cards)
   cards = cards.filter((card) => {
     if (filters[card.effect_type]) return true;
     if (filters["High cards"] && parseInt(card.rank) > 7) return true;
     if (filters["Low cards"] && parseInt(card.rank) <= 7) return true;
     return false;
   })
-
-  console.log(cards)
-
   return cards
 };

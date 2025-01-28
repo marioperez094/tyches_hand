@@ -18,6 +18,7 @@ export default function DeckContainer({
   deck,
   deckCards, 
   collectedCards, 
+  collectedCardsLength,
   moveCards
 }) {
   const [draggingCard, setDraggingCard] = useState(null);
@@ -67,7 +68,7 @@ export default function DeckContainer({
         onDragOver={ (e) => e.preventDefault() }
         onDrop={ (e) => handleCardDrop(e, "Collection Cards") }
       >
-        <PlayerStatTitle>Cards Collected { collectedCards.length }</PlayerStatTitle>
+        <PlayerStatTitle>Cards Collected { collectedCardsLength }</PlayerStatTitle>
         <FilterInputs 
           filterCards={ filterCards }
           filters={ filters } 
@@ -107,6 +108,9 @@ function FilterInputs({ filters, deck, filterCards }) {
   return (
     <div className="flex justify-between overflow-x-scroll filter-container ">
       { Object.keys(filters).map((filter, index) => {
+        const lowerCaseWord = filter.slice(0, 1).toLowerCase() + filter.slice(1);
+
+        if (filter !== "High cards" && filter !== "Low cards" && deck[lowerCaseWord] === 0) return;
         return (
           <div 
             key={ index }
@@ -123,7 +127,7 @@ function FilterInputs({ filters, deck, filterCards }) {
               htmlFor={ filter }
               className="filter-label ml-2"
             >
-              { filter }
+              { capitalizeFirstWord(filter) }
             </label>
           </div>
         )

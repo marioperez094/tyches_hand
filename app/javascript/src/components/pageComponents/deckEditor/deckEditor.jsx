@@ -68,7 +68,7 @@ export default function DeckEditor({ player }) {
   };
 
   function fillDeck() {
-    moveCards(collectedCards, "Deck Cards");
+    moveCards(filteredCollectionCards, "Deck Cards");
   };
 
   function filterCards(e) {
@@ -130,6 +130,7 @@ export default function DeckEditor({ player }) {
           filterCards={ filterCards }
           filters={ filters }
           deckCards={ deckCards }
+          collectedCardsLength={ collectedCards.length }
           collectedCards={ filteredCollectionCards }
           moveCards={ moveCards }
           setError={ setError }
