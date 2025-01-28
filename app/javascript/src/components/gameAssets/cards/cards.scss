@@ -92,7 +92,7 @@
 }
 
 .overlap-cards {
-  margin-left: -120px;
+  margin-left: -60px;
   opacity: 0;
   z-index: 1;
   transition: z-index 0.3s ease;
@@ -127,7 +127,7 @@
 @keyframes stack-animation {
   0% {
     opacity: 0;
-    transform: translateX(50px);
+    transform: translateX(75px);
   }
   100% {
     opacity: 1;
@@ -158,6 +158,6 @@
   }
 
   .overlap-cards {
-    margin-left: -55px;
+    margin-left: -25px;
   }
 }

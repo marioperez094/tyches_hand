@@ -9,7 +9,7 @@ json.player do
 
   if @include_cards
     json.cards do
-      json.array! @player.cards do |card|
+      json.array! @player.cards.sort_by(&:id) do |card|
         json.partial! 'api/cards/card', card: card
       end
     end

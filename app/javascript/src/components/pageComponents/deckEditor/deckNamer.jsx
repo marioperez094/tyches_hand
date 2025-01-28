@@ -28,6 +28,8 @@ export default function DeckNamer({ deck }) {
 
   function submitDeckName(e) {
     if (e) e.preventDefault();
+    if (deckName === name) return editNameBoolean();
+
     const payload = {
       name: deckName
     };
