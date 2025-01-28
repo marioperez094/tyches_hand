@@ -1,11 +1,12 @@
 //External Imports
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //Components
 import Main from "@components/headers/main/main";
 import Title from "@components/headers/title/title";
 import UserEntryWidget from "@components/pageComponents/loginWidget/userEntryWidget";
 import ActiveWidget from "@components/pageComponents/loginWidget/activeWidget";
+import { getRequest } from "@utils/fetchRequest";
 
 //Stylesheets
 import "./login.scss";
@@ -13,9 +14,21 @@ import "./login.scss";
 export default function StartScreen() {
   const [currentWidget, setCurrentWidget] = useState("Options");
 
+  useEffect(() => {
+    getAuthenticated();
+  }, [])
+
   function setCurrentWidgetState(widget) {
     setCurrentWidget(widget)
   };
+
+  function getAuthenticated() {
+    getRequest("/api/authenticated")
+      .then((data) => {
+        if (data.authenticated) return location.assign("/player/stats")
+      })
+      .catch(error => console.log(error));
+  }
 
   return (
     <Main>

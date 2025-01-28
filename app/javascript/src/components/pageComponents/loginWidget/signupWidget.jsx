@@ -61,7 +61,7 @@ export default function SignUpWidget() {
 
   return(
     <form onSubmit={ handleSubmit }>
-      <ErrorMessage error={ error } />
+      <ErrorMessage>{ error }</ErrorMessage>
       <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
         { Object.keys(formData).map((field) => {
           return (
