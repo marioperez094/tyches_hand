@@ -19,7 +19,7 @@ export default function DeckEditor({ player }) {
 
   const { deck, deck_cards, non_deck_cards } = player;
   const { deckCards, collectedCards, moveCards, sortCardsByID, clearDeck, fillDeck, error, setError } = useDeckManager();
-
+  const [deckSaved, setDeckSaved] = useState(false);
   const [filters, setFilters] = useState({
     "High cards": true,
     "Low cards": true,
@@ -32,6 +32,14 @@ export default function DeckEditor({ player }) {
   });
 
   const filteredCollectionCards = filterGivenCards(collectedCards, filters);
+
+  function showDeckSaved() {
+    setDeckSaved(true);
+
+    setTimeout(() => {
+      setDeckSaved(false);
+    }, 10000)
+  };
 
   function filterCards(e) {
     setFilters((prev) => ({
@@ -48,7 +56,7 @@ export default function DeckEditor({ player }) {
 
     putRequest("/api/decks/update/cards", payload)
       .then((data) => {
-        if (data.deck) setError("Deck Saved!");
+        if (data.deck) showDeckSaved();
       })
       .catch(console.log);
   }
@@ -79,6 +87,9 @@ export default function DeckEditor({ player }) {
           </HomeButton>
         </div>
         <ErrorMessage>{ error }</ErrorMessage>
+        <div className="absolute deck-saved-message-container w-full">
+          { deckSaved && <p className="text-center text-green-500 deck-saved-message">Deck Saved!</p> }
+        </div>
       </div>
 
       <article className="mx-auto my-3 sm:my-5 lg:my-10">

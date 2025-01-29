@@ -6,13 +6,10 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Main from "@components/headers/main/main";
 import PlayerCollections from "@components/pageComponents/playerStatsComponents/playerCollections";
 import DeckEditor from "@components/pageComponents/deckEditor/deckEditor";
-import PlayerStatsLayout, { LinkButtons } from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
+import PlayerStatsLayout from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
-
-//Functions
-import { getRequest } from "@utils/fetchRequest";
 
 //Stylesheets
 import "./playerStats.scss";

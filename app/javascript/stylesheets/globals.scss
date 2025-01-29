@@ -3,7 +3,7 @@
 //Scrollbar
 ::-webkit-scrollbar {
   width: 0px;
-  height: 5px;
+  height: 0px;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -66,5 +66,15 @@
   }
   100% {
     transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-and-out {
+  0%, 100% {
+    opacity: 0;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
