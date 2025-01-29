@@ -99,7 +99,7 @@ export default function DeckEditor({ player }) {
   return( 
     <PlayerStatsLayout title="Edit Deck">
       <div className="sticky top-0 deck-buttons-container">
-        <div className="flex justify-center deck-buttons overflow-x-scroll">
+        <div className="flex justify-center deck-buttons overflow-x-scroll w-full">
           <HomeButton
             buttonAction={ submitDeck }
           >

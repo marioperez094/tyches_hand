@@ -3,21 +3,21 @@
 .hover-buttons-container {
   bottom: 0;
   left: 20px;
-  width: 80px;
-  height: 80px;
+  width: 35px;
+  height: 35px;
   z-index: 100;
+
+  &:hover {
+    width: 80px;
+    height: 80px;
+  }
 }
 
 .main-button { 
   width: 35px;
   height: 35px;
-  background: repeating-linear-gradient(
-    45deg,
-    $dark-blood-color,
-    $light-blood-color 6px,
-    $dark-blood-color 5px,
-    $light-blood-color 9px
-  );
+  background: linear-gradient(45deg, $light-blood-color, $dark-blood-color);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   font-size: 18px;
   border: 2px solid $light-gold-color;
   cursor: pointer;
@@ -28,6 +28,7 @@
   z-index: 10;
 
   &:hover {
+    background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
     width: 80px;
     height: 80px;
   }
@@ -52,7 +53,7 @@ a.child-button {
   flex-wrap: wrap;
   width: 75px;
   height: 75px;
-  background-color: $dark-gold-color;
+  background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
   color: white;
   font-size: 16px;
   transition: background-color 0.3s ease;
@@ -61,7 +62,7 @@ a.child-button {
   animation: fade-in 0.3s ease forwards;
 
   &:hover {
-    background-color: $light-gold-color;
+    background: linear-gradient(45deg, $light-blood-color, $dark-blood-color);
   }
 }
 

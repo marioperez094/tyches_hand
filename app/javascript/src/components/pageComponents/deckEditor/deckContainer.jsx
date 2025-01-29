@@ -108,9 +108,8 @@ function FilterInputs({ filters, deck, filterCards }) {
   return (
     <div className="flex justify-between overflow-x-scroll filter-container ">
       { Object.keys(filters).map((filter, index) => {
-        const lowerCaseWord = filter.slice(0, 1).toLowerCase() + filter.slice(1);
-
-        if (filter !== "High cards" && filter !== "Low cards" && deck[lowerCaseWord] === 0) return;
+        if (filter !== "High cards" && filter !== "Low cards" && deck[filter] === 0) return;
+        
         return (
           <div 
             key={ index }

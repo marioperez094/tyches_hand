@@ -17,6 +17,7 @@ export default function DeckStats({ deck }) {
   return (
     <>
       { deckTypes.map((deckType) => {
+        console.log(deck)
         if (deck[deckType.name] > 0) return <DeckTypes  key={ deckType.name } deck={ deck } deckType={ deckType } />
 
         return (
@@ -38,7 +39,7 @@ export default function DeckStats({ deck }) {
 };
 
 function DeckTypes({ deck, deckType }) {
-  const title = `${ capitalizeFirstWord(deckType.name) }: ${ deck[deckType.name] }`
+  const title = `${ deckType.name }: ${ deck[deckType.name] }`
   
   return(
     <li className="relative flex flex-col justify-between deck-type-container">
