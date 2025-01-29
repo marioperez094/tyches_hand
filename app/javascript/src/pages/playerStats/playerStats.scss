@@ -213,14 +213,49 @@
     }
   }
 
-  .filter-container {
+  .filter-checkbox-container {
+    padding-left: 25px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 18px;
+    color: $light-gold-color;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
     input {
-      width: 20px;
+      opacity: 0;
+      cursor: pointer;
+      height: 0;
+      width: 0;
+    }
+
+    &:hover input ~ .filter-checkmark {
+      background-color: $dark-gold-color;
     }
   }
-  .filter-label {
-    color: $light-gold-color;
-    font-size: 18px;
+
+  .filter-checkmark {
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border: 2px solid $light-gold-color;
+  }
+
+  .filter-checkbox-container input:checked ~ .filter-checkmark {
+    background-color: $light-blood-color;
+  }
+
+  .filter-checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+  }
+
+  .filter-checkbox-container input:checked ~ .filter-checkmark:after {
+    display: block;
   }
 
   @keyframes float {

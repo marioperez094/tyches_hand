@@ -7,8 +7,8 @@ import "./hoverButtons.scss";
 
 export default function HoverButtons({ buttonOptions }) {
   const [isOpen, setIsOpen] = useState(false);
-  const arcAngle = 90; //Sets the total space from 12 to 3 on the clock
-  const radius = 150; //Distance oof buttons from main button
+  const arcAngle = 90;
+  const radius = 150;
   const numButtons = buttonOptions.length;
 
   function toggleMenu() {
@@ -16,12 +16,12 @@ export default function HoverButtons({ buttonOptions }) {
   };
   
   const buttons = Array.from({ length: numButtons }, (_, index) => {
-    const angle = (index / (numButtons - 1)) * arcAngle; // Distribute buttons evenly
-    const angleInRadians = (angle * Math.PI) / 180; // Convert angle to radians
+    const angle = (index / (numButtons - 1)) * arcAngle;
+    const angleInRadians = (angle * Math.PI) / 180;
     const x = Math.cos(angleInRadians) * radius;
     const y = Math.sin(angleInRadians) * radius;
 
-    return { x, y }; // Return calculated positions
+    return { x, y };
   });
 
   return(

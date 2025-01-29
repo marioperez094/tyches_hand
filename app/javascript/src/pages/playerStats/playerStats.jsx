@@ -26,14 +26,8 @@ export default function PlayerStatsScreen() {
 };
 
 function PlayerStats() {
-  const { player, setPlayer } = usePlayer();
-  
-  useEffect(() => {
-    getRequest("/api/players/show?deck=true&deck_cards=true")
-      .then(data => setPlayer(data.player))
-      .catch(error => console.log(error.message))
-    }, []);
-  
+  const { player } = usePlayer();
+    
   if (!player) return;
   
   return(

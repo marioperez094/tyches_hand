@@ -1,13 +1,22 @@
 //External Imports
-import React, { useState, useContext, createContext } from "react";
+import React, { useState, useEffect, useContext, createContext } from "react";
+
+//Functions
+import { getRequest } from "@utils/fetchRequest";
 
 const PlayerContext = createContext(false);
 
 function PlayerProvider({ children }) {
-  const [player, changePlayer] = useState(false);
+  const [player, setPlayerState] = useState(null);
+
+  useEffect(() => {
+    getRequest("/api/players/show?deck=true&deck_cards=true")
+      .then(data => setPlayerState(data.player))
+      .catch(error => console.log(error.message));
+  }, []);
 
   function setPlayer(player) {
-    changePlayer(player);
+    setPlayerState(player);
   };
 
   return (
@@ -22,3 +31,9 @@ function usePlayer() {
 };
 
 export { PlayerProvider, usePlayer }
+
+/*useEffect(() => {
+    getRequest("/api/players/show?deck=true&deck_cards=true")
+      .then(data => setPlayer(data.player))
+      .catch(error => console.log(error.message))
+    }, []); */

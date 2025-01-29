@@ -6,11 +6,6 @@
   width: 35px;
   height: 35px;
   z-index: 100;
-
-  &:hover {
-    width: 80px;
-    height: 80px;
-  }
 }
 
 .main-button { 
@@ -62,7 +57,7 @@ a.child-button {
   animation: fade-in 0.3s ease forwards;
 
   &:hover {
-    background: linear-gradient(45deg, $light-blood-color, $dark-blood-color);
+    background-image: linear-gradient(45deg, $light-blood-color, $dark-blood-color);
   }
 }
 
