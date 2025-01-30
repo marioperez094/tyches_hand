@@ -88,7 +88,7 @@ export default function PlayerStatsLayout({ title, children}) {
           <LinkButtons buttonOptions={ buttons }/>
         </div>
       </div>
-      <section className="relative h-7/8 mx-3 mb-5 overflow-y-scroll overflow-x-hidden player-info intricate-border textured-gray-border">
+      <section className="h-full mx-3 mb-5 overflow-y-scroll overflow-x-hidden player-info intricate-border textured-gray-border">
         { children }
       </section>
     </>

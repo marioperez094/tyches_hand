@@ -1,12 +1,5 @@
 @import "@stylesheets/variables.scss";
 
-#login, #player_stats {
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(#222, $light-blood-color 300%);
-}
-
 //Scrollbar
 ::-webkit-scrollbar {
   width: 0px;
@@ -29,6 +22,8 @@
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
+
+//Borders
 
 .intricate-border {
   position: relative;

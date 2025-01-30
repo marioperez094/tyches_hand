@@ -7,6 +7,7 @@ import UserEntryWidget from "@components/pageComponents/loginWidget/userEntryWid
 import ActiveWidget from "@components/pageComponents/loginWidget/activeWidget";
 import LoadingScreen from "@components/loadingComponents/loadingScreen";
 import ErrorMessage from "@components/headers/errorMessage/errorMessage";
+import OverFlowDiv from "@components/headers/overFlowDiv/overFlowDiv";
 
 //Functions
 import { getRequest } from "@utils/fetchRequest";
@@ -34,7 +35,7 @@ export default function StartScreen() {
   }
 
   return (
-    <>
+    <OverFlowDiv>
       { isLoading ? 
         <LoadingScreen /> :
         <>
@@ -69,7 +70,7 @@ export default function StartScreen() {
           </main>
         </>
       }
-    </>
+    </OverFlowDiv>
   )
 };
 

@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import PlayerCollections from "@components/pageComponents/playerStatsComponents/playerCollections";
 import DeckEditor from "@components/pageComponents/deckEditor/deckEditor";
 import PlayerStatsLayout from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
+import OverFlowDiv from "@components/headers/overFlowDiv/overFlowDiv";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
@@ -28,22 +29,24 @@ function PlayerStats() {
   
   return(
     <Router>
-      <div className="player-stat-screen">
-        <Routes>
-          <Route
-            exact path="/player/stats"
-            element={ <PlayerCollections player={ player } /> }
-          />
-          <Route
-            path="/player/stats/edit/deck"
-            element={ <DeckEditor player={ player } /> }
-          />
-          <Route
-            path="/player/stats/edit/tokens"
-            element={ <Tokens title="Edit Tokens" /> }
-          />
-        </Routes>
-      </div>
+      <OverFlowDiv>
+        <div className="relative player-stat-screen">
+          <Routes>
+            <Route
+              exact path="/player/stats"
+              element={ <PlayerCollections player={ player } /> }
+            />
+            <Route
+              path="/player/stats/edit/deck"
+              element={ <DeckEditor player={ player } /> }
+            />
+            <Route
+              path="/player/stats/edit/tokens"
+              element={ <Tokens title="Edit Tokens" /> }
+            />
+          </Routes>
+        </div>
+      </OverFlowDiv>
     </Router>
   )
 };
