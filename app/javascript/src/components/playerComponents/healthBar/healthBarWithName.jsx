@@ -7,10 +7,10 @@ import HealthBar from "./healthBar";
 //Stylesheet
 import "./healthBar.scss"
 
-export default function HealthBarWithName({ name, isPlayer = false }) {
+export default function HealthBarWithName({ health, name, isPlayer = false }) {
   const maxNameLength = 14;
   const shortenName = name.length < maxNameLength ? name: name.slice(0, maxNameLength) + "..."; //Shortens player username
-  const health = 1000
+
   
 
   return(

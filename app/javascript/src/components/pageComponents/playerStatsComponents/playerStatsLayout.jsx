@@ -67,6 +67,7 @@ export default function PlayerStatsLayout({ title, children}) {
   };
   
   const buttons = [ playButton, playerStatsLinks[currentLocation].firstButton, playerStatsLinks[currentLocation].secondButton, logOutButton];
+  
   function logOut() {
     deleteRequest("/api/sessions")
       .then(data => {
