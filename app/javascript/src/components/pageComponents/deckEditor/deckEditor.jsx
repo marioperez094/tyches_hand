@@ -42,7 +42,7 @@ export default function DeckEditor({ player }) {
   };
 
   function filterCards(e) {
-    const { name } = e.target.name
+    const { name } = e.target
     setFilters((prev) => ({
       ...prev,
       [name]: !prev[name],

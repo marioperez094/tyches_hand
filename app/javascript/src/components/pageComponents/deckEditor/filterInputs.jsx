@@ -7,21 +7,24 @@ import { capitalizeFirstWord } from "@utils/utils";
 export default function FilterInputs({ filters, deck, filterCards }) {
   return (
     <div className="flex justify-between overflow-x-scroll filter-container">
-      { Object.keys(filters).map((filter) => {
-        if (!filters[filter] && deck[filter] === 0) return null;
-
+      { Object.entries(filters).map(([filterName, value]) => {
+        console.log("filter: ", filterName + " " + !value)
+        if (!value && deck[filterName] === 0) return;
+        console.log("filter: ", filterName + " " + !value)
+        
         return (
           <label 
-            htmlFor={ filter }
+            key={ filterName }
+            htmlFor={ filterName }
             className="relative block mx-5 filter-checkbox-container"
           >
-            { capitalizeFirstWord(filter) }
+            { capitalizeFirstWord(filterName) }
             <input
               type="checkbox"
-              id={ filter }
-              name={ filter }
+              id={ filterName }
+              name={ filterName }
               className="absolute filter-checkboxes"
-              checked={ filters[filter] }
+              checked={ value }
               onChange={ (e) => filterCards(e) }
             />
             <span className="absolute flex justify-center items-center rounded-full filter-checkmark" />
