@@ -17,7 +17,7 @@ import useDeckManager from "./useDeckManager.js";
 export default function DeckEditor({ player }) {
   if (!player.deck) return null; // Prevent rendering if no deck
 
-  const { deck, deck_cards, non_deck_cards } = player;
+  const { deck, deck_cards } = player;
   const { deckCards, collectedCards, moveCards, sortCardsByID, clearDeck, fillDeck, error, setError } = useDeckManager();
   const [deckSaved, setDeckSaved] = useState(false);
   const [filters, setFilters] = useState({
@@ -42,9 +42,10 @@ export default function DeckEditor({ player }) {
   };
 
   function filterCards(e) {
+    const { name } = e.target.name
     setFilters((prev) => ({
       ...prev,
-      [e.target.name]: !prev[e.target.name],
+      [name]: !prev[name],
     }));
   }
 
@@ -58,7 +59,7 @@ export default function DeckEditor({ player }) {
       .then((data) => {
         if (data.deck) showDeckSaved();
       })
-      .catch(console.log);
+      .catch(error => setError(error.message));
   }
 
   return (

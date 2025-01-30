@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 //Components
 import PlayerCollections from "@components/pageComponents/playerStatsComponents/playerCollections";
 import DeckEditor from "@components/pageComponents/deckEditor/deckEditor";
-import PlayerStatsLayout, { LinkButtons } from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
+import PlayerStatsLayout from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";

@@ -16,7 +16,6 @@ export default function DeckContainer({
   deckCards,
   collectedCards,
   collectedCardsLength,
-  totalCards,
   moveCards
 }) {
   const { draggingCard, cardSource, setDraggingCard, handleDragStart } = useDragPreview();
