@@ -1,18 +1,14 @@
 //External Imports
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 //Components
-import Main from "@components/headers/main/main";
 import PlayerCollections from "@components/pageComponents/playerStatsComponents/playerCollections";
 import DeckEditor from "@components/pageComponents/deckEditor/deckEditor";
 import PlayerStatsLayout, { LinkButtons } from "@components/pageComponents/playerStatsComponents/playerStatsLayout";
 
 //Context
 import { PlayerProvider, usePlayer } from "@context/player";
-
-//Functions
-import { getRequest } from "@utils/fetchRequest";
 
 //Stylesheets
 import "./playerStats.scss";
@@ -32,24 +28,22 @@ function PlayerStats() {
   
   return(
     <Router>
-      <Main>
-        <div className="player-stat-screen">
-          <Routes>
-            <Route
-              exact path="/player/stats/edit/deck"
-              element={ <PlayerCollections player={ player } /> }
-            />
-            <Route
-              path="/player/stats"
-              element={ <DeckEditor player={ player } /> }
-            />
-            <Route
-              path="/player/stats/edit/tokens"
-              element={ <Tokens title="Edit Tokens" /> }
-            />
-          </Routes>
-        </div>
-      </Main>
+      <div className="player-stat-screen">
+        <Routes>
+          <Route
+            exact path="/player/stats"
+            element={ <PlayerCollections player={ player } /> }
+          />
+          <Route
+            path="/player/stats/edit/deck"
+            element={ <DeckEditor player={ player } /> }
+          />
+          <Route
+            path="/player/stats/edit/tokens"
+            element={ <Tokens title="Edit Tokens" /> }
+          />
+        </Routes>
+      </div>
     </Router>
   )
 };

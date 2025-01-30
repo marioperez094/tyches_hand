@@ -17,3 +17,7 @@
     transform: translateY(-2px);
   }
 }
+
+.disabled-button {
+  background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
+}

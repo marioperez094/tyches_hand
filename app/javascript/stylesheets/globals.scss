@@ -1,5 +1,12 @@
 @import "@stylesheets/variables.scss";
 
+#login, #player_stats {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(#222, $light-blood-color 300%);
+}
+
 //Scrollbar
 ::-webkit-scrollbar {
   width: 0px;
@@ -46,25 +53,4 @@
     #4C4C4C 5px,
     #7A7A7A 9px
   ) 10;
-}
-
-@keyframes quiver {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(3px);
-  }
-}
-
-@keyframes slide-up-bounce {
-  0% {
-    transform: translateY(100vh);
-  }
-  80% {
-    transform: translateY(-20px);
-  }
-  100% {
-    transform: translateY(0);
-  }
 }

@@ -5,12 +5,13 @@ import { Link } from "react-router-dom";
 //Stylesheets
 import "./homeButton.scss";
 
-export function HomeButton({ type="button", buttonAction=null, children }) {
+export function HomeButton({ type="button", buttonAction=null, children, disabled }) {
   return(
     <button
       type={ type }
       onClick={ buttonAction }
-      className="home-buttons"
+      className={ `${ disabled && "disabled-button" } home-buttons` }
+      disabled={ disabled }
     >
       { children }
     </button>

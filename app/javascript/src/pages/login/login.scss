@@ -1,5 +1,6 @@
 @import "@stylesheets/variables.scss";
 @import "@stylesheets/globals.scss";
+@import "@stylesheets/animations.scss";
 
 #login {
   .slide-up-animation {
@@ -55,12 +56,12 @@
 
 .blood-drop {
   position: absolute;
+  opacity: 0;
   width: 50px;
   height: 50px;
   background: radial-gradient(circle at center, $dark-blood-color, $light-blood-color);
   border-radius: 50%;
   animation: expand-circle 2s ease-in-out forwards;
-  opacity: 0.8;
 }
 
 .blood-drop:nth-child(1) {
@@ -83,7 +84,12 @@
 
 @keyframes expand-circle {
   0% {
-    transform: scale(0);
+    transform: scale(0.5);
+  }
+  10% {
+    opacity: 1;
+  }
+  10% {
     opacity: 0.8;
   }
   50% {
@@ -92,14 +98,5 @@
   100% {
     transform: scale(20);
     opacity: 0;
-  }
-}
-
-@keyframes fade-in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
   }
 }

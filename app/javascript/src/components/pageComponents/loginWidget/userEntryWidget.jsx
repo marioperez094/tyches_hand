@@ -9,18 +9,14 @@ import { postRequest } from "@utils/fetchRequest";
 
 import { siteKey } from "@utils/constants";
 
-export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }) {
-  const userEntryOptions = [{
-      name: "Sign Up",
-      buttonAction: () => setCurrentWidgetState("Sign Up"),
-    }, {
-      name: "Log In",
-      buttonAction: () => setCurrentWidgetState("Log In"),
-    }, {
-      name: "Guest Mode",
-      buttonAction: (e) => handleSubmit(e),
-  }]
+export default function UserEntryWidget({ activeWidget, setActiveWidget, setIsLoading, setErrorMessage }) {  
+  const userEntryOptions = [
+    { name: "Sign Up", buttonAction: () => setActiveWidget("Sign Up") }, 
+    { name: "Log In", buttonAction: () => setActiveWidget("Log In") }, 
+    { name: "Guest Mode", buttonAction: (e) => handleSubmit(e)},
+  ];
 
+  //Handles reCAPTCHA and submits guest mode
   function handleSubmit(e) {
     if (e) e.preventDefault();
 
@@ -37,6 +33,8 @@ export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }
   };  
 
   function submitGuestMode(captchaToken) {
+    setIsLoading(true);
+    
     const payload = {
       player: {
         guest: true
@@ -46,17 +44,23 @@ export default function UserEntryWidget({ currentWidget, setCurrentWidgetState }
 
     postRequest("/api/players", payload)
       .then((data) => {
-        if (data.player) return location.assign("/tutorial")
+        if (data.player) location.assign("/tutorial")
       })
-      .catch(error => console.log(error))
-  }
+      .catch(error => setErrorMessage(capitalizeFirstWord(error.message)))
+  };
 
   return(
     <>
-      { userEntryOptions.map((option) => {     
-        if (currentWidget === option.name ) return 
-        return <HomeButton buttonAction={ option.buttonAction } key={ option.name }>{ option.name }</HomeButton>
-      })}
+      { userEntryOptions.map((option) => 
+        activeWidget !== option.name ? (
+          <HomeButton 
+            key={ option.name }
+            buttonAction={ option.buttonAction }
+          >
+            { option.name }
+          </HomeButton>
+        ) : null
+      )}
     </>
   )
 };

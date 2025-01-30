@@ -86,12 +86,12 @@
 }
 
 .low-health {
-  animation: pulse 2s infinite ease-in-out;
+  animation: pulse 15 infinite ease-in-out;
 }
 
 .player-health-bar {
   transform: scaleX(0);
-  animation: quiver 10s infinite ease-in-out;
+  animation: float 20s infinite ease-in-out;
 }
 
 @media (max-width: 700px) {

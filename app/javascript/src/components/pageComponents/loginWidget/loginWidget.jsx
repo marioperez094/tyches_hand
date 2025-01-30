@@ -2,61 +2,56 @@
 import React, { useState } from "react";
 
 //Components
-import InputField from "@components/menuComponents/inputField/inputField";
-import { HomeButton } from "@components/menuComponents/buttons/homeButton/homeButton";
-import ErrorMessage from "@components/headers/errorMessage/errorMessage";
+import Form from "./form";
 
 //Functions
 import { postRequest } from "@utils/fetchRequest";
 import { capitalizeFirstWord } from "@utils/utils";
 
-export default function LoginWidget() {
-  const [error, setError] = useState("");
+export default function LoginWidget({ setIsLoading, setErrorMessage }) {
+  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
-  function handleFormData(e) {
-    if (e) e.preventDefault();
-    setFormData({ ...formData,
-      [e.target.name]: e.target.value
-    });
+  function handleInputChange(e) {
+    const { name, value } = e.target;
+    setFormData((prevData) => 
+      ({ ...prevData, [name]: value })
+    );
   };
 
-  function submitForm(e) {
+  function handleSubmit(e) {
     if (e) e.preventDefault();
+    setSubmitting(true);
 
-    postRequest("/api/sessions", { player: formData })
+    const payload = {
+      player: formData
+    }
+
+    postRequest("/api/sessions", payload)
       .then((data) => {
-        if (data.success) return location.assign("/player/stats");
+        if (data.success) {
+          setIsLoading(true);
+          location.assign("/player/stats"); 
+        }
       })
-      .catch(error => setError(capitalizeFirstWord(error.message)));
+      .catch(error => {
+        setErrorMessage(capitalizeFirstWord(error.message));
+        setSubmitting(false);
+        setIsLoading(false);
+      });
   };
 
   return (
-    <form onSubmit={ submitForm}>
-      <ErrorMessage>{ error }</ErrorMessage>
-      <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-        { Object.keys(formData).map((field) => {
-          return (
-            <InputField
-              name={ field }
-              type={ field === "username" ? "text" : "password" }
-              value={ formData[field] }
-              changeEvent={ handleFormData }
-              key={ field }
-            />
-          )
-        })}
-        <div className="px-10">
-          <HomeButton
-          type="submit"
-          >
-            Log In
-          </HomeButton>
-        </div>
-      </div>
-    </form>
+    <Form
+      handleSubmit={ handleSubmit }
+      formData={ formData }
+      handleInputChange={ handleInputChange } 
+      submitting={ submitting }
+    >
+      { submitting ? "Logging In..." : "Log In"}
+    </Form>
   )
 };
