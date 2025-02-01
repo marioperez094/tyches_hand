@@ -1,5 +1,5 @@
 //External Imports
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 
 //Stylesheets
@@ -13,14 +13,19 @@ export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 15
     setIsOpen(prevState => !prevState);
   };
   
-  const buttons = Array.from({ length: numButtons }, (_, index) => {
-    const angle = (index / (numButtons - 1)) * arcAngle;
-    const angleInRadians = (angle * Math.PI) / 180;
-    return {
-      x: Math.cos(angleInRadians) * radius,
-      y: Math.sin(angleInRadians) * radius
-    };
-  });
+  const buttons = useMemo(() =>  
+    Array.from({ length: numButtons }, (_, index) => {
+      const angle = (index / (numButtons - 1)) * arcAngle;
+      const angleInRadians = (angle * Math.PI) / 180;
+      return {
+        x: Math.cos(angleInRadians) * radius,
+        y: Math.sin(angleInRadians) * radius
+      };
+    }),
+    [numButtons, arcAngle, radius]
+  );
+
+  const reversedButtonOptions = useMemo(() => [...buttonOptions].reverse(), [buttonOptions]);
 
   return(
     <div className="fixed hover-buttons-container">
@@ -35,7 +40,7 @@ export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 15
       { /* Child Buttons */ }
       { isOpen && 
         <div className="relative hover-buttons">
-          { buttonOptions.map((currentButton, index) => {
+          { reversedButtonOptions.map((currentButton, index) => {
             const { x, y } = buttons[index];
 
             return currentButton.isLink ? (

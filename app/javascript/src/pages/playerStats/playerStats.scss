@@ -223,6 +223,18 @@
     display: block;
   }
 
+  .selected-card {
+    .hover-box {
+      display: none;
+    }
+
+    .card-front {
+      transform: translateY(20px);
+      border: 2px solid $dark-blood-color;
+      box-shadow: 0 0 10px $light-blood-color;
+    }
+  }
+
   @media (max-width: 400px) {
     .deck-buttons {
       .home-buttons, .link-buttons {

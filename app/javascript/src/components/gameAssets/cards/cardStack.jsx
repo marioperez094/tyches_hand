@@ -1,36 +1,39 @@
 //External Imports
-import React, { useState } from "react";
+import React, { useMemo, useState, useEffect } from "react";
 
 //Components
 import Card from "./card";
-import HoverText from "@components/headers/hoverText/hoverText";
 
 //Stylesheets
 import "./cards.scss";
 
-export default function CardStack({ cards, handleDragStart = null, handleTouchStart = null }) {
+export default function CardStack({ cards, selectedCard, handleCardTap, handleDeckTap }) {
+
+  //Memoized 
+  const cardElements = useMemo(() => 
+    cards.map((card, index) => {
+      const isSelected = selectedCard?.id === card.id;
+
+      return (
+        <div
+          className={ `relative overlap-cards ${ isSelected ? "selected-card" : "" }` } 
+          key={ card.id }
+          onClick={ () => handleCardTap(card) }
+          style={{ animationDelay: `${ index * 0.05 }s` }}
+        >
+          <Card card={ card } />
+        </div>
+      )
+    }), 
+    [cards, selectedCard, handleCardTap]
+  );
 
   return(
     <div 
       className="w-full flex justify-start overflow-x-scroll overflow-y-visible items-center mx-auto relative card-stack"
+      onClick={ handleDeckTap }
     >
-      { cards.map((card, index) => {
-        return(
-          <div 
-            className="relative overlap-cards" 
-            key={ card.id }
-            draggable
-            onDragStart={ (e) => handleDragStart(e, card) }
-            onTouchStart={ (e) => handleTouchStart(e, card) }
-            onTouchMove={ (e) => e.preventDefault() }
-            style={{ animationDelay: `${ index * 0.05 }s` }}
-          >
-            <HoverText name={ card.name } description={ card.description }>
-              <Card card={ card }/>
-            </HoverText>
-          </div>
-        )
-      })}
+      { cardElements }
     </div>
   )
 };

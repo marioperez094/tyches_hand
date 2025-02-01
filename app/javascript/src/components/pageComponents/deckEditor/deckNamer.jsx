@@ -14,21 +14,21 @@ import { putRequest } from "@utils/fetchRequest";
 export default function DeckNamer({ deck }) {
   const{ name } = deck;
   const { player, setPlayer } = usePlayer();
-  const [editName, setEditName] = useState(true);
+
+  const [isEditing, setIsEditing] = useState(false);
   const [deckName, setDeckName] = useState(name);
 
-  function editNameBoolean() {
-    setEditName(prevState => !prevState)
+  function toggleEditMode() {
+    setIsEditing(prevState => !prevState);
   };
 
-  function handleFormData(e) {
-    if (e) e.preventDefault();
+  function handleInputChange(e) {
     setDeckName(e.target.value)
   };
 
   function submitDeckName(e) {
     if (e) e.preventDefault();
-    if (deckName === name) return editNameBoolean();
+    if (deckName.trim() === name) return toggleEditMode(); //Prevents unnecessary API calls
 
     const payload = {
       name: deckName
@@ -42,7 +42,7 @@ export default function DeckNamer({ deck }) {
             deck: data.deck
           });
           
-          editNameBoolean();
+          toggleEditMode();
         }
       })
       .catch(error => console.log(error))
@@ -50,47 +50,49 @@ export default function DeckNamer({ deck }) {
 
   return(
     <>
-      { editName
-        ? <DeckName name={ name } buttonAction={ editNameBoolean }/>
-        : <EditDeckName deckName={ deckName } handleFormData={ handleFormData } submitDeckName={ submitDeckName }/>
+      { isEditing
+        ? <EditDeckName deckName={ deckName } handleInputChange={ handleInputChange } submitDeckName={ submitDeckName }/>
+        : <DeckName name={ name } toggleEditMode={ toggleEditMode }/>
       }
     </>
   )
 };
 
-function DeckName({ name, buttonAction }) {
+//Displyas deck name with edit toggler
+function DeckName({ name, toggleEditMode }) {
   return (
-    <PlayerStatTitle
-      isHeading={ true }
-    >
-      { name }
-      <div className="w-1/8 inline-block ml-5">
-        <button className="px-5 rounded-lg bg-red-800 hover:bg-red-500" onClick={ buttonAction }>Edit</button>
-      </div>
+    <PlayerStatTitle isHeading>
+      {name}
+      <ActionButton onClick={toggleEditMode}>Edit</ActionButton>
     </PlayerStatTitle>
   )
 };
 
-function EditDeckName({ deckName, handleFormData, submitDeckName }) {
+//Rename deck form
+function EditDeckName({ deckName, handleInputChange, submitDeckName }) {
   return (
-    <form 
-      onSubmit={ submitDeckName }
-      className="flex justify-center"
-    >
+    <form onSubmit={submitDeckName} className="flex justify-center">
       <div className="w-1/2">
         <InputField
           name="deck_name"
-          type="text" 
-          value={ deckName }
-          changeEvent={ handleFormData }
+          type="text"
+          value={deckName}
+          changeEvent={handleInputChange}
         />
       </div>
-      <button 
-        type="submit"
-        className="px-5 ml-5 rounded-lg bg-red-800 hover:bg-red-500"
-      >
-        Save
-      </button>
+      <ActionButton type="submit">Save</ActionButton>
     </form>
   )
 };
+
+function ActionButton({ children, onClick, type = "button" }) {
+  return (
+    <button 
+      type={type}
+      className="px-5 ml-5 rounded-lg bg-red-800 hover:bg-red-500"
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+}
