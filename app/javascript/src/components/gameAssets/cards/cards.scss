@@ -1,6 +1,192 @@
 @import "@stylesheets/variables.scss";
+@import "@stylesheets/animations.scss";
 
-.card {
+.card-container {
+  width: 150px;
+  height: 220px;
+  border-radius: 12px;
+  perspective: 1000px;
+  cursor: pointer;
+
+  &.black
+  .card-suit,
+  &.black
+  .card-rank,
+  &.black
+  .card-value {
+    color: #000
+  }
+}
+
+.card-inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease-in-out;
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  padding: 10px;
+  backface-visibility: hidden; // Hides back when flipped 
+  border: 2px solid #000;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-front {
+  background: linear-gradient(135deg, #FFFFFF, #EAEAEA );
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: 1000;
+  
+  &:hover {
+    transform: translateY(-20px) scale(1.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  }
+
+  &.Blessed-card {
+    background: linear-gradient(135deg, $light-gold-color, $dark-gold-color);
+    border: 3px solid $light-gold-color;
+    box-shadow: 0 4px 10px $shadow-gold;
+    .card-suit, .card-rank, .card-value {
+      color: #FFFFFF !important;
+    }
+  }
+
+  &.Bloodstained-card {
+    background: radial-gradient(circle, $light-blood-color, $dark-blood-color);
+    border: 3px solid $dark-blood-color;
+    box-shadow: 0 4px 10px $shadow-blood; 
+    .card-suit, .card-rank, .card-value {
+      color: #E8E4D9 !important;
+    }
+  }
+
+  &.Charred-card {
+    background: linear-gradient(135deg, $ashen-gray, $ember-orange);
+    border: 3px solid $shadow-fire;
+    box-shadow: 0 4px 10px rgba(255, 87, 0, 0.6); 
+    .card-suit, .card-rank, .card-value {
+      color: #EAEAEA !important;
+    }
+  }
+
+  &.Exhumed-card {
+    background: linear-gradient(135deg, $mystic-black, $eerie-green);
+    border: 3px solid $eerie-green;
+    box-shadow: 0 4px 15px $shadow-mist;
+    .card-suit, .card-rank, .card-value {
+      color: #D1D1D1 !important;
+    }
+  }
+
+  &.Fleshwoven-card {
+    background: linear-gradient(135deg, $skin-tone, $shadow-fire);
+    border: 3px solid $vein-blue;
+    box-shadow: 0 4px 10px $shadow-artery;
+    .card-suit, .card-rank, .card-value {
+      color: #EFE2D9 !important;
+    }
+  }
+}
+
+.card-back {
+  background: red;
+  transform: rotateY(180deg);
+}
+
+.card-header .card-suit, .card-footer .card-suit {
+  font-size: 20px;
+}
+
+.card-header, .card-footer {
+  width: 100%;
+  font-size: 18px;
+  font-weight: bold;
+  color: $light-blood-color;
+}
+
+.card-content {
+  font-size: 50px;
+  color: $light-blood-color;
+}
+
+.overlap-cards {
+  opacity: 0;
+  margin-left: -60px;
+  z-index: 1;
+  transition: z-index 0.3s ease;
+  transform: translateX(50px);
+  animation: stack-animation 0.05s ease forwards;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:hover {
+    z-index: 2;
+  } 
+
+  
+  &:active {
+    opacity: 1;
+
+    .card {
+      opacity: 1;
+      cursor: grabbing;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.card-stack {
+  min-height: 300px;
+}
+
+@media (max-width: 1000px) {
+  .card-stack {
+    min-height: 175px;
+  }
+
+  .card-container {
+    width: 75px;
+    height: 110px;
+  }
+
+  .card-face {
+    padding: 6px;
+  }
+
+  .card-header .card-suit, .card-footer .card-suit {
+    font-size: 10px;
+  }
+
+  .card-header, .card-footer {
+    font-size: 9px;
+  }
+  
+  .card-content {
+    font-size: 20px;
+  }
+
+  .overlap-cards {
+    margin-left: -25px;
+  }
+
+}
+
+/*.card {
   width: 150px;
   height: 220px;
   border-radius: 12px;
@@ -10,9 +196,11 @@
   padding: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   z-index: 1000;
+  perspective: 1000px; // Adds depth effect
+  cursor: pointer;
 
   &:hover {
-    transform: translateY(-20px) scale(1.1);
+    transform: translateY(-10px) scale(1.1);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
 
     .hover-info {
@@ -73,6 +261,35 @@
       color: #EFE2D9 !important;
     }
   }
+}
+
+.card-inner.flipped {
+  transform: rotateY(180deg);
+}
+
+.card-face {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  backface-visibility: hidden;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-front {
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-back {
+  background-color: red;
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .card-header .card-suit, .card-footer .card-suit {
@@ -143,6 +360,7 @@
   .card {
     width: 75px;
     height: 110px;
+    padding: 5px;
   }
 
   .card-header .card-suit, .card-footer .card-suit {
@@ -160,4 +378,4 @@
   .overlap-cards {
     margin-left: -25px;
   }
-}
+}*/

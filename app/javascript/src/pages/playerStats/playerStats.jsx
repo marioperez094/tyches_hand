@@ -17,7 +17,13 @@ import "./playerStats.scss";
 export default function PlayerStatsScreen() {
   return (
     <PlayerProvider>
-      <PlayerStats />
+      <Router>
+        <OverFlowDiv>
+          <div className="relative player-stat-screen">
+            <PlayerStats />
+          </div>
+        </OverFlowDiv>
+      </Router>
     </PlayerProvider>
   )
 };
@@ -25,29 +31,23 @@ export default function PlayerStatsScreen() {
 function PlayerStats() {
   const { player } = usePlayer();
     
-  if (!player) return;
+  if (!player) return null; //Doesn't render if player not found
   
   return(
-    <Router>
-      <OverFlowDiv>
-        <div className="relative player-stat-screen">
-          <Routes>
-            <Route
-              exact path="/player/stats"
-              element={ <PlayerCollections player={ player } /> }
-            />
-            <Route
-              path="/player/stats/edit/deck"
-              element={ <DeckEditor player={ player } /> }
-            />
-            <Route
-              path="/player/stats/edit/tokens"
-              element={ <Tokens title="Edit Tokens" /> }
-            />
-          </Routes>
-        </div>
-      </OverFlowDiv>
-    </Router>
+    <Routes>
+      <Route
+        exact path="/player/stats/edit/deck"
+        element={ <PlayerCollections player={ player } /> } //All player stats
+      />
+      <Route
+        path="/player/stats/"
+        element={ <DeckEditor player={ player } /> } //Edit deck
+      />
+      <Route
+        path="/player/stats/edit/tokens"
+        element={ <Tokens title="Edit Tokens" /> }//Edit tokens
+      />
+    </Routes>
   )
 };
 

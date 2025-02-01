@@ -6,9 +6,12 @@ import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle
 import HoverText from "@components/headers/hoverText/hoverText";
 import CardStack from "@components/gameAssets/cards/cardStack";
 import FilterInputs from "./filterInputs";
-import Card from "@components/gameAssets/cards/card";
+import { useSelectItem } from "@components/gameAssets/deck/useSelectItem";
 
-import { useDragPreview } from "@components/gameAssets/deck/useDragPreview.js";
+const hoverText = { 
+  name: "52 Cards", 
+  description: "The hand of Tyche demands balance. Your deck must consist of precisely 52 cards - no more, no less. To defy this rule is to defy Tyche and such insolence would lead to unimaginable consequences." 
+};
 
 export default function DeckContainer({
   deck,
@@ -19,45 +22,35 @@ export default function DeckContainer({
   collectedCardsLength,
   moveCards
 }) {
-  const { draggingItem, source, setDraggingItem, handleDragStart, handleTouchStart } = useDragPreview();
+  const { selectedItem, setSelectedItem, source, setSource, handleItemTap } = useSelectItem();
 
-  const hoverText = { 
-    name: "52 Cards", 
-    description: "The hand of Tyche demands balance. Your deck must consist of precisely 52 cards - no more, no less. To defy this rule is to defy Tyche and such insolence would lead to unimaginable consequences." 
+  function handleDeckTap(target) {
+    if (!selectedItem || target === source) return;
+
+    moveCards([selectedItem], target === "Collection");
+    setSelectedItem(null);
+    setSource(null);
   };
-
-  function handleCardDrop(e, targetStack) {
-    e.preventDefault();
-    if (!draggingItem || source === targetStack) return setDraggingItem(null);
-    
-    moveCards([draggingItem], targetStack);
-    setDraggingItem(null);
-  }
 
   return (
     <>
-      <div
-        className="w-full card-drop px-5"
-        onDragOver={ (e) => e.preventDefault() }
-        onDrop={ (e) => handleCardDrop(e, "Collection Cards") }
-      >
-        <PlayerStatTitle>Cards Collected { collectedCards.length } / { collectedCardsLength }</PlayerStatTitle>
+      { /* Collected Cards Section */ }
+      <section className="w-full card-drop px-5">
+        <PlayerStatTitle>Cards Collected { collectedCards.length } / { collectedCards.length + deckCards.length }</PlayerStatTitle>
         <FilterInputs filters={ filters } deck={ deck } filterCards={ filterCards } />
         <CardStack
           cards={ collectedCards }
-          handleDragStart={ (e, card) => handleDragStart(e, card, "Collection Cards", <Card card={ card } />) }
-          handleTouchStart={ (e, card) => handleTouchStart(e, card, "Collection Cards", <Card card={ card } />) }
+          selectedCard={ selectedItem }
+          handleDeckTap={ () => handleDeckTap("Collection") }
+          handleCardTap={ (card) => handleItemTap(card, "Collection") }
         />
-      </div>
+      </section>
 
-      <div
-        className="w-full card-drop px-5"
-        onDragOver={ (e) => e.preventDefault() }
-        onDrop={ (e) => handleCardDrop(e, "Deck Cards") }
-      >
+      { /* Deck Cards Section */ }
+      <section className="w-full card-drop px-5">
         <PlayerStatTitle>
           <HoverText name={ hoverText.name } description={ hoverText.description }>
-            <span className={ `${ deckCards.length !== 52 && "text-red-300" }` }>
+            <span className={ `${ deckCards.length !== 52 ? "text-red-300" : "" }` }>
               Cards in Deck: { deckCards.length } / 52
               { deckCards.length !== 52 && "!" }
             </span>
@@ -65,10 +58,11 @@ export default function DeckContainer({
         </PlayerStatTitle>
         <CardStack
           cards={ deckCards }
-          handleDragStart={ (e, card) => handleDragStart(e, card, "Deck Cards", <Card card={ card } />) }
-          handleTouchStart={ (e, card) => handleTouchStart(e, card, "Deck Cards", <Card card={ card } />) }
+          selectedCard={ selectedItem }
+          handleDeckTap={ () => handleDeckTap("Deck") }
+          handleCardTap={ (card) => handleItemTap(card, "Deck") }
         />
-      </div>
+      </section>
     </>
   );
 }

@@ -13,8 +13,7 @@ export default function useDeckManager() {
   const [collectedCards, setCollectedCards] = useState(initialCollectedCards);
   const [error, setError] = useState("");
 
-  function moveCards(cards, targetStack) {
-    const isMovingToCollection = targetStack === "Collection Cards";
+  function moveCards(cards, isMovingToCollection) {
 
     const updatedDeckCards = isMovingToCollection
       ? deckCards.filter((card) => !cards.some((c) => c.id === card.id))
@@ -37,13 +36,16 @@ export default function useDeckManager() {
   }
 
   function clearDeck() {
-    moveCards(deckCards, "Collection Cards");
+    const isMovingToCollection = true;
+    moveCards(deckCards, isMovingToCollection);
   }
 
   function fillDeck(filteredCollectionCards) {
     const missingCards = 52 - deckCards.length;
     const fillingCards = filteredCollectionCards.slice(0, missingCards);
-    moveCards(fillingCards, "Deck Cards");
+    const isMovingToCollection = false;
+    
+    moveCards(fillingCards, isMovingToCollection);
   }
 
   return { deckCards, collectedCards, moveCards, sortCardsByID, clearDeck, fillDeck, error, setError };

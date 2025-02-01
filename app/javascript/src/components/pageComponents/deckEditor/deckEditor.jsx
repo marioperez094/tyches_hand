@@ -1,5 +1,5 @@
 //External Imports
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 
 //Components
 import PlayerStatsLayout from "../playerStatsComponents/playerStatsLayout";
@@ -19,6 +19,7 @@ export default function DeckEditor({ player }) {
 
   const { deck, deck_cards } = player;
   const { deckCards, collectedCards, moveCards, sortCardsByID, clearDeck, fillDeck, error, setError } = useDeckManager();
+  
   const [deckSaved, setDeckSaved] = useState(false);
   const [filters, setFilters] = useState({
     "High cards": true,
@@ -31,7 +32,7 @@ export default function DeckEditor({ player }) {
     Fleshwoven: false,
   });
 
-  const filteredCollectionCards = filterGivenCards(collectedCards, filters);
+  const filteredCollectionCards = useMemo(() => filterGivenCards(collectedCards, filters), [collectedCards, filters]);
 
   function showDeckSaved() {
     setDeckSaved(true);
@@ -64,6 +65,7 @@ export default function DeckEditor({ player }) {
 
   return (
     <PlayerStatsLayout title="Edit Deck">
+      { /* Deck Buttons */ }
       <div className="sticky top-0 deck-buttons-container">
         <div className="flex justify-center deck-buttons overflow-x-scroll w-full">
           <HomeButton 
@@ -87,13 +89,19 @@ export default function DeckEditor({ player }) {
             Fill Deck
           </HomeButton>
         </div>
+        
         <ErrorMessage>{ error }</ErrorMessage>
-        <div className="absolute deck-saved-message-container w-full">
-          { deckSaved && <p className="text-center text-green-500 deck-saved-message">Deck Saved!</p> }
-        </div>
+        
+        { /* Deck Saved message*/ }
+        { deckSaved && 
+          <div className="absolute deck-saved-message-container w-full">
+            <p className="text-center text-green-500 deck-saved-message">Deck Saved!</p> 
+          </div>
+        }
       </div>
 
-      <article className="mx-auto my-3 sm:my-5 lg:my-10">
+      { /* Deck Content */ }
+      <section className="mx-auto my-3 sm:my-5 lg:my-10">
         <DeckNamer deck={ deck } />
         <DeckContainer
           deck={ deck }
@@ -104,7 +112,7 @@ export default function DeckEditor({ player }) {
           collectedCardsLength={ collectedCards.length }
           moveCards={ moveCards }
         />
-      </article>
+      </section>
     </PlayerStatsLayout>
   );
 }
