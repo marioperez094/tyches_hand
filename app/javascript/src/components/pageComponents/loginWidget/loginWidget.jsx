@@ -40,7 +40,6 @@ export default function LoginWidget({ setIsLoading, setErrorMessage }) {
       .catch(error => {
         setErrorMessage(capitalizeFirstWord(error.message));
         setSubmitting(false);
-        setIsLoading(false);
       });
   };
 
@@ -50,8 +49,7 @@ export default function LoginWidget({ setIsLoading, setErrorMessage }) {
       formData={ formData }
       handleInputChange={ handleInputChange } 
       submitting={ submitting }
-    >
-      { submitting ? "Logging In..." : "Log In"}
-    </Form>
+      buttonText={ submitting ? "Logging In..." : "Log In"}
+    />
   )
 };

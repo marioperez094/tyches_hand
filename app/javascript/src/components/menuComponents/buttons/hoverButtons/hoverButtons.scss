@@ -17,15 +17,14 @@
   border: 2px solid $light-gold-color;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-  transition: height 0.3s ease, width 0.3s ease, background-color 0.3s ease;
+  transition: scale 0.3s ease-in-out, width 0.3s ease, background-color 0.3s ease;
   bottom: 0;
   left: 0;
   z-index: 10;
 
   &:hover {
     background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
-    width: 80px;
-    height: 80px;
+    transform: scale(1.5);
   }
 }
 

@@ -4,10 +4,10 @@ import React from "react";
 //Stylesheet
 import "./overFlowDiv.scss";
 
-export default function OverFlowDiv({ children }) {
+export default function OverFlowDiv({ children, className = "" }) {
   return (
-    <main className="overflow-hidden h-screen flex flex-col">
-      { children }
-    </main>
-  )
-};
+    <div className={`overflow-hidden h-screen flex flex-col overflow-div ${ className }`}>
+      {children}
+    </div>
+  );
+}

@@ -5,7 +5,7 @@ import React from "react";
 import InputField from "@components/menuComponents/inputField/inputField";
 import { HomeButton } from "@components/menuComponents/buttons/homeButton/homeButton";
 
-export default function Form({ handleSubmit, formData, handleInputChange, submitting, children }) {
+export default function Form({ handleSubmit, formData, handleInputChange, submitting, buttonText }) {
   return (
     <form onSubmit={ handleSubmit }>
       <div className="py-2 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
@@ -18,6 +18,7 @@ export default function Form({ handleSubmit, formData, handleInputChange, submit
               type={ fieldName === "username" ? "text" : "password" }
               value={ value }
               changeEvent={ handleInputChange }
+              autoComplete={fieldName === "password" ? "current-password" : "off"} 
             />
           )
         })}
@@ -26,7 +27,7 @@ export default function Form({ handleSubmit, formData, handleInputChange, submit
             type="submit"
             disabled={ submitting }
           >
-            { children }
+            { buttonText }
           </HomeButton>
         </div>
       </div>

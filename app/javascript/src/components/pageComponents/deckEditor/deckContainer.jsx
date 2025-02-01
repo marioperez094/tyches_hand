@@ -5,9 +5,10 @@ import React from "react";
 import PlayerStatTitle from "@components/headers/playerStatTitle/playerStatTitle";
 import HoverText from "@components/headers/hoverText/hoverText";
 import CardStack from "@components/gameAssets/cards/cardStack";
-import FilterInputs from "./filterInputs"; // Moved to a separate file
+import FilterInputs from "./filterInputs";
+import Card from "@components/gameAssets/cards/card";
 
-import { useDragPreview } from "./useDragPreview.js";
+import { useDragPreview } from "@components/gameAssets/deck/useDragPreview.js";
 
 export default function DeckContainer({
   deck,
@@ -18,7 +19,7 @@ export default function DeckContainer({
   collectedCardsLength,
   moveCards
 }) {
-  const { draggingCard, cardSource, setDraggingCard, handleDragStart } = useDragPreview();
+  const { draggingItem, source, setDraggingItem, handleDragStart, handleTouchStart } = useDragPreview();
 
   const hoverText = { 
     name: "52 Cards", 
@@ -27,10 +28,10 @@ export default function DeckContainer({
 
   function handleCardDrop(e, targetStack) {
     e.preventDefault();
-    if (!draggingCard || cardSource === targetStack) return setDraggingCard(null);
+    if (!draggingItem || source === targetStack) return setDraggingItem(null);
     
-    moveCards([draggingCard], targetStack);
-    setDraggingCard(null);
+    moveCards([draggingItem], targetStack);
+    setDraggingItem(null);
   }
 
   return (
@@ -44,7 +45,8 @@ export default function DeckContainer({
         <FilterInputs filters={ filters } deck={ deck } filterCards={ filterCards } />
         <CardStack
           cards={ collectedCards }
-          dragStart={ (e, card) => handleDragStart(e, card, "Collection Cards") }
+          handleDragStart={ (e, card) => handleDragStart(e, card, "Collection Cards", <Card card={ card } />) }
+          handleTouchStart={ (e, card) => handleTouchStart(e, card, "Collection Cards", <Card card={ card } />) }
         />
       </div>
 
@@ -63,7 +65,8 @@ export default function DeckContainer({
         </PlayerStatTitle>
         <CardStack
           cards={ deckCards }
-          dragStart={ (e, card) => handleDragStart(e, card, "Deck Cards") }
+          handleDragStart={ (e, card) => handleDragStart(e, card, "Deck Cards", <Card card={ card } />) }
+          handleTouchStart={ (e, card) => handleTouchStart(e, card, "Deck Cards", <Card card={ card } />) }
         />
       </div>
     </>

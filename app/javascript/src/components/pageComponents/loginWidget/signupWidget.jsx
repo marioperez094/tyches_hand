@@ -17,7 +17,7 @@ export default function SignUpWidget({ setIsLoading, setErrorMessage }) {
     password: "",
     password_confirmation: "",
   });
-
+  
   function handleInputChange(e) {
     const { name, value } = e.target;
     setFormData((prevData) => 
@@ -36,7 +36,9 @@ export default function SignUpWidget({ setIsLoading, setErrorMessage }) {
         submitForm(token);
       })
       .catch((error) => {
-        setError("reCAPTCHA error: " + error.message)
+        setErrorMessage("reCAPTCHA error: " + error.message);
+        setSubmitting(false);
+
       })
     })
   };
@@ -44,7 +46,7 @@ export default function SignUpWidget({ setIsLoading, setErrorMessage }) {
   function submitForm(captchaToken) {
     const { password, password_confirmation } = formData;
 
-    if (password !== password_confirmation) return setError("The passwords do not match.");
+    if (password !== password_confirmation) return setErrorMessage("The passwords do not match.");
 
     const payload = {
       player: formData, 
@@ -61,7 +63,6 @@ export default function SignUpWidget({ setIsLoading, setErrorMessage }) {
       .catch(error => {
         setErrorMessage(capitalizeFirstWord(error.message));
         setSubmitting(false);
-        setIsLoading(false);
       });
   };
 
@@ -71,8 +72,7 @@ export default function SignUpWidget({ setIsLoading, setErrorMessage }) {
       formData={ formData }
       handleInputChange={ handleInputChange } 
       submitting={ submitting }
-    >
-      { submitting ? "Signing up..." : "Sign Up"}
-    </Form>
+      buttonText={ submitting ? "Signing Up..." : "Sign Up" }
+    />
   )
 };

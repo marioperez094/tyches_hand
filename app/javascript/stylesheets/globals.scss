@@ -1,5 +1,20 @@
 @import "@stylesheets/variables.scss";
 
+//Prevents highlighting except for text areas
+body {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+input, textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
 //Scrollbar
 ::-webkit-scrollbar {
   width: 0px;

@@ -8,7 +8,7 @@ import HoverText from "@components/headers/hoverText/hoverText";
 //Stylesheets
 import "./cards.scss";
 
-export default function CardStack({ cards, dragStart = null }) {
+export default function CardStack({ cards, handleDragStart = null, handleTouchStart = null }) {
 
   return(
     <div 
@@ -20,7 +20,9 @@ export default function CardStack({ cards, dragStart = null }) {
             className="relative overlap-cards" 
             key={ card.id }
             draggable
-            onDragStart={ (e) => dragStart(e, card) }
+            onDragStart={ (e) => handleDragStart(e, card) }
+            onTouchStart={ (e) => handleTouchStart(e, card) }
+            onTouchMove={ (e) => e.preventDefault() }
             style={{ animationDelay: `${ index * 0.05 }s` }}
           >
             <HoverText name={ card.name } description={ card.description }>

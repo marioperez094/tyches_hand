@@ -1,5 +1,5 @@
 //External Imports
-import React from "react";
+import React, { useMemo } from "react";
 
 //Components
 import { capitalizeFirstWord } from "@utils/utils";
@@ -7,8 +7,8 @@ import { capitalizeFirstWord } from "@utils/utils";
 //Stylesheet
 import "./inputField.scss";
 
-export default function InputField({ name, type, value,  changeEvent, required = true }) {
-  const capitalizedName = capitalizeFirstWord(name)
+export default function InputField({ name, type, value,  changeEvent, required = true, ...props }) {
+  const capitalizedName = useMemo(() => capitalizeFirstWord(name), [name]);
   return(
     <input 
       id={ name }
@@ -17,8 +17,9 @@ export default function InputField({ name, type, value,  changeEvent, required =
       value={ value }
       className="h-10 w-full input-field"
       placeholder={ capitalizedName }
-      onChange={ (e) => changeEvent(e) }
+      onChange={ changeEvent }
       required={ required }
+      { ...props }
     />
   )
 };

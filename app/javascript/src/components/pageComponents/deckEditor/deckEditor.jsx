@@ -12,7 +12,7 @@ import DeckContainer from "./deckContainer";
 import { putRequest } from "@utils/fetchRequest";
 import { filterGivenCards } from "@utils/utils";
 
-import useDeckManager from "./useDeckManager.js";
+import useDeckManager from "@components/gameAssets/deck/useDeckManager.js";
 
 export default function DeckEditor({ player }) {
   if (!player.deck) return null; // Prevent rendering if no deck
