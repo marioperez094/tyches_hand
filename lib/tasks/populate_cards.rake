@@ -2,13 +2,13 @@
 namespace :cards do
   desc "Populate cards"
   task populate_cards: :environment do
-    Card::EFFECTS.each do |effect_type|
+    Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
           Card.find_or_create_by!(
             suit: suit,
             rank: rank.to_s,
-            effect_type: effect_type,
+            effect: effect,
           )
         end
       end

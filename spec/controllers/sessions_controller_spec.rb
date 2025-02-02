@@ -4,10 +4,10 @@ RSpec.describe Api::SessionsController, type: :controller do
   render_views 
 
   before do
-    Card::EFFECTS.each do |effect_type|
+    Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
-          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+          FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
         end
       end
     end
@@ -25,6 +25,7 @@ RSpec.describe Api::SessionsController, type: :controller do
       }
       
       expect(Session.count).to be(1)
+      expect(Session.first.expires_at).to eq(100)
       expect(response.body).to eq({
         success: true
       }.to_json)

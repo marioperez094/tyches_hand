@@ -23,7 +23,7 @@ RSpec.describe Api::CardsController, type: :controller do
           suit: card2.suit,
           rank: card2.rank,
           description: card2.description,
-          effect_type: card2.effect_type,
+          effect: card2.effect,
           effect_value: card2.calculate_effect_value
         }
       }.to_json)

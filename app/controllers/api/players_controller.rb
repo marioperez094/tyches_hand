@@ -1,13 +1,12 @@
 module Api
   class PlayersController < ApplicationController
-    before_action :current_player, only: [:show, :convert_to_registered, :update_password, :destroy, :player_discover_cards]
+    before_action :set_current_player, only: [:show, :convert_to_registered, :update_password, :destroy, :player_discover_cards]
+    before_action :set_player, only: [:show]
+    before_action :authenticate_player!, only: [:update_password, :destroy]
 
     def create
-      # recaptcha_token from front end
-      recaptcha_token = params[:recaptcha_token]
-
-      # Verify
-      unless RecaptchaV3Verifier.verify(recaptcha_token, 0.5)
+      # Verify reCAPTCHA token from front end
+      unless RecaptchaV3Verifier.verify(params[:recaptcha_token], 0.5)
         return render json: { error: "reCAPTCHA verification failed" }, status: :unauthorized
       end
 
@@ -15,14 +14,14 @@ module Api
 
       if @player.save
         session = @player.sessions.create
-        deck = @player.create_deck
 
         cookies.signed[:tyches_hand_session_token] = {
           value: session.token,
           httponly: true,
         }
         
-        render 'api/players/show'
+        render json: { success: true }.merge(JSON.parse(render_to_string('api/players/show', formats: [:json]))), 
+        status: :ok
 
       else
         render json: {
@@ -38,14 +37,9 @@ module Api
     end
 
     def show
-      return render json: { error: 'Player not found.' }, 
-      status: :not_found if !@player
-
       @include_decks = params[:deck] == 'true'
       @include_cards = params[:cards] == 'true'
-      
-      #Sepeartes cards in players collection but not in deck
-      @separate_deck_cards = params[:deck_cards] == 'true'
+      @separate_deck_cards = params[:deck_cards] == 'true' #Sepeartes cards in players collection but not in deck
 
       render 'api/players/show',
       status: :ok
@@ -53,7 +47,7 @@ module Api
 
     def player_discover_cards
       return render json: { error: 'Player not found.' },
-      status: :not_found if !@player
+      status: :not_found unless @player
 
       @cards = @player.discover_cards
       render json: { cards: @cards },
@@ -62,15 +56,15 @@ module Api
 
     def convert_to_registered
       return render json: { error: 'Player not found.' },
-      status: :not_found if !@player
+      status: :not_found unless @player
 
       return render json: { error: 'This account is already registered.' },
-      status: :forbidden if @player.guest == false
+      status: :forbidden unless @player.guest
 
       begin
         @player.update!(username: params[:player][:username], password: params[:player][:password], guest: false)
 
-        render 'api/players/show',
+        render json: { success: true }.merge(JSON.parse(render_to_string('api/players/show', formats: [:json]))),
         status: :ok
       rescue ArgumentError => e
         render json: { error: e.message },
@@ -79,11 +73,8 @@ module Api
     end
 
     def update_password
-      unless @player && @player.authenticate(params[:player][:password])
-        return render json: {
-          error: "The username or password is invalid."
-        }, status: :unauthorized
-      end
+      return render json: { error: "Invalid username or password." }, 
+      status: :unauthorized unless @player&.authenticate(params[:player][:password])
 
       begin
         @player.update!(password: params[:player][:new_password])
@@ -96,11 +87,9 @@ module Api
     end
 
     def destroy
-      unless @player && @player.authenticate(params[:player][:password])
-        return render json: {
-          error: "The username or password is invalid."
-        }, status: :unauthorized
-      end
+      return render json: { error: "Invalid username or password." }, status: :unauthorized unless @player&.authenticate(params[:player][:password])
+      
+      @player.force_delete = true #Allows for registered player deletion
       
       if @player&.destroy
         render json: { success: true }
@@ -111,12 +100,13 @@ module Api
 
     private
 
-    def set_player_by_id
-      @player = Player.find_by(id: params[:id])
-      
-      if @player.nil?
-        render json: { error: 'Player not found.' }, status: :not_found
-      end
+    def set_current_player
+      @player = current_player
+    end
+
+    def set_player
+      @player = current_player
+      render json: { error: 'Player not found.' }, status: :not_found unless @player
     end
 
     def player_params

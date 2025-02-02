@@ -9,10 +9,10 @@ RSpec.describe Api::PlayersController, type: :controller do
   end
 
   before do
-    Card::EFFECTS.each do |effect_type|
+    Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
-          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+          FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
         end
       end
     end
@@ -30,11 +30,14 @@ RSpec.describe Api::PlayersController, type: :controller do
       }
 
       expect(response.body).to eq({
+        success: true,
         player: {
           username: 'Test',
           guest: false,
           blood_pool: 5000,
           tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
         }
       }.to_json)
     end
@@ -47,11 +50,14 @@ RSpec.describe Api::PlayersController, type: :controller do
       }
 
       expect(response.body). to eq({
+        success: true,
         player: {
           username: "Guest#{Time.now.to_i}",
           guest: true,
           blood_pool: 5000,
-          tutorial_complete: false
+          tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
         }
       }.to_json)
     end
@@ -84,13 +90,17 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player2.username,
           guest: player2.guest,
           blood_pool: player2.blood_pool,
-          tutorial_complete: false
+          tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
 
         }, {
           username: player1.username,
           guest: player1.guest,
           blood_pool: player1.blood_pool,
-          tutorial_complete: false
+          tutorial_complete: false,
+          high_score: 0, 
+          high_score_round: 0,
         }]
       }.to_json)
     end
@@ -107,7 +117,9 @@ RSpec.describe Api::PlayersController, type: :controller do
           username: player.username,
           guest: player.guest,
           blood_pool: player.blood_pool, 
-          tutorial_complete: false
+          tutorial_complete: false, 
+          high_score: 0,
+          high_score_round: 0,
         }
       }.to_json)
     end
@@ -131,6 +143,8 @@ RSpec.describe Api::PlayersController, type: :controller do
           guest: player.guest,
           blood_pool: player.blood_pool,
           tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
 
           cards: [{
             id: card1.id,
@@ -138,7 +152,7 @@ RSpec.describe Api::PlayersController, type: :controller do
             suit: card1.suit,
             rank: card1.rank,
             description: card1.description,
-            effect_type: card1.effect_type,
+            effect: card1.effect,
             effect_value: card1.calculate_effect_value
           }, {
             id: card2.id,
@@ -146,7 +160,7 @@ RSpec.describe Api::PlayersController, type: :controller do
             suit: card2.suit,
             rank: card2.rank,
             description: card2.description,
-            effect_type: card2.effect_type,
+            effect: card2.effect,
             effect_value: card2.calculate_effect_value
           }]
         }
@@ -168,28 +182,33 @@ RSpec.describe Api::PlayersController, type: :controller do
           guest: player.guest,
           blood_pool: player.blood_pool,
           tutorial_complete: false, 
+          high_score: 0,
+          high_score_round: 0,
 
           deck: {
             name: "#{player.username}'s Deck",
-            total: 52,
-            standard: 52,
-            exhumed: 0,
-            charred: 0,
-            fleshwoven: 0,
-            blessed: 0,
-            bloodstained: 0,
+            Total: 52,
+            Standard: 52,
+            Exhumed: 0,
+            Charred: 0,
+            Fleshwoven: 0,
+            Blessed: 0,
+            Bloodstained: 0,
           }
         }
       }.to_json)
     end
 
-    it 'shows a player and sepeartes their deck and non-deck cards' do
+    it 'shows a player and seperates their deck and collection cards' do
       player = FactoryBot.create(:player)
       session = player.sessions.create
       @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
 
       deck = FactoryBot.create(:deck, player: player)
       player.discover_cards
+      cards = player.cards
+      deck_cards = player.deck.cards
+      collection_cards = cards - deck_cards
 
       get :show, params: { id: player.id, deck_cards: 'true'}
 
@@ -199,17 +218,11 @@ RSpec.describe Api::PlayersController, type: :controller do
           guest: player.guest,
           blood_pool: player.blood_pool,
           tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
 
-          deck: {
-            name: "#{player.username}'s Deck",
-            total: 52,
-            standard: 52,
-            exhumed: 0,
-            charred: 0,
-            fleshwoven: 0,
-            blessed: 0,
-            bloodstained: 0,
-          }
+          collection_cards: collection_cards,
+          deck_cards: deck_cards
         }
       }.to_json)
     end
@@ -229,11 +242,14 @@ RSpec.describe Api::PlayersController, type: :controller do
       }
 
       expect(response.body).to eq({
+        success: true,
         player: {
           username: 'Test',
           guest: false,
           blood_pool: player.blood_pool, 
-          tutorial_complete: false
+          tutorial_complete: false,
+          high_score: 0,
+          high_score_round: 0,
         }
       }.to_json)
     end

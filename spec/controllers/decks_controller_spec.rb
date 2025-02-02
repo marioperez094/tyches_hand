@@ -4,10 +4,10 @@ RSpec.describe Api::DecksController, type: :controller do
   render_views
 
   before do
-    Card::EFFECTS.each do |effect_type|
+    Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
-          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+          FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
         end
       end
     end
@@ -28,13 +28,13 @@ RSpec.describe Api::DecksController, type: :controller do
       expect(response.body).to eq({
         deck: {
           name: "#{player.username}'s Deck",
-          total: 52,
-          standard: 52,
-          exhumed: 0,
-          charred: 0,
-          fleshwoven: 0,
-          blessed: 0,
-          bloodstained: 0,
+          Total: 52,
+          Standard: 52,
+          Exhumed: 0,
+          Charred: 0,
+          Fleshwoven: 0,
+          Blessed: 0,
+          Bloodstained: 0,
         }
       }.to_json)
     end
@@ -63,13 +63,13 @@ RSpec.describe Api::DecksController, type: :controller do
       expect(response.body).to eq({
         deck: {
           name: "Test",
-          total: 53,
-          standard: 52,
-          exhumed: 1,
-          charred: 0,
-          fleshwoven: 0,
-          blessed: 0,
-          bloodstained: 0,
+          Total: 53,
+          Standard: 52,
+          Exhumed: 1,
+          Charred: 0,
+          Fleshwoven: 0,
+          Blessed: 0,
+          Bloodstained: 0,
         }
       }.to_json)
     end
@@ -96,13 +96,13 @@ RSpec.describe Api::DecksController, type: :controller do
       expect(response.body).to eq({
         deck: {
           name: "Test's Deck",
-          total: 52,
-          standard: 51,
-          exhumed: 1,
-          charred: 0,
-          fleshwoven: 0,
-          blessed: 0,
-          bloodstained: 0,
+          Total: 53,
+          Standard: 52,
+          Exhumed: 1,
+          Charred: 0,
+          Fleshwoven: 0,
+          Blessed: 0,
+          Bloodstained: 0,
         }
       }.to_json)
     end

@@ -7,7 +7,7 @@ import { usePlayer } from "@context/player";
 export default function useDeckManager() {
   const { player } = usePlayer();
   const initialDeckCards = player.deck_cards || [];
-  const initialCollectedCards = player.non_deck_cards || [];
+  const initialCollectedCards = player.collection_cards || [];
   
   const [deckCards, setDeckCards] = useState(initialDeckCards);
   const [collectedCards, setCollectedCards] = useState(initialCollectedCards);

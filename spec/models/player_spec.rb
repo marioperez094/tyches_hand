@@ -2,10 +2,10 @@ require 'rails_helper'
 
 RSpec.describe  Player, type: :model do
   before do
-    Card::EFFECTS.each do |effect_type|
+    Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
         Card::RANKS.each do |rank|
-          FactoryBot.create(:card, rank: rank, suit: suit, effect_type: effect_type)
+          FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
         end
       end
     end

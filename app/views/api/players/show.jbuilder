@@ -16,7 +16,7 @@ json.player do
   end
 
   if @separate_deck_cards
-    json.non_deck_cards do
+    json.collection_cards do
       json.array! @player.cards.where.not(id: @player.deck.cards.select(:id)) do |card|
         json.partial! 'api/cards/card', card: card
       end

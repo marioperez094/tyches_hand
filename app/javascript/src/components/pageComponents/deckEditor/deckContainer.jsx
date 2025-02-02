@@ -19,7 +19,6 @@ export default function DeckContainer({
   filterCards,
   deckCards,
   collectedCards,
-  collectedCardsLength,
   moveCards
 }) {
   const { selectedItem, setSelectedItem, source, setSource, handleItemTap } = useSelectItem();

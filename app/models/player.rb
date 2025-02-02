@@ -1,69 +1,96 @@
 class Player < ApplicationRecord
+  #Associations
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :cards, through: :collections
   has_one :deck
 
+  #Secure password with bcrypt
   has_secure_password validations: false
 
   #Validations
   validates :username, presence: true, uniqueness: true, unless: :guest?
-  validates :password, confirmation: true, on: [:create, :update_password, :destroy], presence: true, length: { minimum: 6 }, unless: :guest?
+  validates :password, confirmation: true, length: { minimum: 6 }, presence: true, on: [:create, :update_password, :destroy], unless: :guest?
   validates :password_confirmation, presence: true, on: [:create, :update_password, :destroy], unless: :guest?
   validates :blood_pool, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5000 }
 
-  after_create :assign_guest_username, if: :guest?
+  #Callbacks
+  before_validation :assign_guest_username, if: :guest?
+  before_destroy :prevent_registered_player_deletion, unless: :force_delete?
+  after_create :initialize_deck
 
+  attr_accessor :force_delete #Allows manual deletion when explicitly requested
+
+  #Card Discovery Logic
   def discover_cards
     max_cards = 10
-    max_player_health = 5000.0
-    health_odds = 1 - (self.blood_pool / max_player_health)
+    max_health = 5000.0
+    health_factor = 1 - (blood_pool / max_health) #The lower the health, the higher the discovery rate
 
-    #Only discover cards that are not discovered by players
-    cards = Card.by_undiscovered(self)
+    #Retrieves undiscovered cards for the player
+    available_cards = Card.by_undiscovered(self)
 
-    num_of_cards = weighted_random_card_count(max_cards, health_odds)
+    #Determines number of cards to be discovered
+    num_cards_to_discover = weighted_random_card_count(max_cards, health_factor)
     
-    #The higher the rank the lower the chance of getting a high card
+    #Weighted probabilyt function for ranking and effect type
     rank_weights = ->(card) { 1.5 / (card.card_numeric_rank || 1) }
+    effect_weights = ->(card) { card.effect_probability(card.effect, health_factor) }
 
-    #Retrieves a hash table of 
-    effect_type_weights = -> (card) { card.effect_type_probability(card.effect_type, health_odds) }
-
-    weights_array = Card.calculate_card_weights(
-      cards: cards,
+    #Calculate probability weights for all available cards
+    card_weights = Card.calculate_card_weights(
+      cards: available_cards,
       rank_weights: rank_weights,
-      effect_type_weights: effect_type_weights
+      effect_weights: effect_weights
     )
 
-
-    discovered_cards = Card.randomize_cards_by_weight(cards, weights_array, num_of_cards)
+    #Assign discovered cards to the player's collection
+    discovered_cards = Card.randomize_cards_by_weight(available_cards, card_weights, num_cards_to_discover)
 
     self.cards << discovered_cards
     
     discovered_cards
   end
   
+  #Check if the player already owns a specific card
   def owns_card?(card_id)
     cards.exists?(card_id)
   end
 
   private
 
+  def initialize_deck
+    return if deck.present?
+
+    ActiveRecord::Base.transaction do
+      created_deck = create_deck!
+      created_deck.populate_with_standard_cards
+      self.cards << created_deck.cards #Player owns same 52 cards
+    end
+  end
+
   def guest?
     guest
   end
 
+  #Assign a unique username to gust users
   def assign_guest_username
-    timestamp = Time.now.to_i
-    update!(username: "Guest#{timestamp}") if username.blank?
+    update!(username: "Guest#{ Time.now.to_i }") if username.blank?
   end
 
-  def weighted_random_card_count(max_cards, health_odds)
-    #The less health the player has the higher the probability they will find more cards
-    base_probability = 0.5 + health_odds * 0.3
+  #Determine the number of cards a player discovers based on health odds
+  def weighted_random_card_count(max_cards, health_factor)
+    base_probability = 0.5 + (health_factor * 0.3) #Probabilyt increases with lower health
 
-    #Creates a random number. This is the number of chances player will get a card, if a rand number between 0 and 1 is greater than base_probability
+    # Generate a random number of chances (0 to max_cards), and count successful discoveries
     rand(0..max_cards).times.count { rand < base_probability }
+  end
+
+  def prevent_registered_player_deletion
+    throw(:abort) unless guest? # Prevent destruction if the player is registered
+  end
+
+  def force_delete?
+    !!@force_delete # Returns true if explicitly set
   end
 end

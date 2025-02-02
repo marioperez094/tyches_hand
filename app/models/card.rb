@@ -1,4 +1,5 @@
 class Card < ApplicationRecord
+  #Associations
   has_many :collections, dependent: :destroy
   has_many :players, through: :collections
   
@@ -18,7 +19,7 @@ class Card < ApplicationRecord
     'King' => 13,
     'Ace' => 15,
   }.freeze
-  EFFECT_TYPE_DETAILS = {
+  EFFECT_DETAILS = {
     "Exhumed" => {
       value_calculation: ->(rank) { (500 * rank / 15.0).round },
       description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. GREATER BLOOD POOL WINNINGS WITH WINNING HAND." },
@@ -47,48 +48,47 @@ class Card < ApplicationRecord
   }.freeze
 
 
-  #Easily sort cards
+  #Scopes
   scope :by_suit, ->(suit) { where(suit: suit) }
-  scope :by_effect_type, ->(type) { where(effect_type: type) }
+  scope :by_effect, ->(type) { where(effect: type) }
   scope :by_undiscovered, ->(player) {where.not(id: player.cards.select(:id))}
   
+  #Validations
   validates :description, presence: true
-
-  #Must belongs to one of four suits
   validates :suit, inclusion: { in: SUITS }, presence: true
   validates :name, uniqueness: true, presence: true
 
   #Must have a rank from 1-10 or J, Q, K, A
   validates :rank, presence: true, inclusion: { in: RANKS }
-  validates :effect_type, presence: true, inclusion: { in: EFFECTS } 
+  validates :effect, presence: true, inclusion: { in: EFFECTS } 
 
   def card_numeric_rank
     FACE_CARD_RANK[rank] || rank.to_i
   end
 
   def set_card_name
-    self.name = "#{effect_type} #{rank} of #{suit}"
+    self.name = "#{effect} #{rank} of #{suit}"
   end
 
   def calculate_effect_value
-    EFFECT_TYPE_DETAILS.dig(self.effect_type, :value_calculation)&.call(self.card_numeric_rank) || nil
+    EFFECT_DETAILS.dig(self.effect, :value_calculation)&.call(self.card_numeric_rank) || nil
   end
 
   def set_effect_description
-    self.description = EFFECT_TYPE_DETAILS.dig(self.effect_type, :description)&.call(self.name) || "A #{self.name}"
+    self.description ||= EFFECT_DETAILS.dig(self.effect, :description)&.call(self.name) || "A #{self.name}"
   end
   
-  def effect_type_probability(effect_type, health_odds)
-    EFFECT_TYPE_DETAILS.dig(effect_type, :discovery_probability)&.call(health_odds) || 0
+  def effect_probability(effect, health_odds)
+    EFFECT_DETAILS.dig(effect, :discovery_probability)&.call(health_odds) || 0
   end
 
-  def self.calculate_card_weights(cards:, rank_weights: nil, effect_type_weights: nil, suit_weights: nil)
+  def self.calculate_card_weights(cards:, rank_weights: nil, effect_weights: nil, suit_weights: nil)
     cards.map do |card|
       rank_weight = rank_weights ? rank_weights.call(card) : 1
-      effect_type_weight = effect_type_weights ? effect_type_weights.call(card) : 1
+      effect_weight = effect_weights ? effect_weights.call(card) : 1
       suit_weight = suit_weights ? suit_weights.call(card): 1
 
-      rank_weight * effect_type_weight * suit_weight
+      rank_weight * effect_weight * suit_weight
     end
   end
 
@@ -109,7 +109,7 @@ class Card < ApplicationRecord
       break if cards.empty? 
 
       random = rand * total_weight
-      selected_card_index = cumulative_weights.index { |w| w > random }
+      selected_card_index = cumulative_weights.bsearch_index { |w| w > random } || 0
       
       if selected_card_index.nil?
         raise "Failed to find a valid card. Check weights and cumulative weights logic."
@@ -119,6 +119,7 @@ class Card < ApplicationRecord
       removed_weight = weights.delete_at(selected_card_index)
       cumulative_weights.delete_at(selected_card_index)
 
+      #Adjust cumulative weights after removal
       cumulative_weights.each_with_index do |weight, index|
         next if index < selected_card_index
         cumulative_weights[index] -= removed_weight

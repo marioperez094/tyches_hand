@@ -1,11 +1,9 @@
 module Api
   class DecksController < ApplicationController
-    before_action :current_player
+    before_action :set_current_player
+    before_action :set_deck, only: [:rename_deck, :update_cards_in_deck]
     
     def create
-      return render json: { error: 'Player not found.' },
-      status: :not_found if !@player
-
       @deck = Deck.new(deck_params)
       @deck.player = @player
 
@@ -20,10 +18,8 @@ module Api
 
     def rename_deck
       return render json: { error: 'Player not found.' },
-      status: :not_found if !@player
+      status: :not_found unless @player
 
-      set_deck
-      
       begin
         @deck.update(name: params[:deck][:name])
 
@@ -36,34 +32,32 @@ module Api
     end
 
     def update_cards_in_deck
-      return render json: { error: 'Player not found.' },
-      status: :not_found if !@player
-      
-      set_deck
-
       new_card_ids = params[:deck][:cards].map { |card| card[:id].to_i }
-
+    
       if new_card_ids.size != 52
         return render json: { error: "A deck must contain exactly 52 cards." }, status: :unprocessable_entity
       end
-
+    
       current_card_ids = @deck.cards.pluck(:id)
-
+    
+      # Determine which cards to add or remove
       card_ids_to_add = new_card_ids - current_card_ids
       card_ids_to_remove = current_card_ids - new_card_ids
-
-
-      card_ids_to_add.each do |card_id|
-        if @player.owns_card?(card_id)
-          @deck.cards_in_deck.create!(card_id: card_id)
-        else 
-          return render json: { error: "Card #{ card.name } does not belong to the player"},
-          status: :unprocessable_entity
-        end
+    
+      # Find invalid card selections (cards the player does not own)
+      invalid_card_ids = card_ids_to_add.reject { |card_id| @player.owns_card?(card_id) }
+    
+      return render json: { error: "Player does not own the following cards: #{invalid_card_ids.join(', ')}" },
+             status: :unprocessable_entity if invalid_card_ids.any?
+    
+      cards_to_insert = card_ids_to_add.map do |card_id|
+        { deck_id: @deck.id, card_id: card_id, created_at: Time.current, updated_at: Time.current }
       end
-
-      @deck.cards_in_deck.where(card_id: card_ids_to_remove).destroy_all
-      
+    
+      CardsInDeck.insert_all(cards_to_insert) unless cards_to_insert.empty?
+    
+      @deck.cards_in_deck.where(card_id: card_ids_to_remove).delete_all
+    
       if @deck.save
         render 'api/decks/show', status: :ok
       else
@@ -73,11 +67,16 @@ module Api
 
     private
 
+    def set_current_player
+      @player = current_player
+      render json: { error: 'Player not found.' }, 
+      status: :not_found unless @player
+    end
+
     def set_deck
       @deck = @player.deck
       return render json: { error: 'Deck not found.' },
-      status: :not_found if !@deck
-      @deck
+      status: :not_found unless @deck
     end
 
     def deck_params

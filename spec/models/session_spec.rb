@@ -14,5 +14,12 @@ RSpec.describe Session, type: :model do
 
       expect(session.token).not_to be_nil
     end
+
+    it 'should automatically generate an experation date' do
+      player = FactoryBot.create(:player)
+      session = player.sessions.create
+
+      expect(session.expires_at).not_to be_nil
+    end
   end
 end
