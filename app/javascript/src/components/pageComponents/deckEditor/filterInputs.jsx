@@ -8,7 +8,7 @@ export default function FilterInputs({ filters, deck, filterCards }) {
   return (
     <div className="flex justify-between overflow-x-scroll filter-container">
       { Object.entries(filters).map(([filterName, value]) => {
-        if (!value && deck[filterName] === 0) return;
+        if (deck[filterName] === 0) return;
         
         return (
           <label 
