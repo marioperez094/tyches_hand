@@ -1,6 +1,9 @@
 //External Imports
 import React, { useMemo } from "react";
 
+//Components
+import HoverText from "@components/headers/hoverText/hoverText";
+
 //Stylesheets
 import "./cards.scss"
 
@@ -27,19 +30,21 @@ export default function Card({ card, isFlipped = false }) {
   const displaySuit = cardSuit[suit] || "";
 
   return(
-    <div className={ `card-container ${ isBlackSuit ? "black" : "" }` }>
-      <div className={`card-inner ${isFlipped ? "flipped" : ""}`}>
-        {/* Front (Face-Up) */}
-        <div className={ `card-face card-front ${effect_type}-card` }>
-          <FaceUpCard card={{ displayRank, displaySuit }} />
-        </div>
+    <HoverText name={ card.name } description={ card.description } isFlipped={ isFlipped }>
+      <div className={ `card-container ${ isBlackSuit ? "black" : "" }` }>
+        <div className={`card-inner ${isFlipped ? "flipped" : ""}`}>
+          {/* Front (Face-Up) */}
+          <div className={ `card-face card-front ${effect_type}-card` }>
+            <FaceUpCard card={{ displayRank, displaySuit }} />
+          </div>
 
-        {/* Back (Face-Down) */}
-        <div className="card-face card-back">
-          <FaceDownCard />
+          {/* Back (Face-Down) */}
+          <div className="card-face card-back">
+            <FaceDownCard />
+          </div>
         </div>
       </div>
-    </div>
+    </HoverText>
   )
 };
 
@@ -70,5 +75,5 @@ function FaceUpCard({ card }) {
 };
 
 function FaceDownCard() {
-  return <div className="flex justify-center items-center" />;
+  return <div className="flex justify-center items-center face-down" />;
 }

@@ -36,11 +36,11 @@ function PlayerStats() {
   return(
     <Routes>
       <Route
-        exact path="/player/stats/edit/deck"
+        exact path="/player/stats"
         element={ <PlayerCollections player={ player } /> } //All player stats
       />
       <Route
-        path="/player/stats/"
+        path="/player/stats/edit/deck"
         element={ <DeckEditor player={ player } /> } //Edit deck
       />
       <Route

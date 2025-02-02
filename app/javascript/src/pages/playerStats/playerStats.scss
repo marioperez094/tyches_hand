@@ -228,9 +228,9 @@
       display: none;
     }
 
-    .card-front {
+    .card-inner {
       transform: translateY(20px);
-      border: 2px solid $dark-blood-color;
+      box-shadow: 0 0 10px $light-blood-color;
       box-shadow: 0 0 10px $light-blood-color;
     }
   }
