@@ -8,7 +8,6 @@ import Card from "./card";
 import "./cards.scss";
 
 export default function CardStack({ cards, selectedCard, handleCardTap, handleDeckTap }) {
-
   //Memoized 
   const cardElements = useMemo(() => 
     cards.map((card, index) => {

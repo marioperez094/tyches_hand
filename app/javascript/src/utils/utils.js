@@ -8,9 +8,9 @@ export function capitalizeFirstWord(string) {
 
 export function filterGivenCards(cards, filters) {
   cards = cards.filter((card) => {
-    if (filters[card.effect_type]) return true;
-    if (filters["High cards"] && (isNaN(card.rank) || Number(card.rank) > 7)) return true;
-    if (filters["Low cards"] && parseInt(card.rank) <= 7) return true;
+    if (!filters[card.effect]) return false;
+    if (filters["High cards"] && parseInt(card.rank) > 7) return true;
+    if (filters ["Low cards"] && (isNaN(card.rank) || Number(card.rank) <= 7)) return true;
     return false;
   })
   return cards

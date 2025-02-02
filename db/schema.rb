@@ -13,13 +13,16 @@
 ActiveRecord::Schema.define(version: 2025_01_14_162913) do
 
   create_table "cards", force: :cascade do |t|
-    t.string "name"
-    t.string "suit"
-    t.string "rank"
-    t.string "description"
-    t.string "effect_type"
+    t.string "name", null: false
+    t.string "suit", null: false
+    t.string "rank", null: false
+    t.string "description", null: false
+    t.string "effect", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["effect"], name: "index_cards_on_effect"
+    t.index ["rank"], name: "index_cards_on_rank"
+    t.index ["suit"], name: "index_cards_on_suit"
   end
 
   create_table "cards_in_decks", force: :cascade do |t|
@@ -43,27 +46,30 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
   end
 
   create_table "decks", force: :cascade do |t|
-    t.string "name"
-    t.integer "player_id"
+    t.string "name", null: false
+    t.integer "player_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["player_id"], name: "index_decks_on_player_id"
   end
 
   create_table "players", force: :cascade do |t|
-    t.string "username"
+    t.string "username", null: false
     t.string "password_digest"
     t.boolean "guest", default: false, null: false
     t.boolean "tutorial_complete", default: false, null: false
-    t.integer "blood_pool", default: 5000
+    t.integer "blood_pool", default: 5000, null: false
+    t.integer "high_score", default: 0, null: false
+    t.integer "high_score_round", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["username"], name: "index_players_on_username", unique: true
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.string "token"
-    t.integer "player_id"
+    t.string "token", null: false
+    t.integer "player_id", null: false
+    t.datetime "expires_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["player_id"], name: "index_sessions_on_player_id"

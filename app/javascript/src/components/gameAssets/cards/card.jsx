@@ -8,7 +8,7 @@ import HoverText from "@components/headers/hoverText/hoverText";
 import "./cards.scss"
 
 export default function Card({ card, isFlipped = false }) {
-  const { suit, rank, effect_type } = card;
+  const { suit, rank, effect } = card;
 
   const isBlackSuit = suit === "Clubs" || suit === "Spades";
 
@@ -34,7 +34,7 @@ export default function Card({ card, isFlipped = false }) {
       <div className={ `card-container ${ isBlackSuit ? "black" : "" }` }>
         <div className={`card-inner ${isFlipped ? "flipped" : ""}`}>
           {/* Front (Face-Up) */}
-          <div className={ `card-face card-front ${effect_type}-card` }>
+          <div className={ `card-face card-front ${ effect }-card` }>
             <FaceUpCard card={{ displayRank, displaySuit }} />
           </div>
 
