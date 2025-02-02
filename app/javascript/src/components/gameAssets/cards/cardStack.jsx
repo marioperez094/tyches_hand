@@ -3,12 +3,12 @@ import React, { useMemo, useState, useEffect } from "react";
 
 //Components
 import Card from "./card";
+import HoverText from "@components/headers/hoverText/hoverText";
 
 //Stylesheets
 import "./cards.scss";
 
 export default function CardStack({ cards, selectedCard, handleCardTap, handleDeckTap }) {
-
   //Memoized 
   const cardElements = useMemo(() => 
     cards.map((card, index) => {
@@ -21,11 +21,13 @@ export default function CardStack({ cards, selectedCard, handleCardTap, handleDe
           onClick={ () => handleCardTap(card) }
           style={{ animationDelay: `${ index * 0.05 }s` }}
         >
-          <Card card={ card } />
+          <HoverText name={ card.name } description={ card.description } isFlipped={ isFlipped }>
+            <Card card={ card } isFlipped={ isFlipped } />
+          </HoverText>
         </div>
       )
     }), 
-    [cards, selectedCard, handleCardTap]
+    [cards, selectedCard, handleCardTap, isFlipped]
   );
 
   return(

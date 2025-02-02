@@ -6,10 +6,6 @@
   }
 }
 
-.hover-item {
-  cursor: pointer;
-}
-
 .hover-box {
   top: 0;
   left: 100%;
@@ -36,6 +32,10 @@
     margin: 0;
     line-height: 1.4;
   }
+}
+
+.hide-hover-box {
+  opacity: 0 !important;
 }
 
 @media (max-width: 700px) {
