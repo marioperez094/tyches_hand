@@ -20,7 +20,7 @@ module Api
       begin
         @deck.update(name: params[:deck][:name])
 
-        render 'api/decks/show',
+        render json: { success: true },
         status: :ok
       rescue ArgumentError => e
         render json: { error: e.message },
@@ -56,7 +56,7 @@ module Api
       @deck.cards_in_deck.where(card_id: card_ids_to_remove).delete_all
     
       if @deck.save
-        render 'api/decks/show', status: :ok
+        render json: { success: true }, status: :ok
       else
         render json: { errors: @deck.errors.full_messages }, status: :unprocessable_entity
       end

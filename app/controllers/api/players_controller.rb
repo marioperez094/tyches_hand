@@ -19,7 +19,7 @@ module Api
           httponly: true,
         }
         
-        render json: { success: true }.merge(JSON.parse(render_to_string('api/players/show', formats: [:json]))), 
+        render json: { success: true }, status: :ok, 
         status: :ok
 
       else
@@ -62,8 +62,8 @@ module Api
 
       begin
         @player.update!(username: params[:player][:username], password: params[:player][:password], guest: false)
-
-        render json: { success: true }.merge(JSON.parse(render_to_string('api/players/show', formats: [:json]))),
+        
+        render json: { success: true }, status: :ok,
         status: :ok
       rescue ArgumentError => e
         render json: { error: e.message },
