@@ -1,7 +1,5 @@
 Rails.application.routes.draw do
-  root to: "static_pages#login"
-  
-  get 'player/stats' => "static_pages#player_stats"
+  root to: "static_pages#index"
 
   namespace :api do
     resources :players, only: [:create, :index, :destroy]
@@ -26,5 +24,5 @@ Rails.application.routes.draw do
   end
   
   #Redirects react-router links on reload
-  get '*path' => redirect('/player/stats')
+  get '*path', to: 'static_pages#index', constraints: ->(req) { !req.xhr? && req.format.html? }
 end

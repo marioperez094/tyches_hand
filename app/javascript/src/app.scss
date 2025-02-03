@@ -1,0 +1,9 @@
+@import "@stylesheets/variables.scss";
+
+body { 
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: black;
+}
