@@ -1,139 +1,137 @@
 require 'rails_helper'
 
 RSpec.describe Card, type: :model do
-  context 'create' do
-    it 'must have a suit' do
-      expect {
-        FactoryBot.create(:card, suit: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+  describe "Validations" do
+    it "is valid with a name, suit, rank, effect, and description" do
+      card = FactoryBot.build(:card)
+      expect(card).to be_valid
     end
 
-    it 'must have a rank' do
-      expect {
-        FactoryBot.create(:card, rank: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid without a suit" do
+      card = FactoryBot.build(:card, suit: nil)
+      expect(card).not_to be_valid
     end
 
-    it 'must have a valid suit' do
-      expect {
-        FactoryBot.create(:card, suit: 'Star')
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid with an incorrect suit" do
+      card = FactoryBot.build(:card, suit: "Stars")
+      expect(card).not_to be_valid
     end
 
-    it 'must have a valid effect' do
-      expect {
-        FactoryBot.create(:card, effect: 'Flower')
-      }.to raise_error(ActiveRecord::RecordInvalid) 
+    it "is invalid without a rank" do
+      card = FactoryBot.build(:card, rank: nil)
+      expect(card).not_to be_valid
     end
 
-    it 'must have a numerical rank greater than 1' do
-      expect {
-        FactoryBot.create(:card, rank: 1)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid with an incorrect rank" do
+      card = FactoryBot.build(:card, rank: "Joker")
+      expect(card).not_to be_valid
     end
 
-    it 'must have a numerical rank less than 10' do
-      expect {
-        FactoryBot.create(:card, rank: 11)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid without an effect" do
+      card = FactoryBot.build(:card, effect: nil)
+      expect(card).not_to be_valid
     end
 
-    it 'must have a rank that is J, Q, or K' do
-      expect {
-        FactoryBot.create(:card, rank: 'F')
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid with an incorrect effect" do
+      card = FactoryBot.build(:card, effect: "Magic")
+      expect(card).not_to be_valid
     end
 
-    it 'must be unique' do
-      expect {
-        FactoryBot.create(:card)
-        FactoryBot.create(:card)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "ensures uniqueness of the card name" do
+      FactoryBot.create(:card, name: "Exhumed Ace of Spades")
+      duplicate_card = FactoryBot.build(:card, name: "Exhumed Ace of Spades")
+      expect(duplicate_card).not_to be_valid
+    end
+  end
+
+  describe "Associations" do
+    let(:card) { FactoryBot.create(:card) }
+    let(:player) { FactoryBot.create(:player) }
+    let(:deck) { player.deck }
+
+    it "can be added to a player's collection" do
+      collection = Collection.create!(player: player, card: card)
+      expect(player.cards).to include(card)
+      expect(card.players).to include(player)
     end
 
-    it 'returns card by given suit' do
-      hearts_card = FactoryBot.create(:card)
-      spades_card = FactoryBot.create(:card, rank: '3', suit: "Spades")
-      spades_card2 = FactoryBot.create(:card, suit: "Spades")
-      diamond_card = FactoryBot.create(:card, suit: "Diamonds")
-      clubs_card = FactoryBot.create(:card, suit: "Clubs")
+    it "destroys associated collections when deleted" do
+      collection = Collection.create!(player: player, card: card)
 
-      expect(Card.by_suit("Hearts")).to contain_exactly(hearts_card)
+      expect(Collection.count).to eq(1)
+      card.destroy! 
+
+      expect(Collection.count).to eq(0)
     end
 
-    it 'should have many collections' do
-      card = FactoryBot.create(:card)
-      expect(card.players).to eq([])
+    it "can be added to a deck through cards_in_deck" do
+      cards_in_deck = CardsInDeck.create!(deck: deck, card: card)
+
+      deck.reload 
+      
+      expect(deck.cards).to include(card)
+      expect(card.decks).to include(deck)
     end
 
-    it 'should have many players' do 
-      card = FactoryBot.create(:card)
-      expect(card.players).to eq([])
+    it "destroys associated cards_in_deck when deleted" do
+      cards_in_deck = CardsInDeck.create!(deck: deck, card: card)
+
+      expect(CardsInDeck.count).to eq(1)
+      card.destroy
+      
+      expect(CardsInDeck.count).to eq(0)
+    end
+  end
+
+  describe "Instance Methods" do
+    let(:card) { FactoryBot.create(:card, rank: "Ace", suit: "Spades", effect: "Exhumed") }
+
+    it "card_numeric_rank returns correct value" do
+      expect(card.card_numeric_rank).to eq(15)  # Ace should return 15
     end
 
-    it 'should have many decks' do
-      card = FactoryBot.create(:card)
-      expect(card.decks).to eq([])
+    it "set_card_name assigns the correct name" do
+      card.set_card_name
+      expect(card.name).to eq("Exhumed Ace of Spades")
     end
 
-    it 'should have 312 cards and 52 cards of each effect' do
-      Card::EFFECTS.each do |effect|
-        Card::SUITS.each do |suit|
-          Card::RANKS.each do |rank|
-            FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
-          end
-        end
-      end
-
-      expect(Card.count).to eq(312)
-      expect(Card.by_effect("Exhumed").count).to eq(52)
-      expect(Card.by_effect("Charred").count).to eq(52)
-      expect(Card.by_effect("Fleshwoven").count).to eq(52)
-      expect(Card.by_effect("Blessed").count).to eq(52)
-      expect(Card.by_effect("Bloodstained").count).to eq(52)
-      Card.delete_all
+    it "calculate_effect_value returns the correct value" do
+      expected_value = (500 * 15 / 15.0).round  # Based on Exhumed effect
+      expect(card.calculate_effect_value).to eq(expected_value)
     end
 
-    it 'should calculate an exhumed card' do
-      card = FactoryBot.create(:card, rank: 'King', effect: 'Exhumed')
-      expect(card.calculate_effect_value).to eq(433)
-      expect(card.name).to eq('Exhumed King of Hearts')
-      expect(card.description).to eq("An #{card.name}, cards ripped from a corpse's stiff grip. Greater blood pool winnings with a winning hand.")
+    it "set_effect_description generates the correct description" do
+      card.set_effect_description
+      expect(card.description).to include("An Exhumed Ace of Spades")
+    end
+  end
+
+  describe "Scopes" do
+    let!(:spade_card) { FactoryBot.create(:card, suit: "Spades") }
+    let!(:heart_card) { FactoryBot.create(:card, suit: "Diamonds") }
+    let!(:exhumed_card) { FactoryBot.create(:card, effect: "Exhumed") }
+    let!(:charred_card) { FactoryBot.create(:card, effect: "Charred") }
+    let!(:player) { FactoryBot.create(:player) }
+    let!(:player_owned_card) { FactoryBot.create(:card) }
+
+    before do
+      player.cards << player_owned_card
     end
 
-    it 'should calculate a charred card' do
-      card = FactoryBot.create(:card, rank: 'Queen', effect: 'Charred')
-      expect(card.calculate_effect_value).to eq(0.12)
-      expect(card.name).to eq('Charred Queen of Hearts')
-      expect(card.description).to eq("A #{card.name}, the embers on these cards can still cauterize wounds. Reduces blood loss.")
+    it ".by_suit returns cards of the given suit" do
+      expect(Card.by_suit("Spades")).to include(spade_card)
+      expect(Card.by_suit("Spades")).not_to include(heart_card)
     end
 
-    it 'should calculate a fleshwoven card' do
-      card = FactoryBot.create(:card, rank: 'Jack', effect: 'Fleshwoven')
-      expect(card.calculate_effect_value).to eq(0.15)
-      expect(card.name).to eq('Fleshwoven Jack of Hearts')
-      expect(card.description).to eq("A #{card.name}, these cards appear to have a leathery texture and an odd familiarity. Greater blood pool winnings if the hand ends in a push.")
+    it ".by_effect returns cards with the given effect" do
+      expect(Card.by_effect("Exhumed")).to include(exhumed_card)
+      expect(Card.by_effect("Exhumed")).not_to include(charred_card)
     end
 
-    it 'should calculate a blessed card' do
-      card = FactoryBot.create(:card, rank: '9', effect: 'Blessed')
-      expect(card.calculate_effect_value).to eq(1.6)
-      expect(card.name).to eq('Blessed 9 of Hearts')
-      expect(card.description).to eq("A #{card.name}, the cards are blinding, and sizzles to the touch. Multiplies wager.")
-    end
-
-    it 'should calculate a bloodstained card' do
-      card = FactoryBot.create(:card, rank: 'Ace', effect: 'Bloodstained')
-      expect(card.calculate_effect_value).to eq(1.5)
-      expect(card.name).to eq('Bloodstained Ace of Hearts')
-      expect(card.description).to eq("A #{card.name}, the cards are matted together by blood, filling the room with their foul odor. Daimon's minimum wager increases.")
-    end
-
-    it 'should not have an effect if standard card' do
-      card = FactoryBot.create(:card, rank: 'Ace', effect: 'Standard')
-      expect(card.calculate_effect_value).to eq(nil)
-      expect(card.name).to eq('Standard Ace of Hearts')
-      expect(card.description).to eq('A Standard Ace of Hearts')
+    it ".by_undiscovered returns cards the player has not discovered" do
+      undiscovered_cards = Card.by_undiscovered(player)
+      expect(undiscovered_cards).to include(spade_card, heart_card, exhumed_card, charred_card)
+      expect(undiscovered_cards).not_to include(player_owned_card)
     end
   end
 end

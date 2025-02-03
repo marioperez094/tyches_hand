@@ -53,10 +53,11 @@ function LoadingLine({ loadingLine, isVisible }) {
   return (
     <div className="text-white flex loading-line-container">
       { loadingLine.split("").map((letter, index) => (
-        <>
+        <React.Fragment
+          key={ index }
+        >
         { isVisible &&
           <p
-            key={index}
             className={ `loading-text ${ letter === " " ? "mx-3" : "mx-1" }` }
             style={{
               animationDelay: `${ index * 0.5 }s`
@@ -65,7 +66,7 @@ function LoadingLine({ loadingLine, isVisible }) {
             { letter }
           </p>  
         }
-        </>
+        </React.Fragment>
       ))}
     </div>
   );

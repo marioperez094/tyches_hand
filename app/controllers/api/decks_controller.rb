@@ -17,9 +17,6 @@ module Api
     end
 
     def rename_deck
-      return render json: { error: 'Player not found.' },
-      status: :not_found unless @player
-
       begin
         @deck.update(name: params[:deck][:name])
 
@@ -48,7 +45,7 @@ module Api
       invalid_card_ids = card_ids_to_add.reject { |card_id| @player.owns_card?(card_id) }
     
       return render json: { error: "Player does not own the following cards: #{invalid_card_ids.join(', ')}" },
-             status: :unprocessable_entity if invalid_card_ids.any?
+      status: :unprocessable_entity if invalid_card_ids.any?
     
       cards_to_insert = card_ids_to_add.map do |card_id|
         { deck_id: @deck.id, card_id: card_id, created_at: Time.current, updated_at: Time.current }
@@ -69,7 +66,7 @@ module Api
 
     def set_current_player
       @player = current_player
-      render json: { error: 'Player not found.' }, 
+      render json: { error: 'Player not found.' },
       status: :not_found unless @player
     end
 

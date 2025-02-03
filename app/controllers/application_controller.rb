@@ -2,8 +2,14 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def current_player 
-    @current_player ||= authenticate_current_player
+  def current_player
+    @player ||= authenticate_current_player
+  end
+
+  def set_current_player 
+    @player ||= authenticate_current_player
+    render json: { error: 'Player not found.' },
+    status: :not_found unless @player
   end
 
   #Fetches the player's sessions from the signed cookie

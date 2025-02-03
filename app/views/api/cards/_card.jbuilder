@@ -1,4 +1,4 @@
-json.id card.id
+json.id            card.id
 json.name          card.name
 json.suit          card.suit
 json.rank          card.rank

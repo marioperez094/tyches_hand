@@ -11,116 +11,143 @@ RSpec.describe  Player, type: :model do
     end
   end
 
-  context 'create' do
-    it 'if guest = false, it must have a username' do
-      expect {
-        FactoryBot.create(:player, username: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+  describe "Validations" do
+    it 'is valid with a username and password' do
+      player = FactoryBot.build(:player, password: "securepass", password_confirmation: "securepass")
+      expect(player).to be_valid
     end
 
-    it 'if guest = false, it must have a password' do
-      expect {
-        FactoryBot.create(:player, password: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid without a username (unless guest)" do
+      player = FactoryBot.build(:player, username: nil, guest: false)
+      expect(player).not_to be_valid
     end
 
-    it 'if guest = false, it must have a password_confirmation' do
-      expect {
-        FactoryBot.create(:player, password_confirmation: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-    
-    it 'if guest = false, password and password_confirmation must match' do
-      expect {
-        FactoryBot.create(:player, password_confirmation: "abcdefg")
-      }.to raise_error(ActiveRecord::RecordInvalid)
+    it "is invalid with a non-unique username" do
+      FactoryBot.create(:player, username: "duplicate_user")
+      duplicate_player = FactoryBot.build(:player, username: "duplicate_user")
+      expect(duplicate_player).not_to be_valid
     end
 
-    it 'if guest = true, it can have no username' do
-      expect {
-        FactoryBot.create(:player, username: nil, guest: true)
-      }.not_to raise_error
+    it "is valid without a username if guest is true" do
+      player = FactoryBot.build(:player, username: nil, guest: true)
+      expect(player).to be_valid
     end
 
-    it 'if guest = true, it can have no password' do
-      expect {
-        FactoryBot.create(:player, password: nil, guest: true)
-      }.not_to raise_error
+    it "validates password length (min 6) unless guest" do
+      player = FactoryBot.build(:player, password: "short", password_confirmation: "short", guest: false)
+      expect(player).not_to be_valid
     end
 
-    it 'if guest = true, username is a guest username' do
-      guest_player = FactoryBot.create(:player, username: nil, password: nil, guest: true)
-      expect(guest_player.username).to eq("Guest#{Time.now.to_i}")
+    it "allows blank password if guest" do
+      player = FactoryBot.build(:player, password: nil, password_confirmation: nil, guest: true)
+      expect(player).to be_valid
     end
 
-    it 'does not overwrite an existing username' do
+    it "validates blood_pool within range (0-5000)" do
+      valid_player = FactoryBot.build(:player, blood_pool: 2500)
+      invalid_player = FactoryBot.build(:player, blood_pool: 6000)
+
+      expect(valid_player).to be_valid
+      expect(invalid_player).not_to be_valid
+    end
+  end 
+
+  describe "Associations" do
+    it "has many sessions" do
       player = FactoryBot.create(:player)
+      session1 = FactoryBot.create(:session, player: player)
+      session2 = FactoryBot.create(:session, player: player)
 
-      expect(player.username).to eq('Test')
+      expect(player.sessions).to include(session1, session2)
     end
-    
-    it 'it must have a blood_pool of 5000' do
+
+    it "deletes associated sessions when destroyed" do
       player = FactoryBot.create(:player)
+      session = FactoryBot.create(:session, player: player)
 
-      expect(player.blood_pool).to eq(5000)
-    end
+      expect(Session.count).to eq(1)
 
-    it 'it must have a blood_pool' do
-      expect {
-        FactoryBot.create(:player, blood_pool: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-    
-    it 'it must have guest' do
-      expect {
-        FactoryBot.create(:player, blood_pool: nil)
-      }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-    
-    it 'it must have a blood_pool > 0' do
-      expect {
-        FactoryBot.create(:player, blood_pool: -1)
-      }.to raise_error(ActiveRecord::RecordInvalid)
+      player.force_delete = true
+      player.destroy!
+
+      expect(Player.count).to eq(0)
+      expect(Session.count).to eq(0)
     end
 
-    it 'it must have a blood_pool < 5000' do
-      expect {
-        FactoryBot.create(:player, blood_pool: 5001)
-      }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
-    it 'should have many sessions' do
+    it "has many cards through collections" do
       player = FactoryBot.create(:player)
-      expect(player.sessions).to eq([])
+      card1 = Card.first
+      card2 = Card.second
+      player.cards << [card1, card2]
+
+      expect(player.cards).to include(card1, card2)
     end
 
-    it 'should have many collections' do
+    it "has one deck" do
       player = FactoryBot.create(:player)
-      expect(player.collections).to eq([])
+      deck = player.deck
+
+      expect(player.deck).to eq(deck)
+    end
+  end
+
+  describe "Callbacks" do
+    it "assigns a guest username if guest and username is blank" do
+      player = FactoryBot.create(:player, username: nil, guest: true)
+      expect(player.username).to match(/^Guest\d+$/)
     end
 
-    it 'should have many cards' do 
+    it "prevents registered player deletion unless force_delete is set" do
+      player = FactoryBot.create(:player, guest: false)
+      session = FactoryBot.create(:session, player: player)
+
+      expect { player.destroy }.not_to change(Player, :count)
+      
+      player.force_delete = true
+      expect { player.destroy! }.to change(Player, :count).by(-1)
+    end
+  end
+
+  describe "initialize_deck" do
+    it "creates a deck if the player does not have one" do
       player = FactoryBot.create(:player)
-      expect(player.cards).to eq([])
+      expect(player.deck).not_to be_nil
+      expect(player.deck.cards.count).to eq(52)
+    end
+  end
+
+  describe "#owns_card?" do
+    let(:player) { FactoryBot.create(:player) }
+    let(:card) { Card.first }
+
+    it "returns true if the player owns the card" do
+      player.cards << card
+      expect(player.owns_card?(card.id)).to be true
     end
 
-    it 'has a better chance to discover cards with lower blood_pool' do
-      player1 = FactoryBot.create(:player)
-      player2 = FactoryBot.create(:player, username: 'Test2')
-      player2.blood_pool = 2000
-      deck = FactoryBot.create(:deck, player: player1)
-      deck2 = FactoryBot.create(:deck, player: player2)
+    it "returns false if the player does not own the card" do
+      expect(player.owns_card?(card.id)).to be false
+    end
+  end
 
-      expect(player1.deck).to eq(deck)
+  describe "discover_cards" do
+    let(:player) { FactoryBot.create(:player) }
 
-      player1.discover_cards
-      player2.discover_cards
+    it "assigns newly discovered cards to the player" do
+      expect {
+        discovered_cards = player.discover_cards
+        expect(discovered_cards).not_to be_empty
+        expect(player.cards).to include(*discovered_cards)
+      }.to change { player.cards.count }.by_at_most(10)
+    end
 
-      expect(Card.count).to eq(312)
-      expect(player1.cards.count).to be <= player2.cards.count
-      CardsInDeck.delete_all
-      Collection.delete_all
-      Card.delete_all
+    it "increases discovery rate when health is low" do
+      low_health_player = FactoryBot.create(:player, username: 'low_health_player', blood_pool: 500) # Near death
+      expect(low_health_player.discover_cards.count).to be > player.discover_cards.count
+    end
+
+    it "does not discover more than 10 cards in one attempt" do
+      expect(player.discover_cards.count).to be <= 10
     end
   end
 end

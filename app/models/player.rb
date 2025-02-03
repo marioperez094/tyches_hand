@@ -3,7 +3,7 @@ class Player < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :cards, through: :collections
-  has_one :deck
+  has_one :deck, dependent: :destroy
 
   #Secure password with bcrypt
   has_secure_password validations: false

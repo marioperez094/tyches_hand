@@ -4,13 +4,25 @@ class Session < ApplicationRecord
 
   #Scopes
   scope :active, -> { where("expires_at IS NULL OR expires_at > ?", Time.current) }
-
+  scope :expired, -> { where("expires_at IS NOT NULL AND expires_at < ?", Time.current) }
+  
   #Callbacks
   before_create :generate_unique_session_token
 
   #Checks if session is expired
   def expired?
     expires_at.present? && expires_at < Time.current
+  end
+
+  def self.cleanup_expired
+    expired.delete_all # Bulk delete expired sessions first
+
+    # Bulk delete guest players who no longer have sessions
+    Player.left_joins(:sessions)
+          .where(guest: true)
+          .group(:id)
+          .having("COUNT(sessions.id) = 0")
+          .destroy_all
   end
 
   private
