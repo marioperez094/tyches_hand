@@ -24,12 +24,12 @@ export default function DeckEditor({ player }) {
   const [filters, setFilters] = useState({
     "High cards": true,
     "Low cards": true,
-    Standard: true,
+    Exhumed: true,
+    Charred: true,
+    Fleshwoven: true,
     Blessed: true,
     Bloodstained: true,
-    Charred: true,
-    Exhumed: true,
-    Fleshwoven: true,
+    Standard: true,
   });
 
   const filteredCollectionCards = useMemo(() => filterGivenCards(collectedCards, filters), [collectedCards, filters]);

@@ -76,10 +76,10 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.index ["token"], name: "index_sessions_on_token", unique: true
   end
 
-  add_foreign_key "cards_in_decks", "cards"
-  add_foreign_key "cards_in_decks", "decks"
-  add_foreign_key "collections", "cards"
-  add_foreign_key "collections", "players"
-  add_foreign_key "decks", "players"
-  add_foreign_key "sessions", "players"
+  add_foreign_key "cards_in_decks", "cards", on_delete: :cascade
+  add_foreign_key "cards_in_decks", "decks", on_delete: :cascade
+  add_foreign_key "collections", "cards", on_delete: :cascade
+  add_foreign_key "collections", "players", on_delete: :cascade
+  add_foreign_key "decks", "players", on_delete: :cascade
+  add_foreign_key "sessions", "players", on_delete: :cascade
 end

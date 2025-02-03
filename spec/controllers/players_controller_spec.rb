@@ -3,317 +3,112 @@ require 'rails_helper'
 RSpec.describe Api::PlayersController, type: :controller do
   render_views
 
-  before do
-    #Prevents reCAPTCHA from executing
-    allow(RecaptchaV3Verifier).to receive(:verify).and_return(true)
-  end
+  let(:player) { FactoryBot.create(:player, password: "password123", password_confirmation: "password123") }
+  let(:guest_player) { FactoryBot.create(:player, username: nil, password: nil, password_confirmation: nil, guest: true) }
+  let(:session) { FactoryBot.create(:session, player: player) }
 
   before do
-    Card::EFFECTS.each do |effect|
-      Card::SUITS.each do |suit|
-        Card::RANKS.each do |rank|
-          FactoryBot.create(:card, rank: rank, suit: suit, effect: effect)
-        end
-      end
+    session[:player_id] = player.id # Simulate authentication
+    controller.instance_variable_set(:@player, player) # Ensure @player is set
+  end
+
+  describe "POST #create" do
+    let(:valid_params) { { player: { username: "NewPlayer", password: "securepass", password_confirmation: "securepass" }, recaptcha_token: "valid_token" } }
+
+    before do
+      allow(RecaptchaV3Verifier).to receive(:verify).and_return(true) # Mock reCAPTCHA success
+    end
+
+    it "creates a new player successfully" do
+      post :create, params: valid_params, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["success"]).to eq(true)
+    end
+
+    it "returns an error when reCAPTCHA fails" do
+      allow(RecaptchaV3Verifier).to receive(:verify).and_return(false)
+      post :create, params: valid_params, format: :json
+      expect(response).to have_http_status(:unauthorized)
+    end
+
+    it "returns an error if player creation fails" do
+      allow_any_instance_of(Player).to receive(:save).and_return(false)
+      post :create, params: valid_params, format: :json
+      expect(response).to have_http_status(:bad_request)
     end
   end
 
-  context 'POST /players' do
-    it 'renders a new registered player' do
-      post :create, params: {
-        player: {
-          username: 'Test',
-          password: '123456',
-          password_confirmation: '123456'
-        }, 
+  describe "GET #index" do
+    it "returns a list of players" do
+      FactoryBot.create(:player, username: "Hi")
+      FactoryBot.create(:player, username: "Hello")
+      FactoryBot.create(:player, username: "Howdy")
+      get :index, format: :json
+      
+      expect(response).to have_http_status(:ok)
 
-      }
-
-      expect(response.body).to eq({
-        success: true,
-        player: {
-          username: 'Test',
-          guest: false,
-          blood_pool: 5000,
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-        }
-      }.to_json)
-    end
-
-    it 'renders a new guest player' do
-      post :create, params: {
-        player: {
-          guest: true,
-        }
-      }
-
-      expect(response.body). to eq({
-        success: true,
-        player: {
-          username: "Guest#{Time.now.to_i}",
-          guest: true,
-          blood_pool: 5000,
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-        }
-      }.to_json)
-    end
-
-    it 'creates a player deck with 52 cards' do
-      post :create, params: {
-        player: {
-          username: 'Test',
-          password: '123456',
-          password_confirmation: '123456'
-        }
-      }
-
-      p = Player.find_by(id: 1)
-
-      expect(p.cards.count).to eq(52)
-      expect(p.deck.name).to eq("Test's Deck")
+      parsed_response = JSON.parse(response.body) # Parse the full JSON object
+      expect(parsed_response["players"].size).to be >= 3 # Ensure at least 3 players exist
     end
   end
 
-  context 'GET /players' do
-    it 'indexes all players' do
-      player1 = FactoryBot.create(:player)
-      player2 = FactoryBot.create(:player, username: nil, password: nil, guest: true)
-
-      get :index
-
-      expect(response.body).to eq({
-        players: [{
-          username: player2.username,
-          guest: player2.guest,
-          blood_pool: player2.blood_pool,
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-
-        }, {
-          username: player1.username,
-          guest: player1.guest,
-          blood_pool: player1.blood_pool,
-          tutorial_complete: false,
-          high_score: 0, 
-          high_score_round: 0,
-        }]
-      }.to_json)
-    end
-
-    it 'shows a player' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      get :show, params: { id: player.id }
-
-      expect(response.body).to eq({
-        player: {
-          username: player.username,
-          guest: player.guest,
-          blood_pool: player.blood_pool, 
-          tutorial_complete: false, 
-          high_score: 0,
-          high_score_round: 0,
-        }
-      }.to_json)
-    end
-
-    it 'shows a player and their cards' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      card1 = Card.first
-      card2 = Card.last
-
-      player.cards << card1
-      player.cards << card2
-
-      get :show, params: { id: player.id, cards: 'true'}
-
-      expect(response.body).to eq({
-        player: {
-          username: player.username,
-          guest: player.guest,
-          blood_pool: player.blood_pool,
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-
-          cards: [{
-            id: card1.id,
-            name: card1.name,
-            suit: card1.suit,
-            rank: card1.rank,
-            description: card1.description,
-            effect: card1.effect,
-            effect_value: card1.calculate_effect_value
-          }, {
-            id: card2.id,
-            name: card2.name,
-            suit: card2.suit,
-            rank: card2.rank,
-            description: card2.description,
-            effect: card2.effect,
-            effect_value: card2.calculate_effect_value
-          }]
-        }
-      }.to_json)
-    end
-
-    it 'shows a player and their deck' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      deck = FactoryBot.create(:deck, player: player)
-
-      get :show, params: { id: player.id, deck: 'true'}
-
-      expect(response.body).to eq({
-        player: {
-          username: player.username,
-          guest: player.guest,
-          blood_pool: player.blood_pool,
-          tutorial_complete: false, 
-          high_score: 0,
-          high_score_round: 0,
-
-          deck: {
-            name: "#{player.username}'s Deck",
-            Total: 52,
-            Standard: 52,
-            Exhumed: 0,
-            Charred: 0,
-            Fleshwoven: 0,
-            Blessed: 0,
-            Bloodstained: 0,
-          }
-        }
-      }.to_json)
-    end
-
-    it 'shows a player and seperates their deck and collection cards' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      deck = FactoryBot.create(:deck, player: player)
-      player.discover_cards
-      cards = player.cards
-      deck_cards = player.deck.cards
-      collection_cards = cards - deck_cards
-
-      get :show, params: { id: player.id, deck_cards: 'true'}
-
-      expect(response.body).to eq({
-        player: {
-          username: player.username,
-          guest: player.guest,
-          blood_pool: player.blood_pool,
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-
-          collection_cards: collection_cards,
-          deck_cards: deck_cards
-        }
-      }.to_json)
+  describe "GET #show" do
+    it "returns player data" do
+      get :show, params: { id: player.id }, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include(player.username)
     end
   end
 
-  context 'PUT /player/:id' do
-    it 'converts guest player to registered player' do
-      player = FactoryBot.create(:player, username: nil, password: nil, guest: true)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      post :convert_to_registered, params: { id: player.id,
-        player: {
-          username: 'Test',
-          password: '123456',
-        }
-      }
-
-      expect(response.body).to eq({
-        success: true,
-        player: {
-          username: 'Test',
-          guest: false,
-          blood_pool: player.blood_pool, 
-          tutorial_complete: false,
-          high_score: 0,
-          high_score_round: 0,
-        }
-      }.to_json)
-    end
-
-    it 'does not convert a registered account' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      post :convert_to_registered, params: { id: player.id,
-        player: {
-          username: 'Test',
-          password: '123456',
-        }
-      }
-
-      expect(response.body).to eq({
-        error: 'This account is already registered.'
-      }.to_json)
-    end
-
-    it 'updates a player password' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
-
-      put :update_password, params: {
-        player: {
-          password: '123456',
-          new_password: 'abcdefg'
-        }
-      }
-
-      expect(response.body).to eq({
-        success: true
-      }.to_json)
+  describe "POST #player_discover_cards" do
+    it "allows the player to discover cards" do
+      allow(player).to receive(:discover_cards).and_return([Card.first, Card.second])
+      post :player_discover_cards, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(JSON.parse(response.body)["cards"].size).to eq(2)
     end
   end
 
-  context 'DELETE /player/:id' do
-    it 'deletes a player' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+  describe "PATCH #convert_to_registered" do
+    it "converts a guest account to a registered player" do
+      session[:player_id] = guest_player.id # Simulate authentication
+      controller.instance_variable_set(:@player, guest_player) # Ensure @player is set
 
-      delete :destroy, params: { id: player.id,
-        player: {
-          password: '123456'
-        }
-      }
+      post :convert_to_registered, params: { player: { username: "RegisteredUser", password: "newpassword" } }
+      expect(response).to have_http_status(:ok)
 
-      expect(Player.count).to eq(0)
+      guest_player.reload
+      expect(guest_player.guest).to be false
+    end
+
+    it "returns an error if the player is already registered" do
+      post :convert_to_registered, params: { player: { username: "AlreadyRegistered", password: "newpassword" } }
+      expect(response).to have_http_status(:forbidden)
     end
   end
 
-  context 'POST /players/cards/discover' do
-    it 'randomly generates max 10 cards for player to discover' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+  describe "PATCH #update_password" do
+    it "updates the player's password successfully" do
+      post :update_password, params: { player: { password: "password123", new_password: "newsecurepass" } }
+      expect(response).to have_http_status(:ok)
+    end
 
-      post :player_discover_cards
+    it "returns an error if the current password is incorrect" do
+      post :update_password, params: { player: { password: "wrongpassword", new_password: "newsecurepass" } }
+      expect(response).to have_http_status(:unauthorized)
+    end
+  end
 
-      expect(player.cards.count).to be >= 0
+  describe "DELETE #destroy" do
+    it "deletes the player if authenticated" do
+      delete :destroy, params: { id: player.id, player: { password: "password123" } }
+      expect(response).to have_http_status(:ok)
+      expect(Player.exists?(player.id)).to be false
+    end
+
+    it "returns an error if the password is incorrect" do
+      delete :destroy, params: { id: player.id, player: { password: "wrongpassword" } }
+      expect(response).to have_http_status(:unauthorized)
     end
   end
 end

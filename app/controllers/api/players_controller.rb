@@ -1,7 +1,6 @@
 module Api
   class PlayersController < ApplicationController
     before_action :set_current_player, only: [:show, :convert_to_registered, :update_password, :destroy, :player_discover_cards]
-    before_action :set_player, only: [:show]
     before_action :authenticate_player!, only: [:update_password, :destroy]
 
     def create
@@ -99,15 +98,6 @@ module Api
     end
 
     private
-
-    def set_current_player
-      @player = current_player
-    end
-
-    def set_player
-      @player = current_player
-      render json: { error: 'Player not found.' }, status: :not_found unless @player
-    end
 
     def player_params
       params.require(:player).permit(:username, :password, :password_confirmation, :guest, :new_password,)

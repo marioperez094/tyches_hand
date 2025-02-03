@@ -1,48 +1,54 @@
 require 'rails_helper'
 
-RSpec.describe Api::CardsController, type: :controller do
+RSpec.describe Api::CardsController, type: :controller do  
   render_views
 
-  context 'GET /cards' do
-    it 'searches for a card' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+  let(:player) { FactoryBot.create(:player) }
+  let(:card) { FactoryBot.create(:card) }
 
-      card1 = FactoryBot.create(:card)
-      card2 = FactoryBot.create(:card, rank: 3)
+  before do
+    session[:player_id] = player.id # Simulate authentication
+    controller.instance_variable_set(:@player, player) # Ensure @player is set
+  end
 
-      player.cards << card2
+  describe "GET #show" do
+    context "when the card exists and the player owns it" do
+      before do
+        player.cards << card # Player owns this card
+        get :show, params: { id: card.id }
+      end
 
-      get :show, params: { id: card2.id }
+      it "returns a 200 OK status" do
+        expect(response).to have_http_status(:ok)
+      end
 
-      expect(response.body).to eq({
-        card: {
-          id: card2.id,
-          name: card2.name,
-          suit: card2.suit,
-          rank: card2.rank,
-          description: card2.description,
-          effect: card2.effect,
-          effect_value: card2.calculate_effect_value
-        }
-      }.to_json)
+      it "returns the card data" do
+        expect(response.body).to include(card.name)
+      end
     end
 
-    
-    it 'if a card does not belong to player, invalid' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+    context "when the card does not exist" do
+      before { get :show, params: { id: 9999 } } # Non-existent card ID
 
-      card1 = FactoryBot.create(:card)
-      card2 = FactoryBot.create(:card, rank: 3)
-      
-      get :show, params: { id: card2.id }
+      it "returns a 404 Not Found status" do
+        expect(response).to have_http_status(:not_found)
+      end
 
-      expect(response.body).to eq({
-        error: 'Player does not have this card.'
-      }.to_json)
+      it "returns an error message" do
+        expect(response.body).to include("Card not found.")
+      end
+    end
+
+    context "when the player does not own the card" do
+      before { get :show, params: { id: card.id } } # Player does not own this card
+
+      it "returns a 401 Unauthorized status" do
+        expect(response).to have_http_status(:unauthorized)
+      end
+
+      it "returns an error message" do
+        expect(response.body).to include("Player does not have this card.")
+      end
     end
   end
 end

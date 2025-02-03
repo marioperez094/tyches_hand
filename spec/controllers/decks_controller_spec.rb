@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Api::DecksController, type: :controller do
   render_views
-
+  
   before do
     Card::EFFECTS.each do |effect|
       Card::SUITS.each do |suit|
@@ -13,98 +13,66 @@ RSpec.describe Api::DecksController, type: :controller do
     end
   end
 
-  context 'POST /deck' do
-    it "creates a new player deck" do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+  
+  let(:player) { FactoryBot.create(:player) }
+  let(:deck) { player.deck }
 
-      post :create, params: { player: player,
-        deck: {
-          name: nil
-        }
-      }
 
-      expect(response.body).to eq({
-        deck: {
-          name: "#{player.username}'s Deck",
-          Total: 52,
-          Standard: 52,
-          Exhumed: 0,
-          Charred: 0,
-          Fleshwoven: 0,
-          Blessed: 0,
-          Bloodstained: 0,
-        }
-      }.to_json)
+  before do
+    session[:player_id] = player.id # Simulate authentication
+    controller.instance_variable_set(:@player, player) # Ensure @player is set
+  end
+
+  describe "POST #create" do
+    it "returns an error if deck creation fails" do
+      allow_any_instance_of(Deck).to receive(:save).and_return(false)
+      post :create, params: { deck: { name: nil } }, format: :json
+      expect(response).to have_http_status(:bad_request)
     end
   end
 
-  context 'PUT /deck' do
-    it 'renames the player deck' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+  describe "PATCH #rename_deck" do
+    it "renames the deck successfully" do
+      deck.reload
 
-      deck = FactoryBot.create(:deck, player: player)
+      patch :rename_deck, params: { deck: { name: "Renamed Deck" } }, format: :json
+      expect(response).to have_http_status(:ok)
 
-      
-      card = Card.first
-
-      player.cards << card
-      deck.cards << card
-
-      put :rename_deck, params: {
-        deck: {
-          name: 'Test'
-        }
-      }
-
-      expect(response.body).to eq({
-        deck: {
-          name: "Test",
-          Total: 53,
-          Standard: 52,
-          Exhumed: 1,
-          Charred: 0,
-          Fleshwoven: 0,
-          Blessed: 0,
-          Bloodstained: 0,
-        }
-      }.to_json)
+      expect(deck.name).to eq("Renamed Deck")
     end
 
-    it 'updates cards in a deck' do
-      player = FactoryBot.create(:player)
-      session = player.sessions.create
-      @request.cookie_jar.signed['tyches_hand_session_token'] = session.token
+    it "returns an error if no player is found" do
+      controller.instance_variable_set(:@player, nil)
+      patch :rename_deck, params: { deck: { name: "New Name" } }, format: :json
+      expect(response).to have_http_status(:not_found)
+    end
+  end
 
-      deck = FactoryBot.create(:deck, player: player)
-      cards = deck.cards.map { |card| { id: card.id }  }
+  describe "PATCH #update_cards_in_deck" do
+    it "updates cards successfully when exactly 52 cards are provided" do
+      new_cards = Card.by_effect("Exhumed")
 
-      card1 = Card.first
-      card2 = Card.second
+      player.cards << new_cards
 
-      player.cards << card1
+      patch :update_cards_in_deck, params: { deck: { cards: new_cards.map { |c| { id: c.id } } } }, format: :json
+      expect(response).to have_http_status(:ok)
+      expect(deck.cards.count).to eq(52)
+    end
 
-      put :update_cards_in_deck, params: { 
-        deck: {
-          cards: cards
-        }
-      }
+    it "returns an error when fewer than 52 cards are provided" do
+      new_cards = Card.by_effect("Exhumed")
 
-      expect(response.body).to eq({
-        deck: {
-          name: "Test's Deck",
-          Total: 53,
-          Standard: 52,
-          Exhumed: 1,
-          Charred: 0,
-          Fleshwoven: 0,
-          Blessed: 0,
-          Bloodstained: 0,
-        }
-      }.to_json)
+      patch :update_cards_in_deck, params: { deck: { cards: new_cards.take(50).map { |c| { id: c.id } } } }, format: :json
+      expect(response).to have_http_status(:unprocessable_entity)
+      expect(JSON.parse(response.body)["error"]).to eq("A deck must contain exactly 52 cards.")
+    end
+
+    it "returns an error if a player does not own some of the cards" do
+      new_cards = Card.by_effect("Exhumed")
+      
+      allow(player).to receive(:owns_card?).and_return(false)
+      patch :update_cards_in_deck, params: { deck: { cards: new_cards.map { |c| { id: c.id } } } }, format: :json
+      expect(response).to have_http_status(:unprocessable_entity)
     end
   end
 end

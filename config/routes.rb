@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
     #Players
     get '/players/show' => 'players#show'
-    put '/players/:id/convert_to_registered' => 'players#convert_to_registered'
+    put '/players/convert_to_registered' => 'players#convert_to_registered'
     put '/players/update_password' => 'players#update_password'
     post '/players/cards/discover' => 'players#player_discover_cards'
 
