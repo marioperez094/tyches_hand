@@ -15,12 +15,12 @@ export default function LoadingScreen() {
   const selectedLoadingLines = loadingScreenText.loadingScreenText[randomLine];
 
   return (
-    <main className="h-screen">
-      <div className=" w-full h-full flex flex-col justify-center items-center">
+    <main className="h-full">
+      <ul className=" w-full h-full flex flex-col justify-center items-center">
         { selectedLoadingLines.map((line, index) => 
           <LoadingLine key={ index } animationDelay={ index } loadingLine={ line } />
         )}
-      </div>
+      </ul>
     </main>
   )
 };
@@ -28,7 +28,7 @@ export default function LoadingScreen() {
 // LoadingLine Component: Pre-renders all lines and fades in text when ready
 function LoadingLine({ animationDelay, loadingLine }) {
   return (
-    <div 
+    <li 
       className="text-white flex loading-line-container"
       style={{
         animationDelay: `${ animationDelay * 3 }s`
@@ -48,6 +48,6 @@ function LoadingLine({ animationDelay, loadingLine }) {
           </p>
         </React.Fragment>
       ))}
-    </div>
+    </li>
   )
 }
