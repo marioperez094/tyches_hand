@@ -1,5 +1,11 @@
 //External Imports
-import React, { useState, useEffect } from "react";
+import React, { useMemo } from "react";
+
+//Components
+import LoadingLine from "./loadingLine";
+
+//Context
+import { useLoading } from "@context/loading";
 
 //Constants
 import loadingScreenText from "@utils/loadingScreenText.json";
@@ -8,46 +14,27 @@ import loadingScreenText from "@utils/loadingScreenText.json";
 import "./loadingScreen.scss";
 
 export default function LoadingScreen() {
-  //Selects a random number from loadingScreenText length
-  const [randomLine] = useState(() =>
-    Math.floor(Math.random() * loadingScreenText.loadingScreenText.length)
-  );
-  const selectedLoadingLines = loadingScreenText.loadingScreenText[randomLine];
+  const { isLoading } = useLoading();
+
+  //Select a random loading text set
+  const selectedLoadingLines = useMemo(() => {
+    const randomIndex = Math.floor(Math.random() * loadingScreenText.loadingScreenText.length);
+    return loadingScreenText.loadingScreenText[randomIndex];
+  }, []);
 
   return (
     <main className="h-full">
-      <ul className=" w-full h-full flex flex-col justify-center items-center">
+      <ul className="w-full h-full flex flex-col justify-center items-center">
         { selectedLoadingLines.map((line, index) => 
-          <LoadingLine key={ index } animationDelay={ index } loadingLine={ line } />
+          <LoadingLine 
+            key={ index } 
+            animationDelay={ index } 
+            loadingLine={ line }
+            isLoading={ isLoading }
+          />
         )}
       </ul>
     </main>
   )
 };
 
-// LoadingLine Component: Pre-renders all lines and fades in text when ready
-function LoadingLine({ animationDelay, loadingLine }) {
-  return (
-    <li 
-      className="text-white flex loading-line-container"
-      style={{
-        animationDelay: `${ animationDelay * 3 }s`
-      }}
-    >
-      { loadingLine.split("").map((letter, index) => (
-        <React.Fragment
-          key={ index }
-        >
-          <p
-            className={ `${ letter === " " ? "mx-3" : "mx-1" } loading-text`}
-            style={{
-              animationDelay: `${ index * 0.3 }s`
-            }}
-          >
-            { letter }
-          </p>
-        </React.Fragment>
-      ))}
-    </li>
-  )
-}

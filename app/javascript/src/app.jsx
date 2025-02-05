@@ -1,12 +1,31 @@
 //External Imports
 import React from "react";
+import { Routes, Route } from "react-router-dom";
+
+//Components
+import LoadingScreen from "@components/loadingScreen/loadingScreen";
+import Login from "@pages/login";
+
+//Context
+import { useLoading } from "@context/loading";
 
 //Stylesheets
 import "./app.scss";
-import LoadingScreen from "@components/loadingScreen/loadingScreen";
 
 export default function App() {
+  const { showLoading } = useLoading();
+  
   return (
-    <LoadingScreen />
+    <>
+      { showLoading && <LoadingScreen /> } 
+
+      <Routes>
+        { /* Public routes */ }
+        <Route path="/login" element={ <Login /> } />
+
+
+        <Route path="*" element={<Login />} />
+      </Routes>
+    </>
   )
-}
+};

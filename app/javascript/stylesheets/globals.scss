@@ -1,0 +1,29 @@
+//Borders
+.textured-red-border {
+  border-image: repeating-linear-gradient(
+    45deg,
+    $dark-blood-color,
+    $light-blood-color 6px,
+    $dark-blood-color 5px,
+    $light-blood-color 9px
+  ) 10;
+}
+
+.textured-red-background {
+  background: repeating-linear-gradient(45deg,
+    $dark-blood-color,
+    $light-blood-color 6px,
+    $dark-blood-color 5px,
+    $light-blood-color 9px
+  );
+}
+
+.textured-gray-border {
+  border-image: repeating-linear-gradient(
+    45deg,
+    #4C4C4C,
+    #7A7A7A 6px,
+    #4C4C4C 5px,
+    #7A7A7A 9px
+  ) 10;
+}

@@ -5,10 +5,42 @@
 .loading-line-container {
   height: 40px;
   opacity: 0;
-  animation: fade-in 10s ease-in-out forwards;
+  animation: fade-in 8s ease-in-out forwards;
 
-  .loading-text {
+  span {
     font-size: 20px;
-    animation: float 5s infinite;
+    display: inline-block;
+    margin: 0 2px;
   }
+}
+
+.loading-text {
+  animation: float 5s infinite alternate ease-in-out;
+  animation-delay: var(--delay);
+}
+
+// Glitch effect before disappearing
+.loading-text-exit {
+  animation: glitch-flicker 0.8s steps(2, start) infinite, fade-out 0.5s ease-in-out 0.8s forwards;
+  position: relative;
+}
+
+// Adds RGB color shift effect
+.loading-text-exit::before,
+.loading-text-exit::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  color: #ff00ff; // Magenta ghost text
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.loading-text-exit::after {
+  color: #00ffff; // Cyan ghost text
+  left: 2px;
+  top: -2px;
 }

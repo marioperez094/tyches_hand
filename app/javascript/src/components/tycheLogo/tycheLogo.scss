@@ -1,0 +1,37 @@
+@import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
+
+#tyche-logo {
+  .title-text {
+    background: linear-gradient($light-blood-color 50%, $dark-blood-color);
+    z-index: 0;
+  }
+
+  .border-container {
+    margin-top: 10px;
+    width: fit-content;
+    height: 100px;
+  }
+
+  .textured-red-border {
+    height: 10px;
+    margin-bottom: -15px;
+  }
+
+  .title-text,
+  .four-suits {
+    color: $light-blood-color;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 20px;
+  }
+
+  .four-suits {
+    display: inline-block;
+    font-size: 80px;
+    margin-top: -25px;
+    z-index: 100000;
+    padding: 10px 20px;
+  }
+}
