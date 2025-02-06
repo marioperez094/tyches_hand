@@ -1,0 +1,24 @@
+@import "@stylesheets/variables.scss";
+
+.text-field {
+  font-size: 16px;
+  border: 2px solid $light-blood-color;
+  border-radius: 8px;
+  background-color: $dark-blood-color;
+  color: #FFFFFF;
+  padding: 0 10px;
+  transition: all 0.3s ease;
+}
+
+.text-field:focus {
+  outline: none;
+  border-color: $light-gold-color;
+  box-shadow: 0 0 8px $dark-gold-color;
+  background-color: $light-blood-color;
+}
+
+.text-field::placeholder {
+  color: #aaa;
+  font-style: italic;
+  text-align: center;
+}

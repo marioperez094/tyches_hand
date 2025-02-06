@@ -4,7 +4,7 @@ import { Routes, Route } from "react-router-dom";
 
 //Components
 import LoadingScreen from "@components/loadingScreen/loadingScreen";
-import Login from "@pages/login";
+import Login from "@pages/login/login";
 
 //Context
 import { useLoading } from "@context/loading";

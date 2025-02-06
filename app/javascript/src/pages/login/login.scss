@@ -1,0 +1,46 @@
+@import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
+@import "@stylesheets/animations.scss";
+
+#login {
+  #tyche-logo {
+    animation: fade-in 1s;
+  }
+
+  .main-menu-container {
+    width: 500px;
+    height: 350px;
+    transform: translateY(100vh);
+    animation-delay: 1.5s !important;
+    animation: slide-up-bounce 0.5s ease-out forwards;
+
+    &::before {  
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: repeating-linear-gradient(
+        45deg, 
+        black, 
+        $dark-blood-color 6px, 
+        black 5px, 
+        $dark-blood-color 9px
+      );
+      mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 90%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 90%);
+
+    }
+  }
+  
+  .standard-button, .disabled-button {
+    padding: 12px 24px;
+    width: 100%;
+    margin: 0.5rem 0;
+  }
+}
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

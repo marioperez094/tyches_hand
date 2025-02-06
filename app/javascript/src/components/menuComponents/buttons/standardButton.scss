@@ -1,0 +1,23 @@
+@import "@stylesheets/variables.scss";
+
+.standard-button, .disabled-button {
+  border: 2px solid transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(-2px);
+  }
+}
+
+.standard-button {
+  background: linear-gradient(45deg, $light-blood-color, $dark-blood-color);
+}
+
+.disabled-button {
+  background: linear-gradient(45deg, $light-gold-color, $dark-gold-color);
+}
