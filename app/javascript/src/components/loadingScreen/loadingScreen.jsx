@@ -1,5 +1,5 @@
 //External Imports
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 
 //Components
 import LoadingLine from "./loadingLine";

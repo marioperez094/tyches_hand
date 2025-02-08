@@ -2,12 +2,14 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 
-//Components
-import LoadingScreen from "@components/loadingScreen/loadingScreen";
-import Login from "@pages/login/login";
-
-//Context
+//Context 
 import { useLoading } from "@context/loading";
+import { PlayerProvider } from "@context/player";
+
+//Components
+import LandingPage from "@pages/landingPage/landingPage";
+import LoadingScreen from "@components/loadingScreen/loadingScreen";
+import ProtectedRoutes from "@components/protectedRoutes/protectedRoutes";
 
 //Stylesheets
 import "./app.scss";
@@ -17,14 +19,19 @@ export default function App() {
   
   return (
     <>
-      { showLoading && <LoadingScreen /> } 
+      { showLoading && <LoadingScreen /> }
 
       <Routes>
         { /* Public routes */ }
-        <Route path="/login" element={ <Login /> } />
+        <Route path="/" element={ <LandingPage /> } />
 
-
-        <Route path="*" element={<Login />} />
+        <Route path="/*" 
+          element={ 
+            <PlayerProvider>
+              <ProtectedRoutes /> 
+            </PlayerProvider>
+          } 
+        />
       </Routes>
     </>
   )

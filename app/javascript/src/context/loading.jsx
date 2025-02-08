@@ -20,7 +20,7 @@ function LoadingProvider({ children }) {
     setLoadingState(true);
   }
 
-  function stopLoading(delay = 1000) {
+  function stopLoading(delay = 3000) {
     setLoadingState(false, delay);
   }
 

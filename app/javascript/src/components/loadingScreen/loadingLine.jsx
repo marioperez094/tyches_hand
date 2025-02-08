@@ -5,7 +5,7 @@ import React from "react";
 export default function LoadingLine({ animationDelay, loadingLine, isLoading }) {
   return (
     <li
-      className={`text-white flex loading-line-container` }
+      className={ `text-white flex ${ isLoading ? "loading-line-container" : "height-container" }` }
       style={{
         animationDelay: `${ animationDelay * 2.5 }s`
       }}

@@ -4,17 +4,7 @@ import React, { useState } from "react";
 //Components
 import Form from "@components/menuComponents/form";
 
-//Context 
-import { useLoading } from "@context/loading";
-
-//Functions
-import { postRequest } from "@utils/fetchRequest";
-import { capitalizeFirstWord } from "@utils/utils";
-
-export default function LoginWidget({ setErrorMessage }) {
-  const { startLoading } = useLoading();
-
-  const [submitting, setSubmitting] = useState(false);
+export default function LoginWidget({ submitting, setSubmitting, successfulLogin }) {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -33,18 +23,9 @@ export default function LoginWidget({ setErrorMessage }) {
 
     const payload = {
       player: formData
-    }
-
-    postRequest("/api/sessions", payload)
-      .then((data) => {
-        if (data.success) {
-          startLoading();
-        }
-      })
-      .catch(error => {
-        setErrorMessage(capitalizeFirstWord(error.message));
-        setSubmitting(false);
-      });
+    };
+    
+    successfulLogin("/api/sessions", payload);
   };
 
   return (

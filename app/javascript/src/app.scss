@@ -6,3 +6,7 @@
   background: black;
   background: linear-gradient(#222, $light-blood-color 600%);
 }
+
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

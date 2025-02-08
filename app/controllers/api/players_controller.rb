@@ -36,9 +36,9 @@ module Api
     end
 
     def show
-      @include_decks = params[:deck] == 'true'
-      @include_cards = params[:cards] == 'true'
-      @separate_deck_cards = params[:deck_cards] == 'true' #Sepeartes cards in players collection but not in deck
+      @include_card_stats = params[:card_stats] == 'true'
+      @include_deck_cards = params[:deck_cards] == 'true'
+      @include_collected_cards = params[:connected_cards] == 'true'
 
       render 'api/players/show',
       status: :ok

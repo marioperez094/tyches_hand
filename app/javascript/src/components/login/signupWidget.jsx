@@ -4,18 +4,8 @@ import React, { useState } from "react";
 //Components
 import Form from "@components/menuComponents/form";
 
-//Functions
-import { postRequest } from "@utils/fetchRequest";
-import { capitalizeFirstWord } from "@utils/utils";
-
-//Context 
-import { useLoading } from "@context/loading";
-
-export default function SignupWidget({ setErrorMessage }) {
+export default function SignupWidget({ submitting, setErrorMessage, setSubmitting, successfulLogin }) {
   const siteKey = process.env['REACT_APP_RECAPTCHA_SITE_KEY'];
-  const { startLoading } = useLoading();
-  
-  const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -50,23 +40,17 @@ export default function SignupWidget({ setErrorMessage }) {
   function submitForm(captchaToken) {
     const { password, password_confirmation } = formData;
 
-    if (password !== password_confirmation) return setErrorMessage("The passwords do not match.");
+    if (password !== password_confirmation) {
+      setSubmitting(false);
+      return setErrorMessage("The passwords do not match.") 
+    };
 
     const payload = {
       player: formData, 
       recaptcha_token: captchaToken,
-    }
-
-    postRequest("/api/players", payload)
-      .then((data) => {
-        if (data.player) { 
-          startLoading();
-        }
-      })
-      .catch(error => {
-        setErrorMessage(capitalizeFirstWord(error.message));
-        setSubmitting(false);
-      });
+    };
+    
+    successfulLogin("/api/players", payload);
   };
 
   return(
