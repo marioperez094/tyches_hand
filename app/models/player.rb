@@ -10,7 +10,7 @@ class Player < ApplicationRecord
 
   #Validations
   validates :username, presence: true, uniqueness: true, unless: :guest?
-  validates :password, confirmation: true, length: { minimum: 6 }, presence: true, on: [:create, :update_password, :destroy], unless: :guest?
+  validates :password, confirmation: true, length: { minimum: 6 }, presence: true, on: [:create, :update_password, :convert_to_registered, :destroy], unless: :guest?
   validates :password_confirmation, presence: true, on: [:create, :update_password, :destroy], unless: :guest?
   validates :blood_pool, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5000 }
 

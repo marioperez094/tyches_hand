@@ -9,9 +9,12 @@ export default function UserEntryWidget({ activeWidget, setActiveWidget, success
 
   const [submitting, setSubmitting] = useState(false);
   const userEntryOptions = [
-    { name: "Sign Up", buttonAction: () => setActiveWidget("Sign Up") }, 
-    { name: "Log In", buttonAction: () => setActiveWidget("Log In") }, 
-    { name: submitting ? "Creating Account..." : "Guest Mode", buttonAction: (e) => handleSubmit(e)},
+    { name: "Sign Up", buttonAction: () => setActiveWidget("Sign Up"), disabled: false }, 
+    { name: "Log In", buttonAction: () => setActiveWidget("Log In"), disabled: false }, 
+    { name: submitting ? "Creating Account..." : "Guest Mode", 
+      buttonAction: (e) => handleSubmit(e), 
+      disabled: submitting 
+    },
   ];
 
   function handleSubmit(e) {
@@ -49,6 +52,7 @@ export default function UserEntryWidget({ activeWidget, setActiveWidget, success
           <StandardButton
             key={ option.name }
             buttonAction={ option.buttonAction }
+            disabled={ option.disabled }
           >
             { option.name }
           </StandardButton>

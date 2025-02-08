@@ -7,7 +7,7 @@ import { useLoading } from "@context/loading";
 
 //Components
 import TycheLogo from "@components/headers/tycheLogo/tycheLogo";
-import Login from "@components/login/login";
+import Login from "./login";
 
 //Functions
 import { getRequest } from "@utils/fetchRequest";
@@ -23,11 +23,9 @@ export default function LandingPage() {
   const checkAuthenticated = useCallback(() => {
     getRequest("/api/authenticated")
       .then(data => {
-        console.log(data)
         setIsAuthenticated(data.authenticated);
 
         if (data.authenticated) { 
-          startLoading();
           return navigate("/dashboard", { replace: true })
         };
       })

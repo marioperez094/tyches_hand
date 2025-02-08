@@ -10,11 +10,12 @@ import { useLoading } from "@context/loading";
 import Dashboard from "@pages/dashboard/dashboard";
 
 export default function ProtectedRoutes() {
-  const { stopLoading } = useLoading();
+  const { startLoading, stopLoading } = useLoading();
   const navigate = useNavigate();
   const { player, fetchPlayer } = usePlayer();
 
   useEffect(() => {
+    startLoading();
     async function fetchPlayerInformation() {
       await fetchPlayer();
       stopLoading();
@@ -31,9 +32,11 @@ export default function ProtectedRoutes() {
     }
   }, [player])
 
+  if (!player) return <p>Loading player ...</p>
+
   return (
     <Routes>
-      <Route path="/dashboard" element={ <Dashboard /> } />
+      <Route path="/dashboard/*" element={ <Dashboard /> } />
       <Route path="/game" element={ <Game /> } />
     </Routes>
   )

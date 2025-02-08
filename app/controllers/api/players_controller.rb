@@ -19,7 +19,7 @@ module Api
           httponly: true,
         }
         
-        render json: { success: true }, status: :ok, 
+        render json: { success: true },
         status: :ok
 
       else
@@ -60,13 +60,18 @@ module Api
       return render json: { error: 'This account is already registered.' },
       status: :forbidden unless @player.guest
 
+      if params[:player][:password].length < 6
+        render json: { error: 'Password must be at least 6 characters long.' }, status: :bad_request
+        return
+      end
+
       begin
         @player.update!(username: params[:player][:username], password: params[:player][:password], guest: false)
         
-        render json: { success: true }, status: :ok,
+        render json: { success: true }, 
         status: :ok
-      rescue ArgumentError => e
-        render json: { error: e.message },
+      rescue ActiveRecord::RecordInvalid  => e
+        render json: { error: @player.errors.full_messages },
         status: :bad_request
       end
     end
