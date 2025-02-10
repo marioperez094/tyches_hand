@@ -14,8 +14,6 @@ import DeckStats from "./deckStats";
 export default function PlayerCollections() {
   const { player } = usePlayer();
 
-  console.log(player)
-
   if (!player) return <p>Loading player...</p>;
 
   const { username, blood_pool, guest, deck } = player;

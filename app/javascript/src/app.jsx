@@ -17,8 +17,6 @@ import "./app.scss";
 export default function App() {
   const { showLoading } = useLoading();
 
-  console.log("render");
-  
   return (
     <>
       { showLoading && <LoadingScreen /> }
