@@ -24,13 +24,15 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    async function fetchPlayerInformation() {
-      await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true })
-      
-      stopLoading();
-    }
     fetchPlayerInformation();
   }, []);
+
+
+  async function fetchPlayerInformation() {
+    await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true })
+
+    stopLoading();
+  }
 
   function logOut() {
     deleteRequest("/api/sessions")

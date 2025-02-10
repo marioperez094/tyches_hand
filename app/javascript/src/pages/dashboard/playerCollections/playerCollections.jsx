@@ -14,13 +14,15 @@ import DeckStats from "./deckStats";
 export default function PlayerCollections() {
   const { player } = usePlayer();
 
+  console.log(player)
+
   if (!player) return <p>Loading player...</p>;
 
   const { username, blood_pool, guest, deck } = player;
 
   return(
     <>
-      { guest && <GuestMessage fetchPlayerInformation={ fetchPlayerInformation } />}
+      { guest && <GuestMessage />}
       <div className="mx-auto my-3">
         <HealthBarWithName
           name={ username }

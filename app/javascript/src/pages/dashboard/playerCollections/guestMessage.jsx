@@ -1,6 +1,9 @@
 //External Imports
 import React, { useState } from "react";
 
+//Context
+import { usePlayer } from "@context/player";
+
 //Components
 import Notification from "@components/headers/notification/notification";
 import Form from "@components/menuComponents/form";
@@ -10,7 +13,8 @@ import { StandardButton } from "@components/menuComponents/buttons/buttons";
 import { putRequest } from "@utils/fetchRequest";
 import { capitalizeFirstWord } from "@utils/utils";
 
-export default function GuestMessage({ fetchPlayerInformation }) {
+export default function GuestMessage() {
+  const { setPlayer } = usePlayer();
   const [isVisible, setIsVisible] = useState(true);
   const [showMessage, setShowMessage] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -49,7 +53,10 @@ export default function GuestMessage({ fetchPlayerInformation }) {
         console.log(data)
         setSubmitting(false);
 
-        if (data.success) return fetchPlayerInformation();
+        if (data.success) { setPlayer((prev) => ({
+          ...prev,
+          username: formData.username, guest: false
+        }))};
 
         setErrorMessage("Unable to convert account.")
       })
