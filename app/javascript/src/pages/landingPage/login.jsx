@@ -15,6 +15,7 @@ import { postRequest } from "@utils/fetchRequest";
 import { capitalizeFirstWord } from "@utils/utils";
 
 export default function Login() {
+  const { startLoading } = useLoading();
   const navigate = useNavigate();
 
   const [activeWidget, setActiveWidget] = useState("Options");
@@ -25,6 +26,7 @@ export default function Login() {
     postRequest(link, payload)
       .then((data) => {
         if (data.success) {
+          startLoading();
           return link === "/api/players" ? navigate("/game") : navigate("/dashboard");
         }
       })

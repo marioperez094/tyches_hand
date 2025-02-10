@@ -1,9 +1,9 @@
 json.player do
   json.partial! 'api/players/player', player: @player
 
-  if @include_card_stats 
+  if @include_deck_stats 
     json.deck do
-      json.partial! 'api/players/card_stats', deck: @player.deck
+      json.partial! 'api/players/card_stats', player: @player
     end
   end
 
@@ -15,7 +15,7 @@ json.player do
     end
   end
 
-  if @include_collected_cards
+  if @include_collection_cards
     json.collection_cards do
       json.array! @player.cards.where.not(id: @player.deck.cards.select(:id)) do |card|
         json.partial! 'api/cards/card', card: card

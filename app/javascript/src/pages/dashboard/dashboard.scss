@@ -7,14 +7,118 @@
   transform: translateY(100vh);
   animation: slide-up-bounce 1s ease-out 3.5s forwards;
 
-  .link-buttons {
-    .standard-button {
-      padding: 12px 24px;
-      display: block;
-      width: 100%;
-    }
+  //Card Stat Text
+  .Total-text,
+  .Standard-text,
+  .Blessed-text, 
+  .Bloodstained-text, 
+  .Charred-text, 
+  .Exhumed-text, 
+  .Fleshwoven-text {
+    animation: float 3s infinite ease-in-out;
   }
 
+  .Blessed-text, 
+  .Bloodstained-text, 
+  .Charred-text, 
+  .Exhumed-text, 
+  .Fleshwoven-text { 
+    color: transparent;
+    font-size: 18px;
+    font-weight: bold;
+    position: relative;
+  }
+
+  .Blessed-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $dark-gold-color,
+      $light-gold-color 6px,
+      $dark-gold-color 5px,
+      $light-gold-color 9px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .Bloodstained-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $shadow-blood,
+      $light-blood-color 6px,
+      $shadow-blood 5px,
+      $light-blood-color 7px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .Charred-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $ashen-gray,
+      $ember-orange 6px,
+      $shadow-fire 5px,
+      $ember-orange 8px,
+      $ashen-gray 7px
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .Exhumed-text {
+    background: repeating-linear-gradient(
+      45deg,
+      #FFF,
+      $eerie-green 6px,
+      #FFF 5px,
+      $eerie-green 8px,
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+  
+  .Fleshwoven-text {
+    background: repeating-linear-gradient(
+      45deg,
+      $skin-tone,
+      $shadow-artery 6px,
+      $skin-tone 5px,
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+
+  .deck-type-container {
+    cursor: pointer;
+  }
+
+  .redacted {
+    height: 50px;
+    columns: transparent;
+  }
+
+  .redacted-animation {
+    gap: 8px;
+  }
+  
+  .question-mark {
+    font: 18px;
+    font-weight: bold;
+    color: #CCC;
+    position: relative;
+    animation: float 5s infinite;
+  }
+
+  .question-mark:nth-child(2) {
+    animation-delay: 2.5s;
+  }
+
+  .question-mark:nth-child(4) {
+    animation-delay: 2.5s;
+  }
+
+  //Navigational buttons
   .header-buttons, .deck-buttons {
     .standard-button, .link-button {
       flex: wrap;
@@ -39,10 +143,14 @@
     }
   }
 
-  #form {
+  //Guest warning/form
+  .guest-message-container {
+    margin: 0 auto;
+    max-height: 220px;
+    background-color: rgba(220, 38, 38, 0.2);
+
     .standard-button, .disabled-button {
       padding: 12px 24px;
-      width: 100%;
       margin: 0.5rem 0;
     }
   }

@@ -18,11 +18,11 @@ function LoadingProvider({ children }) {
 
   function startLoading() {
     setLoadingState(true);
-  }
+  };
 
   function stopLoading(delay = 3000) {
     setLoadingState(false, delay);
-  }
+  };
 
   return (
     <LoadingContext.Provider value={{ isLoading, showLoading, startLoading, stopLoading }}>

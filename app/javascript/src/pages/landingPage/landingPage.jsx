@@ -2,9 +2,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
-//Context
-import { useLoading } from "@context/loading";
-
 //Components
 import TycheLogo from "@components/headers/tycheLogo/tycheLogo";
 import Login from "./login";
@@ -16,7 +13,6 @@ import { getRequest } from "@utils/fetchRequest";
 import "./landingPage.scss";
 
 export default function LandingPage() {
-  const { startLoading } = useLoading();
   const navigate = useNavigate()
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -30,6 +26,7 @@ export default function LandingPage() {
         };
       })
       .catch(error => {
+        console.log(error)
         setIsAuthenticated(false);
       });
   }, [navigate]);
@@ -43,7 +40,7 @@ export default function LandingPage() {
       <TycheLogo />
 
       <main className="main-menu-container">
-        { !isAuthenticated && <Login />}
+        { !isAuthenticated && <Login /> } { /* Only shows title if player is logged in. */ }
       </main>
     </div>
   )

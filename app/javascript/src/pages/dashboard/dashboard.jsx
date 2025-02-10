@@ -1,12 +1,13 @@
 //External Imports
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 
 //Context
 import { usePlayer } from "@context/player";
+import { useLoading } from "@context/loading";
 
 //Components
-import PlayerCollections from "./playerCollections";
+import PlayerCollections from "./playerCollections/playerCollections";
 import DashboardLayout from "./dashboardLayout";
 
 //Functions
@@ -14,12 +15,22 @@ import { deleteRequest } from "@utils/fetchRequest";
 
 //Stylesheets
 import "./dashboard.scss";
+import DeckEditor from "./deckEditor/deckEditor";
 
 export default function Dashboard() {
   const currentLocation = useLocation().pathname; //Retrieves current dashboard location
+  const { fetchPlayer } = usePlayer();
+  const { stopLoading } = useLoading();
   const navigate = useNavigate();
 
-  const { deck, player } = usePlayer();
+  useEffect(() => {
+    async function fetchPlayerInformation() {
+      await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true })
+      
+      stopLoading();
+    }
+    fetchPlayerInformation();
+  }, []);
 
   function logOut() {
     deleteRequest("/api/sessions")
@@ -29,14 +40,15 @@ export default function Dashboard() {
       .catch(error => console.log(error))
   };
 
+  //All links in the dashboard, their name and associated component
   const links = {
     "/dashboard":{
       name: "Stats",
-      component: <PlayerCollections player={ player }/>
+      component: <PlayerCollections />
     },
     "/dashboard/edit-deck": {
       name: "Edit Deck",
-      component: (<div>Edit Deck</div>)
+      component: (<DeckEditor />)
     },
     "/dashboard/edit-tokens": {
       name: "Edit Tokens",
@@ -44,8 +56,10 @@ export default function Dashboard() {
     }
   };
 
+  //Retrieves the name of the of the current link for the header
   const title = useMemo(() => links[currentLocation]?.name || "Player Dashboard", [currentLocation]);
 
+  //Dynamic buttons based on the current link
   const buttons = useMemo(() => {
     const filteredButtons =  Object.entries(links)
       .filter(([path]) => path !== currentLocation)
@@ -54,6 +68,7 @@ export default function Dashboard() {
         link: path
       }));
 
+      //Play and logout buttons are static but dashboard link buttons are dynamically loaded
       return ([
         { name: "Play" },
         ...filteredButtons,

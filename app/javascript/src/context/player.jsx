@@ -8,24 +8,33 @@ const PlayerContext = createContext(null);
 
 function PlayerProvider({ children }) {
   const [player, setPlayerState] = useState(null);
-  const [deck, setCardsInDeck] = useState()
+  const [deck, setCardsInDeck] = useState();
 
-  function fetchPlayer() {
-    return getRequest("/api/players/show?deck_cards=true")
+  function fetchPlayer({ deck_stats = false, deck_cards = false, collection_cards = false } = {}) {
+    const queryParams = new URLSearchParams();
+    if (deck_stats) queryParams.append("deck_stats", "true");
+    if (deck_cards) queryParams.append("deck_cards", "true");
+    if (collection_cards) queryParams.append("collection_cards", "true");
+
+    const url = `/api/players/show?${ queryParams.toString() }`;
+
+    return getRequest(url)
       .then(data => {
-        if (data.player) {
-          const { deck_cards, ...playerStats } = data.player;
-          
-          setPlayerState(playerStats)
-          return setDeck(deck_cards)
-
+        if (!data.player) {
+          return null;
         }
-        return setPlayerState(false);
+
+        const { deck_cards, ...playerStats} = data.player;
+
+        setPlayerState(playerStats);
+        if (deck_cards) setDeck(deck_cards);
+
+        return data.player;
       })
-      .catch(error => { 
-        console.log(error.message) 
-        setPlayerState(false);
-      });
+      .catch(error => {
+        console.error("Fetch Player Error: ", error.message);
+        return null;
+      })
   };
 
   function setPlayer(player) {

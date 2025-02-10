@@ -6,7 +6,7 @@ import { StandardButton } from "@components/menuComponents/buttons/buttons";
 
 export default function UserEntryWidget({ activeWidget, setActiveWidget, successfulLogin }) {
   const siteKey = process.env['REACT_APP_RECAPTCHA_SITE_KEY'];
-
+  
   const [submitting, setSubmitting] = useState(false);
   const userEntryOptions = [
     { name: "Sign Up", buttonAction: () => setActiveWidget("Sign Up"), disabled: false }, 

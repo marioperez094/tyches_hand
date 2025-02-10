@@ -4,11 +4,15 @@ import React from "react";
 //Components
 import MenuHeaders from "@components/headers/menuHeaders/menuHeaders";
 import { LinkButton, StandardButton } from "@components/menuComponents/buttons/buttons";
+import HoverButtons from "@components/menuComponents/hoverButtons/hoverButtons";
 
 export default function DashboardLayout({ title, buttons, children }) {
   return (
     <>
       { /* Mobile navigation */ }
+      <div className="md:hidden">
+        <HoverButtons buttonOptions={ buttons } />
+      </div>
 
       { /* Large screen navigation */}
       <div className="mx-5 mt-5 flex justify-between items-end">
@@ -16,7 +20,7 @@ export default function DashboardLayout({ title, buttons, children }) {
           { title }
         </MenuHeaders>
         
-        <div className="md:inline header-buttons">
+        <div className="hidden md:inline header-buttons">
           <LinkButtons buttonOptions={ buttons } />
         </div>
       </div>

@@ -22,7 +22,7 @@ class Card < ApplicationRecord
   EFFECT_DETAILS = {
     "Exhumed" => {
       value_calculation: ->(rank) { (500 * rank / 15.0).round },
-      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. GREATER BLOOD POOL WINNINGS WITH WINNING HAND." },
+      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. INCREASED BLOOD POOL WINNINGS WITH WINNING HAND." },
       discovery_probability: ->(health_odds) { (0.4 + health_odds) / 1.4 }
     },
     "Charred" => {

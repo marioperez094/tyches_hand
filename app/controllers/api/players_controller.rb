@@ -36,9 +36,9 @@ module Api
     end
 
     def show
-      @include_card_stats = params[:card_stats] == 'true'
+      @include_deck_stats = params[:deck_stats] == 'true'
       @include_deck_cards = params[:deck_cards] == 'true'
-      @include_collected_cards = params[:connected_cards] == 'true'
+      @include_collection_cards = params[:collection_cards] == 'true'
 
       render 'api/players/show',
       status: :ok
