@@ -50,7 +50,6 @@ export default function GuestMessage() {
 
     putRequest("/api/players/convert_to_registered", payload)
       .then((data) => {
-        console.log(data)
         setSubmitting(false);
 
         if (data.success) { setPlayer((prev) => ({

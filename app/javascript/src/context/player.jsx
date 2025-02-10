@@ -21,6 +21,7 @@ function PlayerProvider({ children }) {
     return getRequest(url)
       .then(data => {
         if (!data.player) {
+          console.log(data.player)
           return null;
         }
 
@@ -32,6 +33,7 @@ function PlayerProvider({ children }) {
         return data.player;
       })
       .catch(error => {
+        setPlayerState(false)
         console.error("Fetch Player Error: ", error.message);
         return null;
       })

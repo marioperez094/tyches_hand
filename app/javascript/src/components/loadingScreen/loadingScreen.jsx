@@ -14,13 +14,15 @@ import loadingScreenText from "@utils/loadingScreenText.json";
 import "./loadingScreen.scss";
 
 export default function LoadingScreen() {
-  const { isLoading } = useLoading();
+  const { isLoading, showLoading } = useLoading();
 
   //Select a random loading text set
   const selectedLoadingLines = useMemo(() => {
     const randomIndex = Math.floor(Math.random() * loadingScreenText.loadingScreenText.length);
     return loadingScreenText.loadingScreenText[randomIndex];
   }, []);
+
+  if (!showLoading) return null;
 
   return (
     <main className="h-full">

@@ -10,9 +10,10 @@ import { HealthBarWithName } from "@components/gameAssets/healthBar/healthBar";
 import SubHeaders from "@components/headers/subHeaders/subHeaders";
 import DeckStats from "./deckStats";
 
-
 export default function PlayerCollections() {
   const { player } = usePlayer();
+
+  console.log("render")
 
   if (!player) return <p>Loading player...</p>;
 

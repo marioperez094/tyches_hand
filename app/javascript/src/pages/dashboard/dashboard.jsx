@@ -19,20 +19,7 @@ import DeckEditor from "./deckEditor/deckEditor";
 
 export default function Dashboard() {
   const currentLocation = useLocation().pathname; //Retrieves current dashboard location
-  const { fetchPlayer } = usePlayer();
-  const { stopLoading } = useLoading();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetchPlayerInformation();
-  }, []);
-
-
-  async function fetchPlayerInformation() {
-    await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true })
-
-    stopLoading();
-  }
 
   function logOut() {
     deleteRequest("/api/sessions")

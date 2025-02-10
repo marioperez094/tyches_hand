@@ -6,7 +6,13 @@ import LoginWidget from "./loginWidget";
 import SignUpWidget from "./signupWidget";
 import RecaptchaText from "./recaptchaText";
 
-export default function ActiveWidget({ activeWidget, submitting, setErrorMessage, setSubmitting, successfulLogin }) {
+export default function ActiveWidget({ 
+  activeWidget, 
+  submitting, 
+  setErrorMessage, 
+  setSubmitting, 
+  successfulLogin 
+}) {
   return (
     <>
       { getActiveWidget(activeWidget, submitting, setErrorMessage, setSubmitting, successfulLogin)}

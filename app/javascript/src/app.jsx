@@ -3,7 +3,6 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 //Context 
-import { useLoading } from "@context/loading";
 import { PlayerProvider } from "@context/player";
 
 //Components
@@ -15,11 +14,9 @@ import ProtectedRoutes from "@components/protectedRoutes/protectedRoutes";
 import "./app.scss";
 
 export default function App() {
-  const { showLoading } = useLoading();
-
   return (
     <>
-      { showLoading && <LoadingScreen /> }
+      <LoadingScreen />
 
       <Routes>
         { /* Public routes */ }
