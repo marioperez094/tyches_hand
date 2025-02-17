@@ -1,5 +1,5 @@
 //External Imports
-import React from "react";
+import React, { useState } from "react";
 
 //Components
 import LoginWidget from "./loginWidget";
@@ -9,22 +9,22 @@ import RecaptchaText from "./recaptchaText";
 export default function ActiveWidget({ 
   activeWidget, 
   submitting, 
-  setErrorMessage, 
   setSubmitting, 
   successfulLogin 
 }) {
+  
   return (
     <>
-      { getActiveWidget(activeWidget, submitting, setErrorMessage, setSubmitting, successfulLogin)}
+      { getActiveWidget(activeWidget, submitting, setSubmitting, successfulLogin)}
       { activeWidget !== "Options" && <RecaptchaText /> }
     </>
   )
 };
 
-function getActiveWidget(widget, submitting, setErrorMessage, setSubmitting, successfulLogin) {
+function getActiveWidget(widget, submitting, setSubmitting, successfulLogin) {
   switch (widget) {
     case "Sign Up":
-      return <SignUpWidget submitting={ submitting } setErrorMessage={ setErrorMessage } setSubmitting={ setSubmitting } successfulLogin={ successfulLogin } />;
+      return <SignUpWidget submitting={ submitting } setSubmitting={ setSubmitting } successfulLogin={ successfulLogin } />;
     case "Log In":
       return <LoginWidget submitting={ submitting } setSubmitting={ setSubmitting } successfulLogin={ successfulLogin } />;
   }

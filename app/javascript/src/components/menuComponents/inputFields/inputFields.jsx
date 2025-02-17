@@ -2,13 +2,15 @@
 import React, { useMemo } from "react";
 
 //Components
-import { capitalizeFirstWord } from "@utils/utils";
+import { capitalizeFirstLetter } from "@utils/utils";
 
 //Stylesheet
 import "./inputFields.scss";
 
 export default function InputField({ name, type, value,  changeEvent, required = true, ...props }) {
-  const capitalizedName = useMemo(() => capitalizeFirstWord(name), [name]);
+  const capitalizedName = useMemo(() => capitalizeFirstLetter(name), [name]);
+
+  console.log("render inputField")
   
   return(
     <input 

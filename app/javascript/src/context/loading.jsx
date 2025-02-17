@@ -7,6 +7,10 @@ function LoadingProvider({ children }) {
   const [isLoading, setIsLoading] = useState(false);
   const [showLoading, setShowLoading] = useState(false);
 
+  console.log("render loadingContext")
+  console.log("isLoading: " + isLoading)
+  console.log("showLoading: " + showLoading)
+
   //Takes a boolean and a delay for length of ending animation
   function setLoadingState(state, delay) {
     setIsLoading(state);

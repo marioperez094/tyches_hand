@@ -13,9 +13,7 @@ import DeckStats from "./deckStats";
 export default function PlayerCollections() {
   const { player } = usePlayer();
 
-  console.log("render")
-
-  if (!player) return <p>Loading player...</p>;
+  console.log("render playerCollections")
 
   const { username, blood_pool, guest, deck } = player;
 
@@ -41,10 +39,16 @@ export default function PlayerCollections() {
 };
 
 function PlayerStatSection({ children }) {
+  
+  console.log("render playerStatSection")
+
   return <section className="mx-auto w-full player-info-container">{children}</section>;
 };
 
 function CollectionDetails({ name, children }) {
+
+  console.log("render collectionDetails")
+  
   return (
     <>
       <SubHeaders isHeading>{ name }</SubHeaders>

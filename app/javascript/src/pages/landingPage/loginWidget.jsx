@@ -5,6 +5,9 @@ import React, { useState } from "react";
 import Form from "@components/menuComponents/form";
 
 export default function LoginWidget({ submitting, setSubmitting, successfulLogin }) {
+  
+  console.log("render loginWidget")
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -19,7 +22,7 @@ export default function LoginWidget({ submitting, setSubmitting, successfulLogin
 
   function handleSubmit(e) {
     if (e) e.preventDefault();
-    setSubmitting(true);
+    setSubmitting("Log In");
 
     const payload = {
       player: formData
@@ -33,8 +36,8 @@ export default function LoginWidget({ submitting, setSubmitting, successfulLogin
       handleSubmit={ handleSubmit }
       formData={ formData }
       handleInputChange={ handleInputChange }
-      submitting={ submitting }
-      buttonText={ submitting ? "Logging In..." : "Log In"}
+      submitting={ submitting === "Log In" }
+      buttonText={ submitting === "Log In" ? "Logging In..." : "Log In"}
     />
   )
 };

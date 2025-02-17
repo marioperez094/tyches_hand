@@ -27,6 +27,8 @@ export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 15
 
   const reversedButtonOptions = useMemo(() => [...buttonOptions].reverse(), [buttonOptions]);
 
+  console.log("render hoverButtons")
+
   return(
     <div className="fixed hover-buttons-container">
       { /* Main Toggle button */ }
@@ -55,24 +57,36 @@ export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 15
   )
 };
 
+
 // Link Button Component
-const LinkButton = ({ link, name, x, y }) => (
-  <Link
-    to={link}
-    className="absolute rounded-full child-button"
-    style={{ transform: `translate(${ x }px, ${ -y }px)` }}
-  >
-    {name}
-  </Link>
-);
+function LinkButton({ link, name, x, y}) {
+  
+  console.log("render hoverButtons")
+
+  return( 
+    <Link
+      to={link}
+      className="absolute rounded-full child-button"
+      style={{ transform: `translate(${ x }px, ${ -y }px)` }}
+    >
+      {name}
+    </Link>
+  )
+};
+
 
 // Action Button Component
-const ActionButton = ({ name, buttonAction = () => {}, x, y }) => (
-  <button
-    className="absolute rounded-full child-button"
-    style={{ transform: `translate(${ x }px, ${ -y }px)` }}
-    onClick={ buttonAction }
-  >
-    {name}
-  </button>
-);
+function ActionButton({ name, buttonAction = () => {}, x, y }) {
+  
+  console.log("render hoverButtons")
+  
+  return (
+    <button
+      className="absolute rounded-full child-button"
+      style={{ transform: `translate(${ x }px, ${ -y }px)` }}
+      onClick={ buttonAction }
+    >
+      {name}
+    </button>
+  )
+};

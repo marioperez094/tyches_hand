@@ -5,13 +5,16 @@ import React, { useState } from "react";
 import Form from "@components/menuComponents/form";
 
 export default function SignupWidget({ submitting, setErrorMessage, setSubmitting, successfulLogin }) {
+  
+  console.log("render signupWidget")
+
   const siteKey = process.env['REACT_APP_RECAPTCHA_SITE_KEY'];
   const [formData, setFormData] = useState({
     username: "",
     password: "",
     password_confirmation: "",
   });
-
+    
   function handleInputChange(e) {
     const { name, value } = e.target;
     setFormData((prevData) => 
@@ -21,7 +24,7 @@ export default function SignupWidget({ submitting, setErrorMessage, setSubmittin
 
   function handleSubmit(e) {
     if (e) e.preventDefault();
-    setSubmitting(true);
+    setSubmitting("Sign Up");
   
     window.grecaptcha.ready(() => {
       window.grecaptcha
@@ -31,7 +34,7 @@ export default function SignupWidget({ submitting, setErrorMessage, setSubmittin
       })
       .catch((error) => {
         setErrorMessage("reCAPTCHA error: " + error.message);
-        setSubmitting(false);
+        setSubmitting(null);
 
       })
     })
@@ -41,7 +44,7 @@ export default function SignupWidget({ submitting, setErrorMessage, setSubmittin
     const { password, password_confirmation } = formData;
 
     if (password !== password_confirmation) {
-      setSubmitting(false);
+      setSubmitting(null);
       return setErrorMessage("The passwords do not match.") 
     };
 
@@ -58,8 +61,8 @@ export default function SignupWidget({ submitting, setErrorMessage, setSubmittin
       handleSubmit={ handleSubmit }
       formData={ formData }
       handleInputChange={ handleInputChange } 
-      submitting={ submitting }
-      buttonText={ submitting ? "Signing Up..." : "Sign Up" }
+      submitting={ submitting === "Sign Up" }
+      buttonText={ submitting === "Sign Up" ? "Signing Up..." : "Sign Up" }
     />
   )
 };

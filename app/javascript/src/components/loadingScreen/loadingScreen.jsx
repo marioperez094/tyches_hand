@@ -14,7 +14,7 @@ import loadingScreenText from "@utils/loadingScreenText.json";
 import "./loadingScreen.scss";
 
 export default function LoadingScreen() {
-  const { isLoading, showLoading } = useLoading();
+  const { isLoading } = useLoading();
 
   //Select a random loading text set
   const selectedLoadingLines = useMemo(() => {
@@ -22,7 +22,7 @@ export default function LoadingScreen() {
     return loadingScreenText.loadingScreenText[randomIndex];
   }, []);
 
-  if (!showLoading) return null;
+  console.log("render loadingScreen")
 
   return (
     <main className="h-full">

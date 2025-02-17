@@ -2,59 +2,91 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-//Context 
+//Context
 import { useLoading } from "@context/loading";
 
 //Components
-import Notification from "@components/headers/notification/notification";
+import { StandardButton } from "@components/menuComponents/buttons/buttons";
 import UserEntryWidget from "./userEntryWidget";
-import ActiveWidget from "./activeWidget";
+import Notification from "@components/headers/notification/notification";
 
 //Functions
 import { postRequest } from "@utils/fetchRequest";
-import { capitalizeFirstWord } from "@utils/utils";
 
-export default function Login() {
-  const { startLoading } = useLoading();
+export default function Login({ setIsAuthenticated }) {
+  
+  console.log("render login")
+  
+  const siteKey = process.env['REACT_APP_RECAPTCHA_SITE_KEY'];
   const navigate = useNavigate();
+  const { startLoading } = useLoading();
+  const [submitting, setSubmitting] = useState(null);
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const [activeWidget, setActiveWidget] = useState("Options");
-  const [submitting, setSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
+  //All login options
+  const userEntryOptions = [
+    { name: "Sign Up" }, 
+    { name: "Log In" }, 
+  ];
 
-  function successfulLogin(link, payload = null) {
+  async function submitGuest(e) {
+    if (e) e.preventDefault();
+    setSubmitting("Guest");
+
+    //Google recaptcha
+    try {
+      await new Promise ((resolve) => window.grecaptcha.ready(resolve));
+      const token = await window.grecaptcha.execute(siteKey, { action: "submit" });
+
+      const payload = {
+        player: { guest: true },
+        recaptcha_token: token,
+      }
+
+      successfulLogin("/api/players", payload);
+    } catch (error) {
+      setSubmitting(false);
+      console.error(`Recaptcha error: ${ error.message }`)
+    };
+  };
+
+  function successfulLogin(link, payload) {
     postRequest(link, payload)
-      .then((data) => {
+      .then((data) => {          
         if (data.success) {
+          setIsAuthenticated(true)
           startLoading();
-          return link === "/api/players" ? navigate("/game") : navigate("/dashboard");
+
+          //If new account redirects to tutorial, otherwise redirects to dashboad
+          const redirectTo = link === "/api/players" ? "/game" : "/dashboard";
+          navigate(redirectTo);
         }
       })
       .catch(error => {
-        setErrorMessage(capitalizeFirstWord(error.message));
+        setErrorMessage(error.message)
+        console.error(`Guest Error: ${ error.message }`)
         setSubmitting(false);
       })
   };
 
-  return(
+  return (
     <div className="w-full h-full border-t-4 textured-red-border widget-container">
       <div className="overflow-y-scroll w-full h-full">
-        <Notification className="text-red-500 text-lg rounded-full bg-black bg-opacity-30">
-          { errorMessage }
-        </Notification>
-        <ActiveWidget
-          activeWidget={ activeWidget }
+        { errorMessage && <Notification text={ errorMessage }/> }
+        <UserEntryWidget 
+          options={ userEntryOptions }
           submitting={ submitting }
-          setErrorMessage={ setErrorMessage }
           setSubmitting={ setSubmitting }
           successfulLogin={ successfulLogin }
-        />
-        <UserEntryWidget
-          activeWidget={ activeWidget }
-          setActiveWidget={ setActiveWidget } 
-          successfulLogin={ successfulLogin }
-        />
+        />   
+        <StandardButton
+          buttonAction={ submitGuest }
+          disabled={ submitting === "Guest" }
+        >
+          { submitting === "Guest" ? "Creating Account..." : "Guest" }
+        </StandardButton>
       </div>
     </div>
   )
 };
+

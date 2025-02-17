@@ -8,6 +8,8 @@ export function HealthBarWithName({ health, name, isPlayer = false }) {
   const maxNameLength = 14;
   const shortenName = name.length < maxNameLength ? name: name.slice(0, maxNameLength) + "..."; //Shortens player username
 
+  console.log("render healthBarWithName")
+
   
 
   return(
@@ -25,6 +27,9 @@ export function HealthBarWithName({ health, name, isPlayer = false }) {
 };
 
 export function HealthBar({ health, isPlayer }) {
+
+  console.log("render healthBar")
+
   const playerMaxHealth = 5000;
   const healthBarWidth = ( health / playerMaxHealth) * 100;
   const lowHealthEffect = healthBarWidth < 50 && isPlayer && "low-health" //Pulses faster at low health

@@ -11,10 +11,10 @@ import { StandardButton } from "@components/menuComponents/buttons/buttons";
 
 //Functions
 import { putRequest } from "@utils/fetchRequest";
-import { capitalizeFirstWord } from "@utils/utils";
+import { capitalizeFirstLetter } from "@utils/utils";
 
 export default function GuestMessage() {
-  const { setPlayer } = usePlayer();
+  const { player, fetchPlayer } = usePlayer();
   const [isVisible, setIsVisible] = useState(true);
   const [showMessage, setShowMessage] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -25,6 +25,8 @@ export default function GuestMessage() {
     password_confirmation: "",
   });
 
+  console.log("render guestMessage")
+  
   function handleInputChange(e) {
     const { name, value } = e.target;
     setFormData((prevData) => 
@@ -51,17 +53,15 @@ export default function GuestMessage() {
     putRequest("/api/players/convert_to_registered", payload)
       .then((data) => {
         setSubmitting(false);
-
-        if (data.success) { setPlayer((prev) => ({
-          ...prev,
-          username: formData.username, guest: false
-        }))};
+        
+        if (data.success) return fetchPlayer({ deck_stats: true });
 
         setErrorMessage("Unable to convert account.")
       })
       .catch(error => { 
         setSubmitting(false);
-        setErrorMessage(capitalizeFirstWord(error.message))
+        console.log("Error message: " + error.message)
+        setErrorMessage(error.message)
       });
   };
 
@@ -98,7 +98,7 @@ export default function GuestMessage() {
             </>
           ) : (
             <div className="mx-auto lg:w-1/2">
-              <Notification>{ errorMessage }</Notification>
+              { errorMessage && <Notification text={ errorMessage } /> }
               <Form
                 handleSubmit={ handleSubmit }
                 formData={ formData }

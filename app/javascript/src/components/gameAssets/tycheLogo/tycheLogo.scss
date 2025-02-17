@@ -3,19 +3,19 @@
 
 #tyche-logo {
   .title-text {
+    font-size: 6rem;
     background: linear-gradient($light-blood-color 50%, $dark-blood-color);
     z-index: 0;
   }
 
   .border-container {
-    margin-top: 10px;
+    margin-top: 0.625rem;
     width: fit-content;
-    height: 100px;
+    height: 6.25rem;
   }
 
   .textured-red-border {
-    height: 10px;
-    margin-bottom: -15px;
+    height: 0.625rem;
   }
 
   .title-text,
@@ -24,14 +24,29 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    padding-bottom: 20px;
+    padding-bottom: 1.25rem;
   }
 
   .four-suits {
     display: inline-block;
-    font-size: 80px;
-    margin-top: -25px;
-    z-index: 100000;
-    padding: 10px 20px;
+    font-size: 5rem;
+    margin-top: -2.5rem;
+    z-index: 1;
+    padding: 0.625rem 1.25rem;
+  }
+
+  @media (max-width: 26.563rem) {
+    .title-text {
+      font-size: 5rem;
+    }
+
+    .textured-red-border {
+      margin-bottom: -0.5rem;
+    }
+
+    .four-suits {
+      font-size: 3rem;
+      margin-top: -10rem;
+    }
   }
 }

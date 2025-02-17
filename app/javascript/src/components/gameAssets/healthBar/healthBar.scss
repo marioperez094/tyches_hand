@@ -5,7 +5,7 @@
 }
 
 .health-bar-container, .name-container {
-  border: 3px solid #444;
+  border: 0.1875rem solid #444;
 }
 
 .health-background, .health-bar-container, .name-background {
@@ -14,16 +14,16 @@
 
 .health-bar-wrapper {
   transform: scaleX(-1);
-  border-left: 3px solid #444;
+  border-left: 0.1875rem solid #444;
 }
 
 .health-background {
-  max-width: 280px;
+  max-width: 17.5rem;
 }
 
 .health-bar-container {
-  width: 600px;
-  height: 22px;
+  width: 37.5rem;
+  height: 1.375rem;
   border-left: transparent;
   overflow: hidden;
   z-index: 1;
@@ -32,17 +32,17 @@
 .health-bar-fill {
   height: 100%;
   transition: width 0.5s ease, background 0.5s ease;
-  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 0.3125rem rgba(0, 0, 0, 0.5);
   background: linear-gradient(#0B235A, #1C5E9C, #0B235A);
 }
 
 .player-blood-pool {
-  background: linear-gradient( $dark-blood-color, $light-blood-color, $dark-blood-color);
+  background: linear-gradient($dark-blood-color, $light-blood-color, $dark-blood-color);
 }
 
 .name-container {
-  width: 350px;
-  height: 30px;
+  width: 21.875rem;
+  height: 1.875rem;
   border-left: transparent;
   border-top: transparent;
   -moz-transform: skew(-45deg);
@@ -55,18 +55,18 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  text-shadow: 0 0 5px #000;
+  text-shadow: 0 0 0.3125rem #000;
   pointer-events: none;
 }
 
 .name-background {
-  margin-left: 36px;
+  margin-left: 2.25rem;
 }
 
 .name-text {
-  margin-left: -50px;
+  margin-left: -3.125rem;
   transform: skew(45deg) scaleX(-1);
-  padding-left: 10px;
+  padding-left: 0.625rem;
 }
 
 .player-name-text {
@@ -75,13 +75,13 @@
 
 @keyframes pulse {
   0% {
-    box-shadow: 0 0 2px $dark-blood-color;
+    box-shadow: 0 0 0.125rem $dark-blood-color;
   }
   50% {
-    box-shadow: 0 0 30px $light-blood-color;
+    box-shadow: 0 0 1.875rem $light-blood-color;
   }
   100% {
-    box-shadow: 0 0 2px $dark-blood-color;
+    box-shadow: 0 0 0.125rem $dark-blood-color;
   }
 }
 
@@ -94,12 +94,12 @@
   animation: float 20s infinite ease-in-out;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 43.75rem) {
   .health-bar-container {
-    width: 320px;
+    width: 20rem;
   }
 
   .name-container {
-    width: 305px
+    width: 19.0625rem;
   }
 }

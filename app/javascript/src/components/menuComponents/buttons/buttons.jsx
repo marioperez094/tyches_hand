@@ -7,6 +7,9 @@ import "./buttons.scss";
 
 //Reusable Button Component
 export function StandardButton({ type ="button", buttonAction = () => {}, disabled = false, children, ...props }) {
+
+  console.log("render StandardButton")
+
   return(
     <button
       type={ type }
@@ -21,6 +24,9 @@ export function StandardButton({ type ="button", buttonAction = () => {}, disabl
 
 //Reusable Link Button Component
 export function LinkButton({ link , children, ...props }) {
+
+  console.log("render linkButton")
+
   return(
     <Link
       to={ link }

@@ -5,6 +5,9 @@ import React from "react";
 import "./tycheLogo.scss";
 
 export default function TycheLogo() {
+  
+  console.log("rendered tycheLogo")
+
   return (
     <header className="sm:mx-auto sm:w-full sm:max-w-4xl text-center" id="tyche-logo">
       <h1 className="mt-6 text-center text-6xl sm:text-8xl font-extrabold title-text">

@@ -1,9 +1,6 @@
 //External Imports
 import React, { useState } from "react";
 
-//Context
-import { usePlayer } from "@context/player";
-
 //Components
 import SubHeaders from "@components/headers/subHeaders/subHeaders";
 import InputField from "@components/menuComponents/inputFields/inputFields";
@@ -12,7 +9,8 @@ import InputField from "@components/menuComponents/inputFields/inputFields";
 import { putRequest } from "@utils/fetchRequest";
 
 export default function DeckNamer({ name }) {
-  const { setPlayer } = usePlayer();
+
+  console.log("render deckNamer")
   const [isEditing, setIsEditing] = useState(false);
   const [deckName, setDeckName] = useState(name);
 
@@ -35,11 +33,6 @@ export default function DeckNamer({ name }) {
     putRequest("/api/decks/rename", payload)
       .then(data => {
         if (data.success) {
-          setPlayer((prev) => ({
-            ...prev,
-            deck: { ...prev.deck, name: deckName }
-          }));
-
           toggleEditMode();
         }
       })
@@ -51,7 +44,7 @@ export default function DeckNamer({ name }) {
       { isEditing ? (
         <EditDeckName deckName={ deckName } handleInputChange={ handleInputChange } submitDeckName={ submitDeckName } />
       ) : (
-        <DeckName name={ name } toggleEditMode={ toggleEditMode } />
+        <DeckName name={ deckName } toggleEditMode={ toggleEditMode } />
       )}
     </>
   )

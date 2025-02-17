@@ -1,12 +1,38 @@
 //External Imports
-import React from "react";
+import React, { useMemo } from "react";
+import { useLocation } from "react-router-dom";
 
 //Components
 import MenuHeaders from "@components/headers/menuHeaders/menuHeaders";
 import { LinkButton, StandardButton } from "@components/menuComponents/buttons/buttons";
 import HoverButtons from "@components/menuComponents/hoverButtons/hoverButtons";
 
-export default function DashboardLayout({ title, buttons, children }) {
+export default function DashboardLayout({ links, logOut, children }) {
+  const currentLocation = useLocation().pathname; //Retrieves current dashboard location
+    
+  //Retrieves the name of the of the current link for the header
+  const title = useMemo(() => links[currentLocation]?.name || "Player Dashboard", [currentLocation]);
+
+  //Dynamic buttons based on the current location
+  const buttons = useMemo(() => {
+    const filteredButtons =  Object.entries(links)
+      .filter(([path]) => path !== currentLocation)
+      .map(([path, values]) => ({
+        name: values.name,
+        link: path
+      }));
+
+      //Play and logout buttons are static but dashboard link buttons are dynamically loaded
+      return ([
+        { name: "Play" },
+        ...filteredButtons,
+        { name: "Log Out", buttonAction: logOut }
+      ])
+
+  }, [currentLocation, links, logOut]);
+  
+  console.log("render dashboardLayout")
+
   return (
     <>
       { /* Mobile navigation */ }

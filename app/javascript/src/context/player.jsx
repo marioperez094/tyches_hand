@@ -1,54 +1,44 @@
 //External Imports
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 
 //Functions
 import { getRequest } from "@utils/fetchRequest";
+import { useCard } from "@context/card";
 
-const PlayerContext = createContext(null);
+const PlayerContext = createContext(false);
 
 function PlayerProvider({ children }) {
-  const [player, setPlayerState] = useState(null);
-  const [deck, setCardsInDeck] = useState();
+  console.log("render playerProvider")
+  
+  const { setDeck, setCollectionCards } = useCard();
+  const [player, setPlayer] = useState(null);
 
-  function fetchPlayer({ deck_stats = false, deck_cards = false, collection_cards = false } = {}) {
+  console.log("player: " + player)
+
+  function fetchPlayer({ 
+    deck_stats = false,
+    deck_cards = false,
+    collection_cards = false,
+  } = {}) {
     const queryParams = new URLSearchParams();
     if (deck_stats) queryParams.append("deck_stats", "true");
     if (deck_cards) queryParams.append("deck_cards", "true");
     if (collection_cards) queryParams.append("collection_cards", "true");
 
     const url = `/api/players/show?${ queryParams.toString() }`;
-
-    return getRequest(url)
+    
+    getRequest(url)
       .then(data => {
-        if (!data.player) {
-          console.log(data.player)
-          return null;
-        }
-
-        const { deck_cards, ...playerStats} = data.player;
-
-        setPlayerState(playerStats);
+        const { deck_cards, collection_cards, ...playerStats } = data.player;
+        setPlayer(playerStats)
         if (deck_cards) setDeck(deck_cards);
-
-        return data.player;
+        if (collection_cards) setCollectionCards(collection_cards);
       })
-      .catch(error => {
-        setPlayerState(false)
-        console.error("Fetch Player Error: ", error.message);
-        return null;
-      })
-  };
-
-  function setPlayer(player) {
-    setPlayerState(player);
-  };
-
-  function setDeck(deck) {
-    setCardsInDeck(deck);
+      .catch(error => console.error(error.message));
   };
 
   return (
-    <PlayerContext.Provider value={{ player, deck, fetchPlayer, setDeck, setPlayer }}>
+    <PlayerContext.Provider value={{ player, fetchPlayer }}>
       { children }
     </PlayerContext.Provider>
   )

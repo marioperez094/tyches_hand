@@ -3,56 +3,32 @@ import React, { useState } from "react";
 
 //Components
 import { StandardButton } from "@components/menuComponents/buttons/buttons";
+import ActiveWidget from "./activeWidget";
 
-export default function UserEntryWidget({ activeWidget, setActiveWidget, successfulLogin }) {
-  const siteKey = process.env['REACT_APP_RECAPTCHA_SITE_KEY'];
+export default function UserEntryWidget({ 
+  options, 
+  submitting, 
+  setSubmitting, 
+  successfulLogin 
+}) {
   
-  const [submitting, setSubmitting] = useState(false);
-  const userEntryOptions = [
-    { name: "Sign Up", buttonAction: () => setActiveWidget("Sign Up"), disabled: false }, 
-    { name: "Log In", buttonAction: () => setActiveWidget("Log In"), disabled: false }, 
-    { name: submitting ? "Creating Account..." : "Guest Mode", 
-      buttonAction: (e) => handleSubmit(e), 
-      disabled: submitting 
-    },
-  ];
-
-  function handleSubmit(e) {
-    if (e) e.preventDefault();
-    setSubmitting(true);
-
-    window.grecaptcha.ready(() => {
-      window.grecaptcha
-        .execute(siteKey, { action: "submit"})
-        .then((token) => {
-          submitGuestMode(token);
-        })
-        .catch((error) => {
-          alert("reCAPTCHA error: " + error.message)
-        })
-    })
-  };
-
-  function submitGuestMode(captchaToken) {
-    
-    const payload = {
-      player: {
-        guest: true
-      },
-      recaptcha_token: captchaToken,
-    };
-    
-    successfulLogin("/api/players", payload);
-  };
+  console.log("render userEntryWidget")
+  
+  const [activeWidget, setActiveWidget] = useState("Options")
 
   return (
     <>
-      { userEntryOptions.map((option) =>
+      <ActiveWidget
+        activeWidget={ activeWidget }
+        submitting={ submitting }
+        setSubmitting={ setSubmitting }
+        successfulLogin={ successfulLogin }
+      />
+      { options.map((option) =>
         activeWidget !== option.name ?
           <StandardButton
             key={ option.name }
-            buttonAction={ option.buttonAction }
-            disabled={ option.disabled }
+            buttonAction={ () => setActiveWidget(option.name) }
           >
             { option.name }
           </StandardButton>
@@ -60,4 +36,4 @@ export default function UserEntryWidget({ activeWidget, setActiveWidget, success
       )}
     </>
   )
-}
+};

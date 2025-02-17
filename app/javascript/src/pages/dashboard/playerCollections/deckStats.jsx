@@ -11,6 +11,8 @@ export default function DeckStats({ cardStats }) {
       .filter(([_, stat]) => stat > 0)
   }, [cardStats]);
 
+  console.log("render deckStats")
+
   //Undiscovered decks calculated from card stats. Subtract -1 for deck name from Object.keys
   const missingDecks = (Object.keys(cardStats).length - 1) - revealedDecks.length; 
   
@@ -39,6 +41,8 @@ function DeckType({ name, stat }) {
     Bloodstained: "The cards are matted together by blood, filling the room with their foul odor. DAIMON'S MINIMUM WAGER INCREASES."
   };
 
+  console.log("render deckType")
+
   return (
     <li className="w-full flex flex-col justify-between deck-type-container">
       <SubHeaders isHeading={ false }>
@@ -52,6 +56,9 @@ function DeckType({ name, stat }) {
 
 //Redacted deck 
 function RedactedDeck() {
+
+  console.log("render redactedDeck")
+
   return (
       <li className="relative overflow-hidden redacted">
         

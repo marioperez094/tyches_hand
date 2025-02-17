@@ -3,6 +3,9 @@ import React from "react";
 
 // LoadingLine Component: Pre-renders all lines and fades in text when ready
 export default function LoadingLine({ animationDelay, loadingLine, isLoading }) {
+
+  console.log("render loadingLine")
+
   return (
     <li
       className={ `text-white flex ${ isLoading ? "loading-line-container" : "height-container" }` }
