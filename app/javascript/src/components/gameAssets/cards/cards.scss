@@ -1,11 +1,12 @@
 @import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
 @import "@stylesheets/animations.scss";
 
 .card-container {
-  width: 150px;
-  height: 220px;
-  border-radius: 12px;
-  perspective: 1000px;
+  width: 9.375rem;
+  height: 13.75rem;
+  border-radius: 0.75rem;
+  perspective: 62.5rem;
   cursor: pointer;
 
   &.black
@@ -14,7 +15,7 @@
   .card-rank,
   &.black
   .card-value {
-    color: #000
+    color: #000;
   }
 }
 
@@ -24,13 +25,13 @@
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.6s ease-in-out;
-  background: linear-gradient(135deg, #FFFFFF, #EAEAEA );
-  border: 2px solid #000;
-  border-radius: 10px;
+  background: linear-gradient(135deg, #FFFFFF, #EAEAEA);
+  border: 0.125rem solid #000;
+  border-radius: 0.625rem;
   
   &:hover {
-    transform: translateY(-20px) scale(1.1);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    transform: translateY(-1.25rem) scale(1.1);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.4);
   }
 }
 
@@ -42,9 +43,9 @@
   width: 100%;
   height: 100%;
   position: absolute;
-  padding: 10px;
-  backface-visibility: hidden; // Hides back when flipped 
-  border-radius: 8px;
+  padding: 0.625rem;
+  backface-visibility: hidden;
+  border-radius: 0.5rem;
 }
 
 .card-front {
@@ -52,12 +53,11 @@
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
-  z-index: 1000;
 
   &.Blessed-card {
     background: linear-gradient(135deg, $light-gold-color, $dark-gold-color);
-    border: 3px solid $light-gold-color;
-    box-shadow: 0 4px 10px $shadow-gold;
+    border: 0.1875rem solid $light-gold-color;
+    box-shadow: 0 0.25rem 0.625rem $shadow-gold;
     .card-suit, .card-rank, .card-value {
       color: #FFFFFF !important;
     }
@@ -65,8 +65,8 @@
 
   &.Bloodstained-card {
     background: radial-gradient(circle, $light-blood-color, $dark-blood-color);
-    border: 3px solid $dark-blood-color;
-    box-shadow: 0 4px 10px $shadow-blood; 
+    border: 0.1875rem solid $dark-blood-color;
+    box-shadow: 0 0.25rem 0.625rem $shadow-blood;
     .card-suit, .card-rank, .card-value {
       color: #E8E4D9 !important;
     }
@@ -74,8 +74,8 @@
 
   &.Charred-card {
     background: linear-gradient(135deg, $ashen-gray, $ember-orange);
-    border: 3px solid $shadow-fire;
-    box-shadow: 0 4px 10px rgba(255, 87, 0, 0.6); 
+    border: 0.1875rem solid $shadow-fire;
+    box-shadow: 0 0.25rem 0.625rem rgba(255, 87, 0, 0.6);
     .card-suit, .card-rank, .card-value {
       color: #EAEAEA !important;
     }
@@ -83,8 +83,8 @@
 
   &.Exhumed-card {
     background: linear-gradient(135deg, $mystic-black, $eerie-green);
-    border: 3px solid $eerie-green;
-    box-shadow: 0 4px 15px $shadow-mist;
+    border: 0.1875rem solid $eerie-green;
+    box-shadow: 0 0.25rem 0.9375rem $shadow-mist;
     .card-suit, .card-rank, .card-value {
       color: #D1D1D1 !important;
     }
@@ -92,8 +92,8 @@
 
   &.Fleshwoven-card {
     background: linear-gradient(135deg, $skin-tone, $shadow-fire);
-    border: 3px solid $vein-blue;
-    box-shadow: 0 4px 10px $shadow-artery;
+    border: 0.1875rem solid $vein-blue;
+    box-shadow: 0 0.25rem 0.625rem $shadow-artery;
     .card-suit, .card-rank, .card-value {
       color: #EFE2D9 !important;
     }
@@ -105,18 +105,18 @@
 }
 
 .card-header .card-suit, .card-footer .card-suit {
-  font-size: 20px;
+  font-size: 1.25rem;
 }
 
 .card-header, .card-footer {
   width: 100%;
-  font-size: 18px;
+  font-size: 1.125rem;
   font-weight: bold;
   color: $light-blood-color;
 }
 
 .card-content {
-  font-size: 50px;
+  font-size: 3.125rem;
   color: $light-blood-color;
 }
 
@@ -126,72 +126,31 @@
   background: repeating-linear-gradient(
     45deg,
     $dark-blood-color,
-    $light-blood-color 6px,
-    $dark-blood-color 5px,
-    $light-blood-color 9px
+    $light-blood-color 0.375rem,
+    $dark-blood-color 0.3125rem,
+    $light-blood-color 0.5625rem
   );
 }
 
-.overlap-cards {
-  opacity: 0;
-  margin-left: -60px;
-  z-index: 1;
-  transition: z-index 0.3s ease;
-  transform: translateX(50px);
-  animation: stack-animation 0.05s ease forwards;
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:hover {
-    z-index: 2;
-  } 
-
-  
-  &:active {
-    opacity: 1;
-
-    .card {
-      opacity: 1;
-      cursor: grabbing;
-      transform: scale(1.05);
-    }
-  }
-}
-
-.card-stack {
-  min-height: 300px;
-}
-
-@media (max-width: 1000px) {
-  .card-stack {
-    min-height: 175px;
-  }
-
+@media (max-width: 62.5rem) {
   .card-container {
-    width: 75px;
-    height: 110px;
+    width: 4.6875rem;
+    height: 6.875rem;
   }
 
   .card-face {
-    padding: 6px;
+    padding: 0.375rem;
   }
 
   .card-header .card-suit, .card-footer .card-suit {
-    font-size: 10px;
+    font-size: 0.625rem;
   }
 
   .card-header, .card-footer {
-    font-size: 9px;
+    font-size: 0.5625rem;
   }
   
   .card-content {
-    font-size: 20px;
+    font-size: 1.25rem;
   }
-
-  .overlap-cards {
-    margin-left: -25px;
-  }
-
 }

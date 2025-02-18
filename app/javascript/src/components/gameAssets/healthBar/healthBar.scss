@@ -1,0 +1,105 @@
+@import "@stylesheets/variables.scss";
+
+.health-bar-wrapper {
+  overflow: hidden;
+}
+
+.health-bar-container, .name-container {
+  border: 0.1875rem solid #444;
+}
+
+.health-background, .health-bar-container, .name-background {
+  background-color: #222;
+}
+
+.health-bar-wrapper {
+  transform: scaleX(-1);
+  border-left: 0.1875rem solid #444;
+}
+
+.health-background {
+  max-width: 17.5rem;
+}
+
+.health-bar-container {
+  width: 37.5rem;
+  height: 1.375rem;
+  border-left: transparent;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.health-bar-fill {
+  height: 100%;
+  transition: width 0.5s ease, background 0.5s ease;
+  box-shadow: inset 0 0 0.3125rem rgba(0, 0, 0, 0.5);
+  background: linear-gradient(#0B235A, #1C5E9C, #0B235A);
+}
+
+.player-blood-pool {
+  background: linear-gradient($dark-blood-color, $light-blood-color, $dark-blood-color);
+}
+
+.name-container {
+  width: 21.875rem;
+  height: 1.875rem;
+  border-left: transparent;
+  border-top: transparent;
+  -moz-transform: skew(-45deg);
+  -webkit-transform: skew(-45deg);
+  transform: skew(-45deg);
+  overflow: hidden;
+}
+
+.health-bar-text {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 0.3125rem #000;
+  pointer-events: none;
+}
+
+.name-background {
+  margin-left: 2.25rem;
+}
+
+.name-text {
+  margin-left: -3.125rem;
+  transform: skew(45deg) scaleX(-1);
+  padding-left: 0.625rem;
+}
+
+.player-name-text {
+  transform: skew(45deg) scaleX(1);
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0.125rem $dark-blood-color;
+  }
+  50% {
+    box-shadow: 0 0 1.875rem $light-blood-color;
+  }
+  100% {
+    box-shadow: 0 0 0.125rem $dark-blood-color;
+  }
+}
+
+.low-health {
+  animation: pulse 15 infinite ease-in-out;
+}
+
+.player-health-bar {
+  transform: scaleX(0);
+  animation: float 20s infinite ease-in-out;
+}
+
+@media (max-width: 43.75rem) {
+  .health-bar-container {
+    width: 20rem;
+  }
+
+  .name-container {
+    width: 19.0625rem;
+  }
+}

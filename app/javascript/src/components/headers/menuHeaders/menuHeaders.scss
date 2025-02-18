@@ -1,0 +1,19 @@
+@import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
+
+.header-container {
+  height: 2.5rem;
+  width: fit-content;
+  background: radial-gradient(circle at left, $dark-blood-color 80%, transparent);
+  color: $light-gold-color;
+
+  h1 {
+    color: transparent;
+    background: linear-gradient(
+      $dark-gold-color,
+      $light-gold-color 50%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+  }
+}

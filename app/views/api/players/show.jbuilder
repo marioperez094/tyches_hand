@@ -1,29 +1,23 @@
 json.player do
   json.partial! 'api/players/player', player: @player
 
-  if @include_decks 
+  if @include_deck_stats 
     json.deck do
-      json.partial! 'api/decks/deck', deck: @player.deck
+      json.partial! 'api/players/card_stats', player: @player
     end
   end
 
-  if @include_cards
-    json.cards do
-      json.array! @player.cards.sort_by(&:id) do |card|
-        json.partial! 'api/cards/card', card: card
-      end
-    end
-  end
-
-  if @separate_deck_cards
-    json.collection_cards do
-      json.array! @player.cards.where.not(id: @player.deck.cards.select(:id)) do |card|
-        json.partial! 'api/cards/card', card: card
-      end
-    end
-
+  if @include_deck_cards
     json.deck_cards do
       json.array! @player.deck.cards do |card|
+        json.partial! 'api/cards/card', card: card
+      end
+    end
+  end
+
+  if @include_collection_cards
+    json.collection_cards do
+      json.array! @player.cards.where.not(id: @player.deck.cards.select(:id)) do |card|
         json.partial! 'api/cards/card', card: card
       end
     end

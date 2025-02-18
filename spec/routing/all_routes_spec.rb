@@ -64,10 +64,4 @@ RSpec.describe "API Routing", type: :routing do
       expect(put: "/api/decks/update/cards").to route_to("api/decks#update_cards_in_deck")
     end
   end
-
-  describe "Static Pages routes" do
-    it "routes /player/stats to static_pages#player_stats" do
-      expect(get: "/player/stats").to route_to("static_pages#player_stats")
-    end
-  end
 end

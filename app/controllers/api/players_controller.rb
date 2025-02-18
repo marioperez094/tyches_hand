@@ -19,7 +19,7 @@ module Api
           httponly: true,
         }
         
-        render json: { success: true }, status: :ok, 
+        render json: { success: true },
         status: :ok
 
       else
@@ -36,9 +36,9 @@ module Api
     end
 
     def show
-      @include_decks = params[:deck] == 'true'
-      @include_cards = params[:cards] == 'true'
-      @separate_deck_cards = params[:deck_cards] == 'true' #Sepeartes cards in players collection but not in deck
+      @include_deck_stats = params[:deck_stats] == 'true'
+      @include_deck_cards = params[:deck_cards] == 'true'
+      @include_collection_cards = params[:collection_cards] == 'true'
 
       render 'api/players/show',
       status: :ok
@@ -60,13 +60,18 @@ module Api
       return render json: { error: 'This account is already registered.' },
       status: :forbidden unless @player.guest
 
+      if params[:player][:password].length < 6
+        render json: { error: 'Password must be at least 6 characters long.' }, status: :bad_request
+        return
+      end
+
       begin
         @player.update!(username: params[:player][:username], password: params[:player][:password], guest: false)
         
-        render json: { success: true }, status: :ok,
+        render json: { success: true }, 
         status: :ok
-      rescue ArgumentError => e
-        render json: { error: e.message },
+      rescue ActiveRecord::RecordInvalid  => e
+        render json: { error: @player.errors.full_messages },
         status: :bad_request
       end
     end

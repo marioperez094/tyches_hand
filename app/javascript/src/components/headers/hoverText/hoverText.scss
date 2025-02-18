@@ -9,7 +9,7 @@
 .hover-box {
   top: 0;
   left: 100%;
-  width: 180px;
+  width: 11.25rem;
   background-color: rgba(0, 0, 0, 0.8);
   color: #FFF;
   border-radius: 8px;
@@ -39,11 +39,4 @@
 
 .hide-hover-box {
   opacity: 0 !important;
-}
-
-@media (max-width: 700px) {
-  .hover-box {
-    top: 0;
-    left: 0;
-  }
 }

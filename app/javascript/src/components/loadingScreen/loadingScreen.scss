@@ -1,0 +1,49 @@
+@import "@stylesheets/variables.scss";
+@import "@stylesheets/globals.scss";
+@import "@stylesheets/animations.scss";
+
+.loading-line-container, .height-container {
+  height: 2.5rem;
+
+  span {
+    font-size: 1.25rem;
+    display: inline-block;
+    margin: 0 0.125rem;
+  }
+}
+
+.loading-line-container {
+  opacity: 0;
+  animation: fade-in 8s ease-in-out forwards;
+}
+
+.loading-text {
+  animation: float 5s infinite alternate ease-in-out;
+  animation-delay: var(--delay);
+}
+
+// Glitch effect before disappearing
+.loading-text-exit {
+  animation: glitch-flicker 0.8s steps(2, start) infinite, fade-out 0.5s ease-in-out 2s forwards;
+  position: relative;
+}
+
+// Adds RGB color shift effect
+.loading-text-exit::before,
+.loading-text-exit::after {
+  content: attr(data-text);
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  overflow: hidden;
+  color: #ff00ff;
+  opacity: 0.8;
+  z-index: -1;
+}
+
+.loading-text-exit::after {
+  color: #00ffff;
+  left: 0.125rem;
+  top: -0.125rem;
+}

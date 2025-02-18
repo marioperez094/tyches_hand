@@ -28,6 +28,7 @@ module Api
       return render json: { error: "Session not found." },
       status: :not_found unless session
 
+      #Deletes guest player
       if session.player.guest
         session.player.deck&.destroy
         session.player.collections.destroy_all
@@ -44,15 +45,17 @@ module Api
       session = Session.find_by(token: cookies.signed[:tyches_hand_session_token])
 
       if session&.expired? 
+        
+        #Deletes guest player if their session expires 
+        if session.player&.guest
+          session.player&.deck&.destroy
+          session.player&.collections.destroy_all
+          session.player.destroy
+        end
+
         session.destroy
         cookies.delete(:tyches_hand_session_token)
         return render json: { authenticated: false, error: "Session expired." }
-      end
-
-      if session&.player&.guest
-        session.player&.deck&.destroy
-        session.player&.collections.destroy_all
-        session.player.destroy
       end
 
       render json: { authenticated: current_player.present? }

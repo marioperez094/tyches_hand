@@ -1,26 +1,44 @@
 //External Imports
-import React, { useState, useEffect, useContext, createContext } from "react";
+import React, { useState, useContext, createContext } from "react";
 
 //Functions
 import { getRequest } from "@utils/fetchRequest";
+import { useCard } from "@context/card";
 
 const PlayerContext = createContext(false);
 
 function PlayerProvider({ children }) {
-  const [player, setPlayerState] = useState(null);
+  console.log("render playerProvider")
+  
+  const { setDeck, setCollectionCards } = useCard();
+  const [player, setPlayer] = useState(null);
 
-  useEffect(() => {
-    getRequest("/api/players/show?deck=true&deck_cards=true")
-      .then(data => setPlayerState(data.player))
-      .catch(error => console.log(error.message));
-  }, []);
+  console.log("player: " + player)
 
-  function setPlayer(player) {
-    setPlayerState(player);
+  function fetchPlayer({ 
+    deck_stats = false,
+    deck_cards = false,
+    collection_cards = false,
+  } = {}) {
+    const queryParams = new URLSearchParams();
+    if (deck_stats) queryParams.append("deck_stats", "true");
+    if (deck_cards) queryParams.append("deck_cards", "true");
+    if (collection_cards) queryParams.append("collection_cards", "true");
+
+    const url = `/api/players/show?${ queryParams.toString() }`;
+    
+    getRequest(url)
+      .then(data => {
+        const { deck_cards, collection_cards, ...playerStats } = data.player;
+        setPlayer(playerStats)
+        if (deck_cards) setDeck(deck_cards);
+        if (collection_cards) setCollectionCards(collection_cards);
+      })
+      .catch(error => console.error(error.message));
   };
 
   return (
-    <PlayerContext.Provider value={{ player, setPlayer }}>
+    <PlayerContext.Provider value={{ player, fetchPlayer }}>
       { children }
     </PlayerContext.Provider>
   )
@@ -31,9 +49,3 @@ function usePlayer() {
 };
 
 export { PlayerProvider, usePlayer }
-
-/*useEffect(() => {
-    getRequest("/api/players/show?deck=true&deck_cards=true")
-      .then(data => setPlayer(data.player))
-      .catch(error => console.log(error.message))
-    }, []); */

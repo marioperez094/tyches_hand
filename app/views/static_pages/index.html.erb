@@ -1,0 +1,6 @@
+<%= javascript_packs_with_chunks_tag 'index' %>
+<%= stylesheet_packs_with_chunks_tag 'index' %>
+
+<% content_for :head do %>
+  <script src="https://www.google.com/recaptcha/api.js?render=<%= ENV['REACT_APP_RECAPTCHA_SITE_KEY'] %>"></script>
+<% end %>
