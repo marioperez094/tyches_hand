@@ -29,11 +29,25 @@ function CardProvider({ children }) {
       setTarget(updatedTarget);
   };
 
-  function sortCardsByID() {
-    const { updatedLoadout, updatedCollection } = sortItemsByID(deck, collectionCards);
+  function sortCardsByRank() {
+    const rankOrder = {
+      "Jack": 11,
+      "Queen": 12,
+      "King": 13,
+      "Ace": 15,
+    };
 
-    setDeck(updatedLoadout);
-    setCollectionCards(updatedCollection);
+    function sortedCards(cards) { 
+      return cards.slice().sort((a, b) => {
+        const rankA = rankOrder[a.rank] || parseInt(a.rank);
+        const rankB = rankOrder[b.rank] || parseInt(b.rank);
+  
+        return rankA - rankB;
+      });
+    } 
+
+    setDeck(sortedCards(deck));
+    setCollectionCards(sortedCards(collectionCards));
   }
 
   function clearDeck() {
@@ -51,7 +65,7 @@ function CardProvider({ children }) {
   };
 
   return (
-    <CardContext.Provider value={{ deck, collectionCards, handleMoveCards, sortCardsByID, clearDeck, fillDeck, setDeck, setCollectionCards }}>
+    <CardContext.Provider value={{ deck, collectionCards, handleMoveCards, sortCardsByRank, clearDeck, fillDeck, setDeck, setCollectionCards }}>
       { children }
     </CardContext.Provider>
   )

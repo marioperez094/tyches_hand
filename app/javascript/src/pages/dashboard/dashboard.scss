@@ -7,6 +7,8 @@
   transform: translateY(100vh);
   animation: slide-up-bounce 1s ease-out 2s forwards;
 
+  //Player Collection Stats
+
   //Card Stat Text
   .Total-text,
   .Standard-text,
@@ -143,7 +145,26 @@
     }
   }
 
-  //Guest warning/form
+  //Deck Editor
+  
+  .deck-buttons-container {
+    z-index: 2;
+  }
+
+  .deck-buttons {
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0) 70%);
+    backdrop-filter: blur(0.5rem);
+  }
+  .deck-message-container {
+    height: 3rem;
+    width: 100%;
+  }
+
+  .text-green-500.notification, .text-red-500.notification {
+    animation: fade-out 5s ease-in forwards;
+  }
+
+  //Guest warning and form
   .guest-message-container {
     margin: 0 auto;
     max-height: 13.75rem;
@@ -153,16 +174,6 @@
       padding: 0.75rem 1.5rem;
       margin: 0.5rem 0;
     }
-  }
-
-  .deck-buttons-container {
-    background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 40%, rgba(0, 0, 0, 0) 70%);
-    backdrop-filter: blur(0.5rem);
-    z-index: 2;
-  }
-
-  .text-green-500.notification, .text-red-500.notification {
-    animation: fade-out 5s ease-in forwards;
   }
 
   .filter-checkbox-container {

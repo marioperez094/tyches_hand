@@ -22,7 +22,7 @@ export default function DeckEditor() {
   console.log("render deckEditor")
 
   const { player } = usePlayer();
-  const { deck, collectionCards, handleMoveCards, sortCardsByID, clearDeck, fillDeck } = useCard();
+  const { deck, collectionCards, handleMoveCards, sortCardsByRank, clearDeck, fillDeck } = useCard();
   const { selectedItem, setSelectedItem, source, setSource, handleItemTap } = useSelectItem();
   const [message, setMessage] = useState("")
   const [filters, setFilters] = useState({
@@ -79,15 +79,15 @@ export default function DeckEditor() {
   return (
     <>
       { /* Deck editing buttons */ }
-      <div className="sticky top-0 deck-buttons-container">
-        <div className="flex justify-center deck-buttons overflow-x-scroll w-full">
+      <div className="sticky top-0 deck-buttons-container overflow-x-scroll">
+        <div className="flex justify-center deck-buttons w-full">
           <StandardButton
             buttonAction={ submitDeck }
           >
             Save Deck
           </StandardButton>
           <StandardButton
-            buttonAction={ sortCardsByID }
+            buttonAction={ sortCardsByRank }
           >
             Sort Decks
           </StandardButton>
@@ -102,13 +102,16 @@ export default function DeckEditor() {
             Fill Deck
           </StandardButton>
         </div>
+        <div className="relative deck-message-container"> {/* Ensures space for Notification */}
+          { message &&
+            <Notification 
+              text={message} 
+              className={`absolute top-0 left-0 w-full ${ message === "Deck Saved!" ? "text-green-500" : "text-red-500" }`} 
+            />  
+          }
+        </div>
 
-        { message && 
-          <Notification 
-            text={ message } 
-            className={ `absolute w-full ${ message === "Deck Saved!" ? "text-green-500" : "text-red-500" }` } 
-          />
-        }
+        
       </div>
 
       <section className="mx-auto my-3 sm:my-5 lg:my-10">
