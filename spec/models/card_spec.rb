@@ -37,6 +37,11 @@ RSpec.describe Card, type: :model do
       expect(card).not_to be_valid
     end
 
+    it "is invalid with an incorrect effect_type" do
+      card = FactoryBot.build(:card, effect_type: "Magic") # Invalid type
+      expect(card).not_to be_valid
+    end
+
     it "ensures uniqueness of the card name" do
       FactoryBot.create(:card, name: "Exhumed Ace of Spades")
       duplicate_card = FactoryBot.build(:card, name: "Exhumed Ace of Spades")
@@ -104,6 +109,16 @@ RSpec.describe Card, type: :model do
       card.set_effect_description
       expect(card.description).to include("An Exhumed Ace of Spades")
     end
+
+    it "automatically assigns effect_type based on effect" do
+      card = FactoryBot.create(:card, effect: "Exhumed")
+      expect(card.effect_type).to eq("Pot")
+    end
+    
+    it "assigns 'none' to Standard cards" do
+      card = FactoryBot.create(:card, effect: "Standard")
+      expect(card.effect_type).to eq("None")
+    end
   end
 
   describe "Scopes" do
@@ -113,6 +128,8 @@ RSpec.describe Card, type: :model do
     let!(:charred_card) { FactoryBot.create(:card, effect: "Charred") }
     let!(:player) { FactoryBot.create(:player) }
     let!(:player_owned_card) { FactoryBot.create(:card) }
+    let!(:pot_card) { FactoryBot.create(:card, effect: "Blessed") } # damage
+    let!(:heal_card) { FactoryBot.create(:card, rank: "King", effect: "Charred") } # heal
 
     before do
       player.cards << player_owned_card
@@ -132,6 +149,14 @@ RSpec.describe Card, type: :model do
       undiscovered_cards = Card.by_undiscovered(player)
       expect(undiscovered_cards).to include(spade_card, heart_card, exhumed_card, charred_card)
       expect(undiscovered_cards).not_to include(player_owned_card)
+    end
+
+    it ".by_effect_type returns cards with the given effect type" do
+      expect(Card.by_effect_type("Pot")).to include(pot_card)
+      expect(Card.by_effect_type("Pot")).not_to include(heal_card)
+    
+      expect(Card.by_effect_type("Heal")).to include(heal_card)
+      expect(Card.by_effect_type("Heal")).not_to include(pot_card)
     end
   end
 end

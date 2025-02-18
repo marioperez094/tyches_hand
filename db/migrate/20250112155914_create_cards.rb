@@ -1,11 +1,12 @@
 class CreateCards < ActiveRecord::Migration[6.1]
   def change
     create_table :cards do |t|
-      t.string :name, null: false         #Name of card i.e. "Blood Type 7 of Hearts",
+      t.string :name, null: false          #Name of card i.e. "Blood Type 7 of Hearts",
       t.string :suit, null: false          #Suit of the card
       t.string :rank, null: false          #Value of the card
-      t.string :description, null: false   #Card description including effects
-      t.string :effect, null: false   #Category of the effect
+      t.text :description, null: false     #Card description including effects
+      t.string :effect, null: false        #Category of the effect
+      t.string :effect_type, null: false   #Defines if its "damage", "healing", "misc"
 
       t.timestamps
     end

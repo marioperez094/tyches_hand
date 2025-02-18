@@ -6,8 +6,9 @@ class CreatePlayers < ActiveRecord::Migration[6.1]
       t.boolean :guest, default: false, null: false
       t.boolean :tutorial_complete, default: false, null: false
       t.integer :blood_pool, default: 5000, null: false
-      t.integer :high_score, default: 0, null: false
-      t.integer :high_score_round, default: 0, null: false
+      t.integer :highest_daimon_health, default: 0, null: false
+      t.integer :highest_round, default: 0, null: false
+      t.integer :lore_progression, default: 0, null: false
 
       t.timestamps
     end

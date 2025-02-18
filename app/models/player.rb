@@ -13,6 +13,7 @@ class Player < ApplicationRecord
   validates :password, confirmation: true, length: { minimum: 6 }, presence: true, on: [:create, :update_password, :convert_to_registered, :destroy], unless: :guest?
   validates :password_confirmation, presence: true, on: [:create, :update_password, :destroy], unless: :guest?
   validates :blood_pool, numericality: { only_integer: true, greater_than_or_equal_to: 0, less_than_or_equal_to: 5000 }
+  validates :lore_progression, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   #Callbacks
   before_validation :assign_guest_username, if: :guest?
@@ -20,6 +21,31 @@ class Player < ApplicationRecord
   after_create :initialize_deck
 
   attr_accessor :force_delete #Allows manual deletion when explicitly requested
+
+
+  #Public Token Functions
+
+
+  #def current_lore_token
+    #Token.where(lore_token: true).order(:sequence_order).offset(lore_progression).first
+  #end
+
+  #def advance_lore_progression
+    #return unless current_lore_token # Ensure there's a token to advance to
+    
+    #next_lore_token = Token.where(lore_token: true)
+      #.order(:sequence_order)
+      #.offset(lore_progression + 1)
+      #.first
+
+    #self.lore_progression += 1 if next_lore_token.present?
+    #save!
+  #end
+
+
+
+  #Public Card Functions
+
 
   #Card Discovery Logic
   def discover_cards
@@ -59,6 +85,23 @@ class Player < ApplicationRecord
 
   private
 
+  def guest?
+    guest
+  end
+
+  #Assign a unique username to gust users
+  def assign_guest_username
+    update!(username: "Guest#{ Time.now.to_i }") if username.blank?
+  end
+
+  def force_delete?
+    !!@force_delete # Returns true if explicitly set
+  end
+
+  
+  #Private Card Functions
+
+
   def initialize_deck
     return if deck.present?
 
@@ -67,15 +110,6 @@ class Player < ApplicationRecord
       created_deck.populate_with_standard_cards
       self.cards << created_deck.cards #Player owns same 52 cards
     end
-  end
-
-  def guest?
-    guest
-  end
-
-  #Assign a unique username to gust users
-  def assign_guest_username
-    update!(username: "Guest#{ Time.now.to_i }") if username.blank?
   end
 
   #Determine the number of cards a player discovers based on health odds
@@ -88,9 +122,5 @@ class Player < ApplicationRecord
 
   def prevent_registered_player_deletion
     throw(:abort) unless guest? # Prevent destruction if the player is registered
-  end
-
-  def force_delete?
-    !!@force_delete # Returns true if explicitly set
   end
 end

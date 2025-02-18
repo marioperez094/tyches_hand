@@ -16,8 +16,9 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.string "name", null: false
     t.string "suit", null: false
     t.string "rank", null: false
-    t.string "description", null: false
+    t.text "description", null: false
     t.string "effect", null: false
+    t.string "effect_type", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["effect"], name: "index_cards_on_effect"
@@ -59,8 +60,9 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.boolean "guest", default: false, null: false
     t.boolean "tutorial_complete", default: false, null: false
     t.integer "blood_pool", default: 5000, null: false
-    t.integer "high_score", default: 0, null: false
-    t.integer "high_score_round", default: 0, null: false
+    t.integer "highest_daimon_health", default: 0, null: false
+    t.integer "highest_round", default: 0, null: false
+    t.integer "lore_progression", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["username"], name: "index_players_on_username", unique: true

@@ -8,11 +8,13 @@ class Card < ApplicationRecord
 
   before_validation :set_card_name
   before_validation :set_effect_description
+  before_validation :set_effect_type, if: -> { effect.present? }
 
   #Constants
   RANKS = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace].freeze
   SUITS = %w[Hearts Diamonds Clubs Spades].freeze
   EFFECTS = %w[Exhumed Charred Fleshwoven Blessed Bloodstained Standard].freeze
+  EFFECT_TYPES= %w[Pot Heal Damage None].freeze
   FACE_CARD_RANK = {
     'Jack' => 11,
     'Queen' => 12,
@@ -23,27 +25,32 @@ class Card < ApplicationRecord
     "Exhumed" => {
       value_calculation: ->(rank) { (500 * rank / 15.0).round },
       description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. INCREASED BLOOD POOL WINNINGS WITH WINNING HAND." },
-      discovery_probability: ->(health_odds) { (0.4 + health_odds) / 1.4 }
+      discovery_probability: ->(health_odds) { (0.4 + health_odds) / 1.4 },
+      effect_type: 'Pot'
     },
     "Charred" => {
       value_calculation: ->(rank) { (0.15 * rank / 15.0).round(2) },
       description: ->(name) { "A #{name}, the embers on these cards can still cauterize wounds. REDUCES BLOOD LOSS." },
-      discovery_probability: ->(health_odds) { (0.6 + health_odds) / 2 }
+      discovery_probability: ->(health_odds) { (0.6 + health_odds) / 2 },
+      effect_type: 'Heal'
     },
     "Fleshwoven" => {
       value_calculation: ->(rank) { (0.2 * rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. GREATER BLOOD POOL WINNINGS IF THE HAND ENDS IN A PUSH." },
-      discovery_probability: ->(health_odds) { 0.6 }
+      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. INCREASES BLOOD POOL WINNINGS IF THE HAND ENDS IN A PUSH." },
+      discovery_probability: ->(health_odds) { 0.6 },
+      effect_type: 'Pot'
     },
     "Blessed" => {
       value_calculation: ->(rank) { (1 + rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. MULTIPLIES WAGER." },
-      discovery_probability: ->(health_odds) { 0.5 * (1.5 - health_odds) }
+      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. INCREASES BLOOD POOL WINNINGS WITH LOOSING HAND." },
+      discovery_probability: ->(health_odds) { 0.5 * (1.5 - health_odds) },
+      effect_type: 'Pot'
     },
     "Bloodstained" => {
       value_calculation: ->(rank) { (1 + 0.5 * (rank / 15.0)).round(2) },
       description: ->(name) { "A #{name}, the cards are matted together by blood, filling the room with their foul odor. DAIMON'S MINIMUM WAGER INCREASES." },
-      discovery_probability: ->(health_odds) { 0.2 * (1 - health_odds) }
+      discovery_probability: ->(health_odds) { 0.2 * (1 - health_odds) },
+      effect_type: 'Damage'
     }
   }.freeze
 
@@ -51,6 +58,7 @@ class Card < ApplicationRecord
   #Scopes
   scope :by_suit, ->(suit) { where(suit: suit) }
   scope :by_effect, ->(type) { where(effect: type) }
+  scope :by_effect_type, ->(type) { where(effect_type: type) }
   scope :by_undiscovered, ->(player) {where.not(id: player.cards.select(:id))}
   
   #Validations
@@ -61,6 +69,7 @@ class Card < ApplicationRecord
   #Must have a rank from 1-10 or J, Q, K, A
   validates :rank, presence: true, inclusion: { in: RANKS }
   validates :effect, presence: true, inclusion: { in: EFFECTS } 
+  validates :effect_type, presence: true, inclusion: { in: EFFECT_TYPES }
 
   def card_numeric_rank
     FACE_CARD_RANK[rank] || rank.to_i
@@ -76,6 +85,10 @@ class Card < ApplicationRecord
 
   def set_effect_description
     self.description ||= EFFECT_DETAILS.dig(self.effect, :description)&.call(self.name) || "A #{self.name}"
+  end
+
+  def set_effect_type
+    self.effect_type ||= EFFECT_DETAILS.dig(self.effect, :effect_type) || "None"
   end
   
   def effect_probability(effect, health_odds)
