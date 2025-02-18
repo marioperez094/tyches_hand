@@ -1,11 +1,8 @@
 //External Imports
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 
 //Components
-import Card from "./card";
-
-//Stylesheets
-import "./cards.scss";
+import Card from "@components/gameAssets/cards/card";
 
 export default function CardStack({ cards, selectedCard, handleCardTap, handleDeckTap }) {
   //Memoized 

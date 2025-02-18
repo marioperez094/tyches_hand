@@ -1,5 +1,5 @@
 //External Imports
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import { Link } from "react-router-dom";
 
 //Stylesheets
@@ -7,17 +7,28 @@ import "./hoverButtons.scss";
 
 export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 150 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const hoverRef = useRef(null);
+
   const numButtons = buttonOptions.length;
 
   function toggleMenu() {
     setIsOpen(prevState => !prevState);
   };
+
+  function handleBlur(e) {
+    //Only closes if user clicks anywhere outside the hover buttons
+    if (!hoverRef.current.contains(e.relatedTarget)) return setIsOpen(false);
+  }
   
   const buttons = useMemo(() =>  
+    //Creates set number of arrays based on button options
     Array.from({ length: numButtons }, (_, index) => {
+
+      //Calculates angle based on presets 
       const angle = (index / (numButtons - 1)) * arcAngle;
       const angleInRadians = (angle * Math.PI) / 180;
       return {
+        //Converts angle into x and y coordinates
         x: Math.cos(angleInRadians) * radius,
         y: Math.sin(angleInRadians) * radius
       };
@@ -25,12 +36,18 @@ export default function HoverButtons({ buttonOptions, arcAngle = 90, radius = 15
     [numButtons, arcAngle, radius]
   );
 
+  //Reverse button options since first button appears in bottom right.
   const reversedButtonOptions = useMemo(() => [...buttonOptions].reverse(), [buttonOptions]);
 
   console.log("render hoverButtons")
 
   return(
-    <div className="fixed hover-buttons-container">
+    <div 
+      ref={ hoverRef }
+      className="fixed hover-buttons-container"
+      tabIndex={ 0 }
+      onBlur={ handleBlur }
+    >
       { /* Main Toggle button */ }
       <button 
         className="rounded-full text-white absolute main-button"

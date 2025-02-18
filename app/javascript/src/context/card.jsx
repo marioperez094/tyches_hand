@@ -14,7 +14,7 @@ function CardProvider({ children }) {
   console.log("deck: " + deck.length)
   console.log("collectionCards: " + collectionCards.length)
 
-  const { moveItems, clearLoadout } = useItemManager();
+  const { moveItems, sortItemsByID, clearLoadout } = useItemManager();
 
   function handleMoveCards(items, isMovingToCollections) {
     //Source and target based on moving to collection boolean
@@ -28,6 +28,13 @@ function CardProvider({ children }) {
       setSource(updatedSource);
       setTarget(updatedTarget);
   };
+
+  function sortCardsByID() {
+    const { updatedLoadout, updatedCollection } = sortItemsByID(deck, collectionCards);
+
+    setDeck(updatedLoadout);
+    setCollectionCards(updatedCollection);
+  }
 
   function clearDeck() {
     const { updatedSource, updatedTarget } = clearLoadout(deck, collectionCards);
@@ -44,7 +51,7 @@ function CardProvider({ children }) {
   };
 
   return (
-    <CardContext.Provider value={{ deck, collectionCards, handleMoveCards, clearDeck, fillDeck, setDeck, setCollectionCards }}>
+    <CardContext.Provider value={{ deck, collectionCards, handleMoveCards, sortCardsByID, clearDeck, fillDeck, setDeck, setCollectionCards }}>
       { children }
     </CardContext.Provider>
   )

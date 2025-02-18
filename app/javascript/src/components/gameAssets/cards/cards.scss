@@ -132,41 +132,7 @@
   );
 }
 
-.overlap-cards {
-  opacity: 0;
-  margin-left: -3.75rem;
-  transition: z-index 0.3s ease;
-  transform: translateX(3.125rem);
-  animation: stack-animation 0.05s ease forwards;
-
-  &:first-child {
-    margin-left: 0;
-  }
-
-  &:hover {
-    z-index: 1;
-  } 
-
-  &:active {
-    opacity: 1;
-
-    .card {
-      opacity: 1;
-      cursor: grabbing;
-      transform: scale(1.05);
-    }
-  }
-}
-
-.card-stack {
-  min-height: 50vh;
-}
-
 @media (max-width: 62.5rem) {
-  .card-stack {
-    // min-height: 10.9375rem;
-  }
-
   .card-container {
     width: 4.6875rem;
     height: 6.875rem;
@@ -186,9 +152,5 @@
   
   .card-content {
     font-size: 1.25rem;
-  }
-
-  .overlap-cards {
-    margin-left: -1.5625rem;
   }
 }

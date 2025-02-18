@@ -161,7 +161,7 @@
     z-index: 2;
   }
 
-  .text-green-500.notification {
+  .text-green-500.notification, .text-red-500.notification {
     animation: fade-out 5s ease-in forwards;
   }
 
@@ -204,5 +204,58 @@
 
   .filter-checkbox-container input:checked ~ .filter-checkmark:after {
     display: block;
+  }
+
+  .overlap-cards {
+    opacity: 0;
+    margin-left: -3.75rem;
+    transition: z-index 0.3s ease;
+    transform: translateX(3.125rem);
+    animation: stack-animation 0.05s ease forwards;
+  
+    &:first-child {
+      margin-left: 0;
+    }
+  
+    &:hover {
+      z-index: 1;
+    } 
+  
+    &:active {
+      opacity: 1;
+  
+      .card {
+        opacity: 1;
+        cursor: grabbing;
+        transform: scale(1.05);
+      }
+    }
+  }
+  
+  .card-stack {
+    min-height: 19rem;
+    padding-right: 12rem;
+  }
+
+  .selected-card {
+    .hover-box {
+      display: none;
+    }
+
+    .card-inner {
+      transform: translateY(20px);
+      box-shadow: 0 0 10px $light-gold-color;
+    }
+  }
+
+  
+  @media (max-width: 62.5rem) {
+    .card-stack {
+      min-height: 10.9375rem;
+    }
+
+    .overlap-cards {
+      margin-left: -1.5625rem;
+    }
   }
 }

@@ -8,19 +8,22 @@ import { useCard } from "@context/card";
 //Components
 import { StandardButton } from "@components/menuComponents/buttons/buttons";
 import Notification from "@components/headers/notification/notification";
-import CardStack from "@components/gameAssets/cards/cardStack";
+import CardStack from "./cardStack";
 import DeckNamer from "./deckNamer";
 import DeckContainer from "./deckContainer";
 import FilterInputs from "./filterInputs";
 
 //Functions 
+import { putRequest } from "@utils/fetchRequest";
 import { filterGivenCards } from "@utils/utils";
+import { useSelectItem } from "@utils/useSelectItem";
 
 export default function DeckEditor() {
   console.log("render deckEditor")
 
   const { player } = usePlayer();
-  const { deck, collectionCards, handleMoveCards, clearDeck, fillDeck } = useCard();
+  const { deck, collectionCards, handleMoveCards, sortCardsByID, clearDeck, fillDeck } = useCard();
+  const { selectedItem, setSelectedItem, source, setSource, handleItemTap } = useSelectItem();
   const [message, setMessage] = useState("")
   const [filters, setFilters] = useState({
     "High cards": true,
@@ -49,6 +52,28 @@ export default function DeckEditor() {
       ...prev,
       [name]: !prev[name],
     }));
+  };
+
+  function handleDeckTap(target) {
+    if (!selectedItem || target === source) return;
+    const isMovingToCollection = target === "Collection";
+
+    handleMoveCards([selectedItem], isMovingToCollection); //Check if isMovingToCollection
+    setSelectedItem(null);
+    setSource(null);
+  };
+
+  function submitDeck(e) {
+    if (e) e.preventDefault();
+
+    const payload = { deck: { cards: deck }};
+
+    putRequest("/api/decks/update/cards", payload)
+      .then(data => {
+        console.log(data)
+        if (data.success) return showMessage("Deck Saved!");
+      })
+      .catch(error => setMessage(error.message))
   }
 
   return (
@@ -56,10 +81,14 @@ export default function DeckEditor() {
       { /* Deck editing buttons */ }
       <div className="sticky top-0 deck-buttons-container">
         <div className="flex justify-center deck-buttons overflow-x-scroll w-full">
-          <StandardButton>
+          <StandardButton
+            buttonAction={ submitDeck }
+          >
             Save Deck
           </StandardButton>
-          <StandardButton>
+          <StandardButton
+            buttonAction={ sortCardsByID }
+          >
             Sort Decks
           </StandardButton>
           <StandardButton
@@ -90,6 +119,9 @@ export default function DeckEditor() {
           <FilterInputs filters={ filters } deckStats={ player.deck } filterCards={ filterCards } />
           <CardStack
             cards={ filteredCollectionCards } 
+            selectedCard={ selectedItem }
+            handleDeckTap={ () => handleDeckTap("Collection") }
+            handleCardTap={ (card) => handleItemTap(card, "Collection") }
           />
         </DeckContainer>
         <DeckContainer
@@ -101,6 +133,9 @@ export default function DeckEditor() {
         >
           <CardStack
             cards={ deck } 
+            selectedCard={ selectedItem }
+            handleDeckTap={ () => handleDeckTap("Deck") }
+            handleCardTap={ (card) => handleItemTap(card, "Deck") }
           />
         </DeckContainer>
       </section>
