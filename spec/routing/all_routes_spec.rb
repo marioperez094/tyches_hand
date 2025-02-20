@@ -70,4 +70,10 @@ RSpec.describe "API Routing", type: :routing do
       expect(put: "/api/decks/update/cards").to route_to("api/decks#update_cards_in_deck")
     end
   end
+
+  describe "Slot routes" do
+    it 'routes /api/slots/update/tokens to token_slots#update_token_slots' do
+      expect(put: '/api/slots/update/tokens').to route_to('api/token_slots#update_token_slots')
+    end
+  end
 end

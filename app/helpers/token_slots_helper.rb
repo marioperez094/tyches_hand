@@ -1,0 +1,2 @@
+module TokenSlotsHelper
+end

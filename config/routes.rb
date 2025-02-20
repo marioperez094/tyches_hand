@@ -22,6 +22,9 @@ Rails.application.routes.draw do
     put '/decks/rename' => 'decks#rename_deck'
     put '/decks/update/cards' => 'decks#update_cards_in_deck'
 
+    #Slots
+    put '/slots/update/tokens' => 'token_slots#update_token_slots'
+
   end
   
   #Redirects react-router links on reload
