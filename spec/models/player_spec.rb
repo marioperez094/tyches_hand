@@ -172,6 +172,23 @@ RSpec.describe  Player, type: :model do
     end
   end
 
+  describe "Token Slot Initialization" do
+    it "creates 6 token slots when a player is created" do
+      player = FactoryBot.create(:player)
+
+      expect(player.token_slots.count).to eq(6)  # Ensure exactly 6 slots exist
+      expect(player.token_slots.where(slot_type: "Inscribed").count).to eq(1)
+      expect(player.token_slots.where(slot_type: "Oathbound").count).to eq(2)
+      expect(player.token_slots.where(slot_type: "Offering").count).to eq(3)
+    end
+
+    it "does not create duplicate token slots on multiple player saves" do
+      player = FactoryBot.create(:player)
+
+      expect { player.save! }.not_to change { player.token_slots.count }
+    end
+  end
+
   describe "#owns_card?" do
     let(:player) { FactoryBot.create(:player) }
     let(:card) { Card.first }

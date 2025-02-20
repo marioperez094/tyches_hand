@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :players, only: [:create, :index, :destroy]
     resources :sessions, only: [:create]
     resources :cards, only: [:show]
+    resources :tokens, only: [:show]
     resources :decks, only: [:create]
 
     #Players

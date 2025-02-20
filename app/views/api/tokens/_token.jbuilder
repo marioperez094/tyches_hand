@@ -1,6 +1,6 @@
 json.id                token.id
 json.name              token.name
-json.symbol            token.symbol
+json.rune              token.rune
 json.description       token.description
 json.effect_type       token.effect_type
 json.inscribed_effect  token.inscribed_effect
