@@ -39,6 +39,8 @@ module Api
       @include_deck_stats = params[:deck_stats] == 'true'
       @include_deck_cards = params[:deck_cards] == 'true'
       @include_collection_cards = params[:collection_cards] == 'true'
+      @include_slotted_tokens = params[:slotted_tokens] == 'true'
+      @include_collection_tokens = params[:collection_tokens] == 'true'
 
       render 'api/players/show',
       status: :ok

@@ -39,7 +39,7 @@ export default function Dashboard({ logOut }) {
   }, []);
 
   async function fetchPlayerInfo() {
-    await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true });
+    await fetchPlayer({ deck_stats: true, deck_cards: true, collection_cards: true, collection_tokens: true });
 
     stopLoading();
   };

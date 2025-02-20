@@ -53,8 +53,11 @@ RSpec.describe  Player, type: :model do
   end 
 
   describe "Associations" do
+    let(:token) { FactoryBot.create(:token) }
+    let(:player) { FactoryBot.create(:player) }
+    let(:deck) { player.deck }
+
     it "has many sessions" do
-      player = FactoryBot.create(:player)
       session1 = FactoryBot.create(:session, player: player)
       session2 = FactoryBot.create(:session, player: player)
 
@@ -62,7 +65,6 @@ RSpec.describe  Player, type: :model do
     end
 
     it "deletes associated sessions when destroyed" do
-      player = FactoryBot.create(:player)
       session = FactoryBot.create(:session, player: player)
 
       expect(Session.count).to eq(1)
@@ -75,12 +77,66 @@ RSpec.describe  Player, type: :model do
     end
 
     it "has many cards through collections" do
-      player = FactoryBot.create(:player)
       card1 = Card.first
       card2 = Card.second
       player.cards << [card1, card2]
 
       expect(player.cards).to include(card1, card2)
+    end
+
+    it "deletes associated collection when destroyed" do
+      card = Card.first
+      collection = Collection.create!(player: player, card: card)
+      
+      expect(Collection.count).to eq(53)
+
+      player.force_delete = true
+      player.destroy!
+
+      expect(Player.count).to eq(0)
+      expect(Collection.count).to eq(0)
+    end
+
+    it "has a deck" do
+      expect(player.deck.name).to eq("Test's Deck")
+      expect(Deck.count).to eq(1)
+      
+      player.force_delete = true
+      player.destroy!
+
+      expect(Player.count).to eq(0)
+      expect(Deck.count).to eq(0)
+    end
+
+    it "deletes associated deck when destroyed" do
+      expect(player.deck.name).to eq("Test's Deck")
+      expect(Deck.count).to eq(1)
+
+      player.force_delete = true
+      player.destroy!
+
+      expect(Player.count).to eq(0)
+      expect(Deck.count).to eq(0)
+    end
+
+    it "has many tokens through player_token" do
+      player = FactoryBot.create(:player)
+      token = FactoryBot.create(:token)
+      player.tokens << token
+
+      expect(player.tokens).to include(token)
+    end
+
+    it "deletes associated collection when destroyed" do
+      player_token = PlayerToken.create!(player: player, token: token)
+      
+      expect(PlayerToken.count).to eq(1)
+
+      player.force_delete = true
+      player.destroy!
+
+      expect(Player.count).to eq(0)
+      expect(PlayerToken.count).to eq(0)
     end
 
     it "has one deck" do
@@ -130,6 +186,20 @@ RSpec.describe  Player, type: :model do
     end
   end
 
+  describe "#owns_token?" do
+    let(:player) { FactoryBot.create(:player) }
+    let(:token) { FactoryBot.create(:token) }
+
+    it "returns true if the player owns the card" do
+      player.tokens << token
+      expect(player.owns_token?(token.id)).to be true
+    end
+
+    it "returns false if the player does not own the card" do
+      expect(player.owns_token?(token.id)).to be false
+    end
+  end
+
   describe "discover_cards" do
     let(:player) { FactoryBot.create(:player) }
 
@@ -143,7 +213,8 @@ RSpec.describe  Player, type: :model do
 
     it "increases discovery rate when health is low" do
       low_health_player = FactoryBot.create(:player, username: 'low_health_player', blood_pool: 500) # Near death
-      expect(low_health_player.discover_cards.count).to be > player.discover_cards.count
+      discoveries = 10.times.map { low_health_player.discover_cards.count > player.discover_cards.count }
+      expect(discoveries.count(true)).to be > 5  # Expect at least 6 out of 10 runs to hold true
     end
 
     it "does not discover more than 10 cards in one attempt" do

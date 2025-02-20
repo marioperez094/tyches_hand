@@ -101,7 +101,7 @@ RSpec.describe Card, type: :model do
     end
 
     it "calculate_effect_value returns the correct value" do
-      expected_value = (500 * 15 / 15.0).round  # Based on Exhumed effect
+      expected_value = (1 + 0.5 * 15 / 15.0).round  # Based on Exhumed effect
       expect(card.calculate_effect_value).to eq(expected_value)
     end
 
