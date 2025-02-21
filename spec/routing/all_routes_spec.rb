@@ -51,6 +51,12 @@ RSpec.describe "API Routing", type: :routing do
     end
   end
 
+  describe "Tokens routes" do
+    it "routes /api/tokens/:id to tokens#show" do
+      expect(get: "/api/tokens/1").to route_to("api/tokens#show", id: "1")
+    end
+  end
+
   describe "Decks routes" do
     it "routes /api/decks to decks#create" do
       expect(post: "/api/decks").to route_to("api/decks#create")
@@ -62,6 +68,12 @@ RSpec.describe "API Routing", type: :routing do
 
     it "routes /api/decks/update/cards to decks#update_cards_in_deck" do
       expect(put: "/api/decks/update/cards").to route_to("api/decks#update_cards_in_deck")
+    end
+  end
+
+  describe "Slot routes" do
+    it 'routes /api/slots/update/tokens to token_slots#update_token_slots' do
+      expect(put: '/api/slots/update/tokens').to route_to('api/token_slots#update_token_slots')
     end
   end
 end

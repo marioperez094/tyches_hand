@@ -19,16 +19,19 @@ function PlayerProvider({ children }) {
     deck_stats = false,
     deck_cards = false,
     collection_cards = false,
+    collection_tokens = false,
   } = {}) {
     const queryParams = new URLSearchParams();
     if (deck_stats) queryParams.append("deck_stats", "true");
     if (deck_cards) queryParams.append("deck_cards", "true");
     if (collection_cards) queryParams.append("collection_cards", "true");
+    if (collection_tokens) queryParams.append("collection_tokens", "true");
 
     const url = `/api/players/show?${ queryParams.toString() }`;
     
     getRequest(url)
       .then(data => {
+        console.log(data)
         const { deck_cards, collection_cards, ...playerStats } = data.player;
         setPlayer(playerStats)
         if (deck_cards) setDeck(deck_cards);

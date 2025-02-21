@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     resources :players, only: [:create, :index, :destroy]
     resources :sessions, only: [:create]
     resources :cards, only: [:show]
+    resources :tokens, only: [:show]
     resources :decks, only: [:create]
 
     #Players
@@ -20,6 +21,9 @@ Rails.application.routes.draw do
     #Decks
     put '/decks/rename' => 'decks#rename_deck'
     put '/decks/update/cards' => 'decks#update_cards_in_deck'
+
+    #Slots
+    put '/slots/update/tokens' => 'token_slots#update_token_slots'
 
   end
   

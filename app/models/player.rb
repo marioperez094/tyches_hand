@@ -3,7 +3,15 @@ class Player < ApplicationRecord
   has_many :sessions, dependent: :destroy
   has_many :collections, dependent: :destroy
   has_many :cards, through: :collections
+
+  has_many :player_tokens, dependent: :destroy
+  has_many :tokens, through: :player_tokens
+
+  has_many :token_slots, dependent: :destroy
+  has_many :equipped_tokens, through: :token_slots, source: :slotted_tokens
+
   has_one :deck, dependent: :destroy
+  has_many :equipped_cards, through: :deck, source: :cards
 
   #Secure password with bcrypt
   has_secure_password validations: false
@@ -19,32 +27,12 @@ class Player < ApplicationRecord
   before_validation :assign_guest_username, if: :guest?
   before_destroy :prevent_registered_player_deletion, unless: :force_delete?
   after_create :initialize_deck
+  after_create :initialize_token_slots
 
   attr_accessor :force_delete #Allows manual deletion when explicitly requested
+  
 
-
-  #Public Token Functions
-
-
-  #def current_lore_token
-    #Token.where(lore_token: true).order(:sequence_order).offset(lore_progression).first
-  #end
-
-  #def advance_lore_progression
-    #return unless current_lore_token # Ensure there's a token to advance to
-    
-    #next_lore_token = Token.where(lore_token: true)
-      #.order(:sequence_order)
-      #.offset(lore_progression + 1)
-      #.first
-
-    #self.lore_progression += 1 if next_lore_token.present?
-    #save!
-  #end
-
-
-
-  #Public Card Functions
+  #Public Card Methods
 
 
   #Card Discovery Logic
@@ -59,7 +47,7 @@ class Player < ApplicationRecord
     #Determines number of cards to be discovered
     num_cards_to_discover = weighted_random_card_count(max_cards, health_factor)
     
-    #Weighted probabilyt function for ranking and effect type
+    #Weighted probability function for ranking and effect type
     rank_weights = ->(card) { 1.5 / (card.card_numeric_rank || 1) }
     effect_weights = ->(card) { card.effect_probability(card.effect, health_factor) }
 
@@ -78,9 +66,13 @@ class Player < ApplicationRecord
     discovered_cards
   end
   
-  #Check if the player already owns a specific card
+  #Check if the player already owns a specific card or token
   def owns_card?(card_id)
     cards.exists?(card_id)
+  end
+
+  def owns_token?(token_id)
+    tokens.exists?(token_id)
   end
 
   private
@@ -99,7 +91,7 @@ class Player < ApplicationRecord
   end
 
   
-  #Private Card Functions
+  #Private Card Methods
 
 
   def initialize_deck
@@ -114,7 +106,7 @@ class Player < ApplicationRecord
 
   #Determine the number of cards a player discovers based on health odds
   def weighted_random_card_count(max_cards, health_factor)
-    base_probability = 0.5 + (health_factor * 0.3) #Probabilyt increases with lower health
+    base_probability = 0.5 + (health_factor * 0.3) #Probability increases with lower health
 
     # Generate a random number of chances (0 to max_cards), and count successful discoveries
     rand(0..max_cards).times.count { rand < base_probability }
@@ -122,5 +114,17 @@ class Player < ApplicationRecord
 
   def prevent_registered_player_deletion
     throw(:abort) unless guest? # Prevent destruction if the player is registered
+  end
+
+  
+  #Private Token Slot Methods
+
+
+  def initialize_token_slots
+    ActiveRecord::Base.transaction do
+      token_slots.create!(slot_type: "Inscribed")
+      2.times { token_slots.create!(slot_type: "Oathbound") }
+      3.times { token_slots.create!(slot_type: "Offering") }
+    end
   end
 end

@@ -14,7 +14,7 @@ class Card < ApplicationRecord
   RANKS = %w[2 3 4 5 6 7 8 9 10 Jack Queen King Ace].freeze
   SUITS = %w[Hearts Diamonds Clubs Spades].freeze
   EFFECTS = %w[Exhumed Charred Fleshwoven Blessed Bloodstained Standard].freeze
-  EFFECT_TYPES= %w[Pot Heal Damage None].freeze
+  EFFECT_TYPES= %w[Damage Pot Heal None].freeze
   FACE_CARD_RANK = {
     'Jack' => 11,
     'Queen' => 12,
@@ -23,32 +23,32 @@ class Card < ApplicationRecord
   }.freeze
   EFFECT_DETAILS = {
     "Exhumed" => {
-      value_calculation: ->(rank) { (500 * rank / 15.0).round },
-      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. INCREASED BLOOD POOL WINNINGS WITH WINNING HAND." },
+      value_calculation: ->(rank) { (1 + 0.5 * rank / 15.0).round },
+      description: ->(name) { "An #{name}, cards ripped from a corpse's stiff grip. INCREASES BLOOD POT PAYOUT ON A WIN." },
       discovery_probability: ->(health_odds) { (0.4 + health_odds) / 1.4 },
       effect_type: 'Pot'
     },
     "Charred" => {
-      value_calculation: ->(rank) { (0.15 * rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, the embers on these cards can still cauterize wounds. REDUCES BLOOD LOSS." },
+      value_calculation: ->(rank) { (0.2 * (rank / 15.0)).round(2) },
+      description: ->(name) { "A #{name}, the embers on these cards can still cauterize wounds. PARTIALLY REFUNDS BLOOD LOST ON WAGER." },
       discovery_probability: ->(health_odds) { (0.6 + health_odds) / 2 },
       effect_type: 'Heal'
     },
     "Fleshwoven" => {
-      value_calculation: ->(rank) { (0.2 * rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. INCREASES BLOOD POOL WINNINGS IF THE HAND ENDS IN A PUSH." },
+      value_calculation: ->(rank) { (1 + rank / 15.0).round(2) },
+      description: ->(name) { "A #{name}, these cards appear to have a leathery texture and an odd familiarity. INCREASES BLOOD POT PAYOUT ON A PUSH." },
       discovery_probability: ->(health_odds) { 0.6 },
       effect_type: 'Pot'
     },
     "Blessed" => {
-      value_calculation: ->(rank) { (1 + rank / 15.0).round(2) },
-      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. INCREASES BLOOD POOL WINNINGS WITH LOOSING HAND." },
+      value_calculation: ->(rank) { (0.4 * rank / 15.0).round(2) },
+      description: ->(name) { "A #{name}, the cards are blinding, and sizzles to the touch. PARTIALLY REFUNDS BLOOD LOST ON A LOSS." },
       discovery_probability: ->(health_odds) { 0.5 * (1.5 - health_odds) },
       effect_type: 'Pot'
     },
     "Bloodstained" => {
-      value_calculation: ->(rank) { (1 + 0.5 * (rank / 15.0)).round(2) },
-      description: ->(name) { "A #{name}, the cards are matted together by blood, filling the room with their foul odor. DAIMON'S MINIMUM WAGER INCREASES." },
+      value_calculation: ->(rank) { (1 + 0.1 * (rank / 15.0)).round(2) },
+      description: ->(name) { "A #{name}, the cards are matted together by blood, filling the room with their foul odor. HOUSE TAKES EXTRA DAMAGE." },
       discovery_probability: ->(health_odds) { 0.2 * (1 - health_odds) },
       effect_type: 'Damage'
     }
@@ -59,7 +59,7 @@ class Card < ApplicationRecord
   scope :by_suit, ->(suit) { where(suit: suit) }
   scope :by_effect, ->(type) { where(effect: type) }
   scope :by_effect_type, ->(type) { where(effect_type: type) }
-  scope :by_undiscovered, ->(player) {where.not(id: player.cards.select(:id))}
+  scope :by_undiscovered, ->(player) { where.not(id: player.cards.pluck(:id)) }
   
   #Validations
   validates :description, presence: true
@@ -70,6 +70,10 @@ class Card < ApplicationRecord
   validates :rank, presence: true, inclusion: { in: RANKS }
   validates :effect, presence: true, inclusion: { in: EFFECTS } 
   validates :effect_type, presence: true, inclusion: { in: EFFECT_TYPES }
+
+  
+  #Public Set Methods
+
 
   def card_numeric_rank
     FACE_CARD_RANK[rank] || rank.to_i
@@ -90,6 +94,10 @@ class Card < ApplicationRecord
   def set_effect_type
     self.effect_type ||= EFFECT_DETAILS.dig(self.effect, :effect_type) || "None"
   end
+
+  
+  #Card Discovery Methods
+
   
   def effect_probability(effect, health_odds)
     EFFECT_DETAILS.dig(effect, :discovery_probability)&.call(health_odds) || 0

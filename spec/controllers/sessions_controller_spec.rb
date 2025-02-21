@@ -89,8 +89,8 @@ RSpec.describe Api::SessionsController, type: :controller do
       expect(Session.exists?(session.id)).to be false
     end
 
-    it "deletes guest players after checking authentication" do
-      guest_session = FactoryBot.create(:session, player: guest_player)
+    it "deletes guest players after checking authentication if session expired" do
+      guest_session = FactoryBot.create(:session, player: guest_player, expires_at: 1.hour.ago)
       cookies.signed[:tyches_hand_session_token] = guest_session.token
 
       get :authenticated, format: :json

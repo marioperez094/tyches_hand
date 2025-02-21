@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2025_01_14_162913) do
+ActiveRecord::Schema.define(version: 2025_02_20_003249) do
 
   create_table "cards", force: :cascade do |t|
     t.string "name", null: false
@@ -54,6 +54,15 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.index ["player_id"], name: "index_decks_on_player_id"
   end
 
+  create_table "player_tokens", force: :cascade do |t|
+    t.integer "player_id"
+    t.integer "token_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["player_id"], name: "index_player_tokens_on_player_id"
+    t.index ["token_id"], name: "index_player_tokens_on_token_id"
+  end
+
   create_table "players", force: :cascade do |t|
     t.string "username", null: false
     t.string "password_digest"
@@ -78,10 +87,50 @@ ActiveRecord::Schema.define(version: 2025_01_14_162913) do
     t.index ["token"], name: "index_sessions_on_token", unique: true
   end
 
+  create_table "slotted_tokens", force: :cascade do |t|
+    t.integer "token_id"
+    t.integer "token_slot_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["token_id", "token_slot_id"], name: "index_slotted_tokens_on_token_id_and_token_slot_id", unique: true
+    t.index ["token_id"], name: "index_slotted_tokens_on_token_id"
+    t.index ["token_slot_id"], name: "index_slotted_tokens_on_token_slot_id"
+  end
+
+  create_table "token_slots", force: :cascade do |t|
+    t.string "slot_type", null: false
+    t.integer "player_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["player_id"], name: "index_token_slots_on_player_id"
+  end
+
+  create_table "tokens", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "rune", null: false
+    t.text "description", null: false
+    t.string "effect_type", null: false
+    t.text "inscribed_effect", null: false
+    t.text "oathbound_effect", null: false
+    t.text "offering_effect", null: false
+    t.boolean "lore_token", default: false, null: false
+    t.integer "sequence_order"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["effect_type"], name: "index_tokens_on_effect_type"
+    t.index ["lore_token"], name: "index_tokens_on_lore_token"
+    t.index ["sequence_order"], name: "index_tokens_on_sequence_order", unique: true, where: "lore_token = true"
+  end
+
   add_foreign_key "cards_in_decks", "cards", on_delete: :cascade
   add_foreign_key "cards_in_decks", "decks", on_delete: :cascade
   add_foreign_key "collections", "cards", on_delete: :cascade
   add_foreign_key "collections", "players", on_delete: :cascade
   add_foreign_key "decks", "players", on_delete: :cascade
+  add_foreign_key "player_tokens", "players", on_delete: :cascade
+  add_foreign_key "player_tokens", "tokens", on_delete: :cascade
   add_foreign_key "sessions", "players", on_delete: :cascade
+  add_foreign_key "slotted_tokens", "token_slots", on_delete: :cascade
+  add_foreign_key "slotted_tokens", "tokens", on_delete: :cascade
+  add_foreign_key "token_slots", "players", on_delete: :cascade
 end

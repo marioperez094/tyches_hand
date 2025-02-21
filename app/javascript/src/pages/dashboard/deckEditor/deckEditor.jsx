@@ -1,5 +1,5 @@
 //External Imports
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 
 //Context 
 import { usePlayer } from "@context/player";
@@ -24,7 +24,7 @@ export default function DeckEditor() {
   const { player } = usePlayer();
   const { deck, collectionCards, handleMoveCards, sortCardsByRank, clearDeck, fillDeck } = useCard();
   const { selectedItem, setSelectedItem, source, setSource, handleItemTap } = useSelectItem();
-  const [message, setMessage] = useState("")
+  const [message, setMessage] = useState(null)
   const [filters, setFilters] = useState({
     "High cards": true,
     "Low cards": true,
@@ -35,16 +35,21 @@ export default function DeckEditor() {
     Bloodstained: true,
     Standard: true,
   });
+
+  console.log(message)
     
   const filteredCollectionCards = useMemo(() => filterGivenCards(collectionCards, filters), [collectionCards, filters]);
 
   function showMessage(message) {
     setMessage(message);
-
-    setTimeout(() => {
-      setMessage("");
-    }, 5000);
   };
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => setMessage(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [message])
 
   function filterCards(e) {
     const { name } = e.target

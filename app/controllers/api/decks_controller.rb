@@ -53,7 +53,7 @@ module Api
     
       CardsInDeck.insert_all(cards_to_insert) unless cards_to_insert.empty?
     
-      @deck.cards_in_deck.where(card_id: card_ids_to_remove).delete_all
+      @deck.cards_in_decks.where(card_id: card_ids_to_remove).delete_all
     
       if @deck.save
         render json: { success: true }, status: :ok

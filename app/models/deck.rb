@@ -2,8 +2,8 @@ class Deck < ApplicationRecord
   #Associations
   belongs_to :player
 
-  has_many :cards_in_deck, dependent: :destroy
-  has_many :cards, through: :cards_in_deck
+  has_many :cards_in_decks, dependent: :destroy
+  has_many :cards, through: :cards_in_decks
 
   #Validations
   validates :player_id, uniqueness: true
